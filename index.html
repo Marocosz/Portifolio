@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marcos Rodrigues</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/phosphor-icons"></script>
+</head>
+
+<body>
+
+    <canvas id="particle-canvas"></canvas>
+
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <nav class="main-nav">
+        <ul>
+            <li data-section="hero" class="active"><span class="nav-tooltip">Início</span><i
+                    class="ph-light ph-rocket-launch"></i></li>
+            <li data-section="about"><span class="nav-tooltip">Me Conheça</span><i class="ph-light ph-user"></i></li>
+            <li data-section="timeline"><span class="nav-tooltip">Jornada</span><i class="ph-light ph-path"></i></li>
+            <li data-section="projects"><span class="nav-tooltip">Projetos</span><i class="ph-light ph-kanban"></i></li>
+            <li data-section="lab"><span class="nav-tooltip">Lab</span><i class="ph-light ph-flask"></i></li>
+            <li data-section="contact"><span class="nav-tooltip">Contato</span><i
+                    class="ph-light ph-terminal-window"></i></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="hero" class="fullscreen-section">
+            <div class="hero-content">
+
+                <div class="hero-text">
+                    <h1 class="hero-title">
+                        <span class="hero-title-line">Marcos</span>
+                        <span class="hero-title-line">Rodrigues</span>
+                    </h1>
+                    <p class="hero-subtitle">Desenvolvedor • IA & Automação</p>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="about" class="content-section reveal-text">
+            <div class="section-title reveal-text">Me Conheça</div>
+            <div class="about-container">
+                <div class="about-text">
+                    <p class="reveal-text">Olá! Eu sou um apaixonado por transformar problemas complexos em soluções
+                        elegantes e automatizadas. Minha jornada no mundo da tecnologia é movida pela curiosidade e pelo
+                        desejo de construir o futuro com inteligência artificial.</p>
+                    <p class="reveal-text">Aqui, você não encontrará apenas uma lista de habilidades, mas uma narrativa
+                        visual de como eu conecto código, dados e criatividade para inovar.</p>
+                </div>
+                <div class="about-image-wrapper">
+                    <img src="img/logodev.png" alt="Foto de [Seu Nome]" class="lazy-load"
+                        data-src="img/minha-foto.png">
+                </div>
+            </div>
+        </section>
+
+        <section id="timeline" class="content-section">
+            <div class="section-title reveal-text">Minha Jornada</div>
+            <div class="timeline-container">
+                <div class="timeline-line"></div>
+                <div class="timeline-item" data-year="2018"
+                    data-description="Iniciei minha graduação em Ciência da Computação, mergulhando de cabeça em algoritmos e estruturas de dados.">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">2018</div>
+                </div>
+                <div class="timeline-item" data-year="2020"
+                    data-description="Primeiro estágio em automação de processos, onde desenvolvi bots que otimizaram mais de 200 horas de trabalho manual por mês.">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">2020</div>
+                </div>
+                <div class="timeline-item" data-year="2022"
+                    data-description="Liderei um projeto de IA para análise preditiva de dados, aumentando a eficiência da empresa em 15%.">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">2022</div>
+                </div>
+                <div class="timeline-item" data-year="2024"
+                    data-description="Concluí minha especialização em Machine Learning e comecei a atuar como desenvolvedor sênior em projetos de IA generativa.">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">2024</div>
+                </div>
+            </div>
+            <div class="timeline-description-box">
+                <p>Clique em um marco para ver os detalhes.</p>
+            </div>
+        </section>
+
+        <section id="projects" class="content-section">
+            <div class="section-title reveal-text">Projetos</div>
+            <div class="project-filters">
+                <button class="filter-btn active" data-filter="all">Todos</button>
+                <button class="filter-btn" data-filter="ai">Inteligência Artificial</button>
+                <button class="filter-btn" data-filter="automation">Automação</button>
+                <button class="filter-btn" data-filter="web">Web</button>
+            </div>
+            <div class="project-gallery">
+                <div class="project-card" data-category="ai">
+                    <img class="lazy-load" data-src="https://via.placeholder.com/600x400.webp?text=Projeto+IA"
+                        alt="Projeto 1">
+                    <div class="project-info">
+                        <h3>Sistema de Reconhecimento Facial</h3>
+                        <p>IA</p>
+                    </div>
+                </div>
+                <div class="project-card" data-category="automation">
+                    <img class="lazy-load" data-src="https://via.placeholder.com/600x400.webp?text=Projeto+Automação"
+                        alt="Projeto 2">
+                    <div class="project-info">
+                        <h3>RPA para Setor Financeiro</h3>
+                        <p>Automação</p>
+                    </div>
+                </div>
+                <div class="project-card" data-category="web">
+                    <img class="lazy-load" data-src="https://via.placeholder.com/600x400.webp?text=Projeto+Web"
+                        alt="Projeto 3">
+                    <div class="project-info">
+                        <h3>Dashboard Interativo de Dados</h3>
+                        <p>Web</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="lab" class="content-section">
+            <div class="section-title reveal-text">Lab Experimental</div>
+            <div class="lab-container">
+                <p class="reveal-text">Um lugar para protótipos, ideias e experimentos de código. Interaja abaixo.</p>
+                <div class="lab-experiment">
+                    <h4>Simulador de Rede Neural</h4>
+                    <p>Passe o mouse sobre os neurônios para ver as conexões se ativarem.</p>
+                    <div class="neural-network"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="fullscreen-section">
+            <div class="terminal">
+                <div class="terminal-header">
+                    <div class="terminal-buttons">
+                        <span class="btn-close"></span>
+                        <span class="btn-min"></span>
+                        <span class="btn-max"></span>
+                    </div>
+                    <div class="terminal-title">contato@seu-nome: ~</div>
+                </div>
+                <div class="terminal-body" id="terminal-body">
+                    <div id="terminal-output"></div>
+                    <div class="terminal-prompt">
+                        <span class="prompt-user">visitante@portfolio:~$</span>
+                        <div class="terminal-input-container">
+                            <input type="text" id="terminal-input" class="terminal-input" autocomplete="off"
+                                spellcheck="false">
+                            <span class="cursor-blink"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="project-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <img id="modal-img" src="" alt="Imagem do Projeto">
+            <h2 id="modal-title"></h2>
+            <p id="modal-description">Aqui vão os detalhes completos do projeto. Fale sobre a tecnologia usada, os
+                desafios e os resultados alcançados. Você pode adicionar mais HTML aqui, como links para o GitHub ou
+                para a demo ao vivo.</p>
+        </div>
+    </div>
+
+
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,785 @@
+/* ============================================= */
+/* FONTES E VARIÁVEIS GLOBAIS                    */
+/* ============================================= */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Syne:wght@800&display=swap');
+
+:root {
+    --color-primary: #00f7ff;
+    /* Ciano vibrante */
+    --color-secondary: #f0f;
+    /* Magenta */
+    --color-background: #0d0d1a;
+    /* Azul-escuro profundo */
+    --color-text: #e0e0e0;
+    --color-text-dark: #a0a0a0;
+    --font-primary: 'Space Grotesk', sans-serif;
+    --font-display: 'Syne', sans-serif;
+    --nav-width: 60px;
+}
+
+/* ============================================= */
+/* RESET E ESTILOS GERAIS                        */
+/* ============================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    font-family: var(--font-primary);
+    overflow-x: hidden;
+    cursor: none;
+    /* Esconde o cursor padrão */
+}
+
+
+/* ============================================= */
+/* CURSOR CUSTOMIZADO (VERSÃO FINAL E CORRETA)   */
+/* ============================================= */
+.cursor,
+.cursor-follower {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 1;
+    /* Garante que o cursor esteja sempre visível */
+}
+
+.cursor {
+    width: 8px;
+    height: 8px;
+    background-color: var(--color-primary);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: transform 0.2s ease-in-out, background-color 0.2s ease;
+}
+
+.cursor-follower {
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--color-primary);
+    border-radius: 50%;
+    /* Define o estado inicial com translate e scale */
+    transform: translate(-50%, -50%) scale(1);
+    /* CORREÇÃO: Garante que TODAS as propriedades (posição e escala) sejam animadas */
+    transition: all 0.3s ease-out;
+}
+
+.cursor.active {
+    transform: translate(-50%, -50%) scale(3);
+    background-color: rgba(255, 0, 255, 0.5);
+}
+
+.cursor-follower.active {
+    /* CORREÇÃO: Combina a centralização com o aumento */
+    transform: translate(-50%, -50%) scale(1.5);
+    border-color: var(--color-secondary);
+}
+
+/* ============================================= */
+/* NAVEGAÇÃO NÃO-LINEAR                          */
+/* ============================================= */
+.main-nav {
+    position: fixed;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    background: rgba(20, 20, 30, 0.5);
+    backdrop-filter: blur(10px);
+    border-radius: 30px;
+    z-index: 1000;
+}
+
+.main-nav ul {
+    list-style: none;
+    padding: 10px 5px;
+}
+
+.main-nav li {
+    position: relative;
+    padding: 15px;
+    cursor: pointer;
+    color: var(--color-text-dark);
+    transition: color 0.3s ease;
+}
+
+.main-nav li.active {
+    color: var(--color-primary);
+}
+
+.main-nav li:hover {
+    color: var(--color-primary);
+}
+
+.main-nav i {
+    font-size: 24px;
+}
+
+.nav-tooltip {
+    position: absolute;
+    top: 50%;
+    right: 120%;
+    transform: translateY(-50%);
+    background-color: var(--color-primary);
+    color: var(--color-background);
+    padding: 5px 15px;
+    border-radius: 5px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    font-weight: bold;
+}
+
+.main-nav li:hover .nav-tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+/* ============================================= */
+/* ESTRUTURA DAS SEÇÕES                          */
+/* ============================================= */
+.fullscreen-section {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 5%;
+}
+
+.content-section {
+    min-height: 100vh;
+    padding: 100px 15% 100px 10%;
+    position: relative;
+}
+
+.section-title {
+    font-family: var(--font-display);
+    /* VALORES AJUSTADOS para melhor responsividade em telas pequenas */
+    font-size: clamp(2.2rem, 8vw, 5rem);
+    color: var(--color-primary);
+    margin-bottom: 60px;
+    text-transform: uppercase;
+    /* GARANTIA para evitar que o texto 'estoure' a tela */
+    word-break: break-word;
+}
+
+/* ============================================= */
+/* SEÇÃO 1: HERO (VERSÃO SÓ TEXTO, FONTE MENOR)  */
+/* ============================================= */
+#particle-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+/* Container principal do conteúdo (agora só texto) */
+#hero .hero-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 90%;
+    /* Ocupa mais da largura da tela */
+    max-width: 1200px;
+}
+
+/* Container do texto */
+.hero-text {
+    text-align: center;
+    /* Centraliza todo o texto */
+}
+
+/* Título principal (agora um container para as linhas) */
+#hero .hero-title {
+    font-family: var(--font-display);
+    /* FONTE REDUZIDA para não cortar na tela */
+    font-size: clamp(2.5rem, 8vw, 6rem);
+    color: #fff;
+    text-transform: uppercase;
+    line-height: 1.1;
+    /* Espaçamento entre as linhas */
+    margin: 0 0 15px 0;
+    padding: 0;
+}
+
+/* Estilo para cada linha do título (Marcos / Rodrigues) */
+.hero-title-line {
+    display: block;
+    /* Garante que cada um fique em sua própria linha */
+    opacity: 0;
+    animation: fade-in 1s forwards;
+}
+
+/* Animação com atraso para a segunda linha */
+.hero-title-line:nth-child(2) {
+    animation-delay: 0.3s;
+}
+
+/* Subtítulo */
+#hero .hero-subtitle {
+    font-size: 1.3rem;
+    /* Um pouco menor para harmonizar */
+    color: var(--color-text-dark);
+    letter-spacing: 3px;
+    opacity: 0;
+    animation: fade-in 1s 0.6s forwards;
+}
+
+/* REGRA PARA A IMAGEM FOI REMOVIDA */
+
+/* Indicador de Scroll */
+.scroll-down-indicator {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--color-text-dark);
+    opacity: 0;
+    animation: fade-in 1s 2s forwards;
+}
+
+.scroll-down-indicator i {
+    display: block;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateY(0);
+    }
+
+    40% {
+        transform: translateY(-10px);
+    }
+
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Animação de fade-in */
+@keyframes fade-in {
+    to {
+        opacity: 1;
+    }
+}
+
+/* ============================================= */
+/* SEÇÃO 2: ABOUT                                */
+/* ============================================= */
+#about .about-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 50px;
+    align-items: center;
+}
+
+#about .about-text p {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    margin-bottom: 20px;
+}
+
+#about .about-image-wrapper {
+    position: relative;
+    filter: grayscale(100%);
+    transition: filter 0.5s ease;
+}
+
+#about .about-image-wrapper:hover {
+    filter: grayscale(0%);
+}
+
+#about .about-image-wrapper img {
+    width: 100%;
+    border-radius: 10px;
+    transform: rotate(3deg);
+    transition: transform 0.5s ease;
+}
+
+#about .about-image-wrapper:hover img {
+    transform: rotate(0deg);
+}
+
+/* Estilos para a animação de revelação de texto com scroll */
+.reveal-text {
+    opacity: 0;
+    /* MUDANÇA AQUI: Começa deslocado para a esquerda */
+    transform: translateX(-100px); /* ou -100% dependendo do efeito desejado */
+    transition: transform 1.5s ease, opacity 1.5s ease;
+}
+
+.reveal-text.visible {
+    opacity: 1;
+    transform: translateY(0); /* volta para a posição original */
+}
+
+/* ============================================= */
+/* SEÇÃO 3: TIMELINE                             */
+/* ============================================= */
+.timeline-container {
+    opacity: 0;
+    /* MUDANÇA AQUI: Começa deslocado para a esquerda */
+    transform: translateX(-100px); /* ou -100% dependendo do efeito desejado */
+    transition: transform 1.5s ease, opacity 1.5s ease;
+}
+
+.timeline-line {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--color-text-dark);
+    transform: translateY(-50%);
+}
+
+.timeline-line::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 100%;
+    background: var(--color-primary);
+    transition: width 1s ease-in-out;
+}
+
+.timeline-container.visible .timeline-line::after {
+    width: 100%;
+}
+
+.timeline-container.visible {
+    opacity: 1;
+    transform: translateX(0); /* posição original */
+}
+
+.timeline-item {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.timeline-item:nth-child(2) {
+    left: 10%;
+}
+
+.timeline-item:nth-child(3) {
+    left: 35%;
+}
+
+.timeline-item:nth-child(4) {
+    left: 65%;
+}
+
+.timeline-item:nth-child(5) {
+    left: 90%;
+}
+
+.timeline-dot {
+    width: 20px;
+    height: 20px;
+    background: var(--color-background);
+    border: 3px solid var(--color-text-dark);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.timeline-item.active .timeline-dot,
+.timeline-item:hover .timeline-dot {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    transform: scale(1.2);
+}
+
+.timeline-year {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--color-text-dark);
+    font-weight: bold;
+}
+
+.timeline-item:nth-child(even) .timeline-year {
+    bottom: auto;
+    top: 30px;
+}
+
+.timeline-description-box {
+    margin-top: 80px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-left: 3px solid var(--color-primary);
+    min-height: 50px;
+    transition: all 0.5s ease;
+}
+
+.timeline-description-box p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+/* ============================================= */
+/* SEÇÃO 4: PROJECTS                             */
+/* ============================================= */
+.project-filters {
+    margin-bottom: 40px;
+}
+
+.filter-btn {
+    background: transparent;
+    border: 1px solid var(--color-text-dark);
+    color: var(--color-text-dark);
+    padding: 10px 20px;
+    margin-right: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+    background: var(--color-primary);
+    color: var(--color-background);
+    border-color: var(--color-primary);
+}
+
+.project-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.project-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.project-card.hide {
+    transform: scale(0);
+    width: 0;
+    height: 0;
+    padding: 0;
+    margin: 0;
+    opacity: 0;
+}
+
+.project-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.project-card:hover img {
+    transform: scale(1.1);
+}
+
+.project-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+    padding: 40px 20px 20px;
+    color: #fff;
+    transform: translateY(100%);
+    transition: transform 0.5s ease;
+}
+
+.project-card:hover .project-info {
+    transform: translateY(0);
+}
+
+/* Modal do Projeto */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-content {
+    background: var(--color-background);
+    padding: 40px;
+    border-radius: 5px;
+    width: 90%;
+    max-width: 800px;
+    position: relative;
+    animation: slide-in 0.5s ease;
+}
+
+@keyframes slide-in {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    font-size: 30px;
+    cursor: pointer;
+    color: var(--color-text-dark);
+}
+
+.close-modal:hover {
+    color: #fff;
+}
+
+#modal-img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+#modal-title {
+    margin-bottom: 15px;
+    color: var(--color-primary);
+}
+
+/* ============================================= */
+/* SEÇÃO 5: LAB                                  */
+/* ============================================= */
+#lab .lab-container {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 40px;
+    border-radius: 10px;
+}
+
+.neural-network {
+    width: 100%;
+    height: 300px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: relative;
+}
+
+.nn-layer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 100%;
+}
+
+.neuron {
+    width: 20px;
+    height: 20px;
+    background: var(--color-text-dark);
+    border-radius: 50%;
+    position: relative;
+    transition: background 0.3s ease;
+}
+
+.neuron.active {
+    background: var(--color-primary);
+    box-shadow: 0 0 15px var(--color-primary);
+}
+
+/* ============================================= */
+/* SEÇÃO 6: CONTACT (TERMINAL)                   */
+/* ============================================= */
+#contact {
+    background: #000;
+    align-items: flex-start;
+    /* Alinha o terminal no topo em telas menores */
+    padding-top: 10vh;
+}
+
+.terminal {
+    width: 90%;
+    max-width: 800px;
+    height: 80vh;
+    max-height: 600px;
+    background: rgba(20, 20, 20, 0.9);
+    border: 1px solid #444;
+    border-radius: 10px;
+    box-shadow: 0 0 30px rgba(0, 247, 255, 0.2);
+    display: flex;
+    flex-direction: column;
+    cursor: text;
+    /* Indica que a área é editável */
+}
+
+.terminal-header {
+    background: #333;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    cursor: default;
+}
+
+.terminal-buttons {
+    display: flex;
+}
+
+.terminal-buttons span {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.btn-close {
+    background: #ff5f56;
+}
+
+.btn-min {
+    background: #ffbd2e;
+}
+
+.btn-max {
+    background: #27c93f;
+}
+
+.terminal-title {
+    color: #ccc;
+    margin: 0 auto;
+    font-family: monospace;
+}
+
+.terminal-body {
+    flex-grow: 1;
+    padding: 15px;
+    overflow-y: auto;
+    font-family: monospace;
+    font-size: 1.1rem;
+}
+
+#terminal-output p {
+    margin-bottom: 10px;
+    white-space: pre-wrap;
+    line-height: 1.5;
+    word-break: break-all;
+}
+
+#terminal-output a {
+    color: var(--color-secondary);
+    text-decoration: underline;
+}
+
+.terminal-prompt {
+    display: flex;
+    align-items: center;
+}
+
+.terminal-input {
+    flex-grow: 1;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-family: monospace;
+    font-size: 1.1rem;
+    position: relative;
+}
+
+.terminal-input:focus {
+    outline: none;
+}
+
+/* NOVO: Cursor Inteligente */
+.terminal-input-container {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.terminal-input-container .terminal-input {
+    padding-right: 1ch;
+    /* Espaço para o cursor não sobrepor o texto */
+}
+
+.cursor-blink {
+    visibility: hidden;
+    /* Escondido por padrão */
+    background-color: #fff;
+    width: 8px;
+    /* Largura do caractere monoespaçado */
+    height: 1.2em;
+    display: inline-block;
+    animation: blink 1s steps(2, start) infinite;
+}
+
+.terminal-input:focus+.cursor-blink {
+    visibility: visible;
+    /* Visível apenas com foco */
+}
+
+@keyframes blink {
+    to {
+        visibility: hidden;
+    }
+}
+
+/* ============================================= */
+/* RESPONSIVIDADE                                */
+/* ============================================= */
+@media (max-width: 1024px) {
+    .content-section {
+        padding: 80px 10%;
+    }
+
+    .main-nav {
+        display: none;
+        /* Simplificar em mobile ou criar um menu hamburguer */
+    }
+}
+
+@media (max-width: 768px) {
+    #about .about-container {
+        grid-template-columns: 1fr;
+    }
+
+    .project-gallery {
+        grid-template-columns: 1fr;
+    }
+
+    .timeline-container {
+        width: 95%;
+    }
+}
