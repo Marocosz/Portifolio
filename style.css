@@ -717,15 +717,13 @@ body {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.85);
-    /* Fundo mais escuro */
-    backdrop-filter: blur(8px);
-    /* Blur mais intenso para o fundo */
+    background-color: rgba(0, 0, 0, 0.85); /* Fundo mais escuro */
+    backdrop-filter: blur(8px); /* Blur mais intenso para o fundo */
     justify-content: center;
     align-items: center;
     opacity: 0;
-    transition: opacity 0.4s ease;
-    /* Transição mais suave */
+    overflow-x: hidden; /* Garante que não haja scroll horizontal no overlay */
+    transition: opacity 0.4s ease; /* Transição mais suave */
 }
 
 .modal.show {
@@ -734,36 +732,33 @@ body {
 }
 
 .modal-content {
-    background: var(--color-background);
-    /* Fundo do modal do tema */
-    padding: 30px;
-    /* Padding ligeiramente ajustado */
-    border-radius: 10px;
-    /* Bordas mais arredondadas */
+    background: var(--color-background); /* Fundo do modal do tema */
+    padding: 30px; /* Padding ajustado */
+    border-radius: 10px; /* Bordas mais arredondadas */
     width: 90%;
     max-width: 800px;
-    position: relative;
-    transform: scale(0.9);
-    /* Inicia menor para um pop-up mais pronunciado */
-    transition: transform 0.4s ease, opacity 0.4s ease;
-    /* Transição suave para escala e opacidade */
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
-    /* Sombra mais pronunciada */
-    display: flex;
-    /* Usar flexbox para o conteúdo */
-    flex-direction: column;
-    /* Conteúdo em coluna */
-    max-height: 90vh;
-    /* Altura máxima para permitir scroll */
-    overflow-y: auto;
-    /* Permite scroll se o conteúdo for muito longo */
+    position: relative; /* Essencial para o posicionamento do close-modal */
+    transform: scale(0.9); /* Inicia menor para um pop-up mais pronunciado */
+    transition: transform 0.4s ease, opacity 0.4s ease; /* Transição suave para escala e opacidade */
+    /* REMOVIDO: Contorno flutuante (box-shadow complexo) */
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6); /* Sombra padrão do modal */
+    display: flex; /* Usar flexbox para o conteúdo */
+    flex-direction: column; /* Conteúdo em coluna */
+    max-height: 90vh; /* Altura máxima para permitir scroll */
+    overflow-y: auto; /* Permite scroll vertical se o conteúdo for muito longo */
+    overflow-x: hidden; /* Garante que não haja scroll horizontal no conteúdo do modal */
+    border: 2px solid transparent; /* Borda inicial transparente (se ainda quiser) */
+    z-index: 2001; /* Garante que o conteúdo do modal esteja ACIMA do fundo */
 }
 
 .modal.show .modal-content {
     transform: scale(1);
-    opacity: 1;
-    /* Garante que a opacidade seja 1 ao mostrar */
+    opacity: 1; /* Garante que a opacidade seja 1 ao mostrar */
 }
+
+/* Removido o pseudo-elemento ::after que criava o contorno flutuante */
+/* .modal-content::after { ... } */
+
 
 /* Scrollbar estilizada para o modal (Webkit browsers) */
 .modal-content::-webkit-scrollbar {
@@ -771,89 +766,138 @@ body {
 }
 
 .modal-content::-webkit-scrollbar-track {
-    background: var(--color-background);
+    background: rgba(var(--color-background), 0.5); /* Fundo da trilha do scrollbar */
     border-radius: 10px;
 }
 
 .modal-content::-webkit-scrollbar-thumb {
-    background: var(--color-primary);
+    background: var(--color-primary); /* Cor do polegar do scrollbar */
     border-radius: 10px;
 }
 
 .modal-content::-webkit-scrollbar-thumb:hover {
-    background: #8A2BE2;
-    /* Cor roxa no hover do scrollbar */
+    background: #8A2BE2; /* Cor roxa no hover do scrollbar */
 }
 
 .close-modal {
     position: absolute;
     top: 15px;
     right: 20px;
-    /* Ajustado para ficar um pouco mais perto da borda */
     font-size: 32px;
-    /* Ícone um pouco maior */
     cursor: pointer;
     color: var(--color-text-dark);
     transition: color 0.3s ease, transform 0.3s ease;
-    /* Adicionado transform na transição */
-    z-index: 2010;
-    /* Garante que fique acima de tudo no modal */
+    z-index: 2010; /* Garante que o botão de fechar esteja no topo */
 }
 
 .close-modal:hover {
     color: var(--color-primary);
     transform: rotate(90deg);
-    /* Gira o X ao passar o mouse */
 }
 
 #modal-img {
     width: 100%;
-    height: 300px;
-    /* Altura fixa */
+    height: 200px; /* Imagem menor */
     object-fit: cover;
     border-radius: 8px;
-    /* Bordas mais arredondadas */
     margin-bottom: 25px;
-    /* Mais espaço abaixo da imagem */
     filter: brightness(0.95);
-    /* Levemente mais escuro para combinar com o tema */
 }
 
-#modal-title {
-    margin-bottom: 15px;
-    color: var(--color-primary);
-    /* Mantém a cor primária */
-    font-size: 2.2rem;
-    /* Título maior */
-    text-align: center;
-    /* Centraliza o título */
-}
-
-#modal-description {
-    font-size: 1.1rem;
-    /* Tamanho de fonte um pouco maior */
-    line-height: 1.6;
-    /* Espaçamento de linha melhor para leitura */
-    color: var(--color-text);
-    /* Cor de texto padrão do seu tema */
-    text-align: justify;
-    /* Justifica o texto para um bloco mais limpo */
+#modal-project-title {
     margin-bottom: 20px;
-    /* Espaço abaixo da descrição */
+    color: var(--color-secondary);
+    font-family: var(--font-display);
+    font-size: clamp(0.9rem, 2vw, 1.5rem); /* Título significativamente menor */
+    text-align: center;
+    line-height: 1.2;
 }
 
-/* Opcional: Estilo para links dentro do modal (se houver) */
-.modal-content a {
+.modal-section {
+    margin-bottom: 25px;
+}
+
+.modal-section h4 {
+    font-size: 1.5rem;
     color: var(--color-primary);
-    text-decoration: none;
-    font-weight: bold;
-    transition: color 0.3s ease;
+    margin-bottom: 10px;
+    border-bottom: none; /* SEM A LINHA DE BAIXO */
+    padding-bottom: 0;
 }
 
-.modal-content a:hover {
-    color: #8A2BE2;
-    /* Roxo no hover */
-    text-decoration: underline;
+#modal-purpose-description {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--color-text);
+    text-align: justify;
+}
+
+/* MODIFICADO: Container das tecnologias para garantir tamanhos iguais */
+.tech-tags-container {
+    display: grid; 
+    /* Ajusta automaticamente colunas, com cada uma tendo no mínimo 180px, mas se expandindo para preencher */
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+    gap: 15px; 
+    /* Removido justify-items e align-items para que o item.tech preencha a célula do grid */
+}
+
+/* MODIFICADO: Item de tecnologia com altura mínima e flex-grow */
+.tech-item {
+    background-color: rgba(var(--color-primary), 0.1);
+    border: 1px solid var(--color-primary);
+    border-radius: 5px;
+    padding: 10px 15px; 
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    white-space: normal;
+    /* CHAVE: Definir altura mínima para que o menor se expanda */
+    min-height: 100px; /* Ajuste este valor conforme o tamanho do seu maior conteúdo + padding */
+    /* CHAVE: Permite que os itens cresçam para preencher o espaço disponível na célula do grid */
+    flex-grow: 1; 
+    width: 100%; /* Garante que o item ocupe 100% da largura da sua célula no grid */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); 
+}
+
+.tech-name {
+    color: var(--color-primary);
+    font-size: 1rem; 
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.tech-explanation {
+    color: var(--color-text-dark);
+    font-size: 0.85rem; 
+    line-height: 1.5;
+    text-align: left;
+    /* CHAVE: Permite que a explicação ocupe o espaço restante */
+    flex-grow: 1; 
+    max-width: 100%; 
+}
+
+.modal-footer {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: none; /* SEM A BORDA DO FOOTER */
+    text-align: center;
+}
+
+.modal-footer .project-link {
+    background-color: var(--color-primary);
+    color: var(--color-background);
+    padding: 10px 25px;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+.modal-footer .project-link:hover {
+    background-color: #8A2BE2;
+    color: #FFFFFF;
+    transform: translateY(-3px);
 }
 
 /* ------------------------------------- */
@@ -862,20 +906,42 @@ body {
 @media (max-width: 768px) {
     .modal-content {
         padding: 20px;
-        /* Menos padding em telas menores */
         width: 95%;
-        /* Ocupa mais largura em telas menores */
     }
 
-    #modal-title {
-        font-size: 1.8rem;
-        /* Título menor em telas menores */
+    #modal-project-title {
+        font-size: clamp(1rem, 4vw, 1.6rem); 
+        margin-bottom: 15px;
     }
 
     #modal-img {
-        height: 200px;
-        /* Altura menor para imagem em telas menores */
-        margin-bottom: 15px;
+        height: 150px;
+        margin-bottom: 20px;
+    }
+
+    .modal-section h4 {
+        font-size: 1.3rem;
+        margin-bottom: 8px;
+    }
+
+    #modal-purpose-description {
+        font-size: 1rem;
+    }
+
+    .tech-tags-container {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); 
+        gap: 10px;
+    }
+
+    .tech-item {
+        padding: 8px 10px;
+        min-height: 90px; /* Ajuste para mobile se necessário */
+    }
+    .tech-name {
+        font-size: 0.9rem;
+    }
+    .tech-explanation {
+        font-size: 0.8rem;
     }
 
     .close-modal {

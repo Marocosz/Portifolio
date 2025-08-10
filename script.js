@@ -696,16 +696,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const projectCards = document.querySelectorAll('.project-card');
         const modal = document.getElementById('project-modal');
 
-        // Checa se o modal existe antes de tentar selecionar elementos dentro dele
         if (!modal) {
-            // Se o modal não existe, cria uma função init vazia para não dar erro.
             return { init: () => console.warn('Módulo de Projetos: Modal não encontrado.') };
         }
 
         const closeModalBtn = modal.querySelector('.close-modal');
         const modalImg = document.getElementById('modal-img');
-        const modalTitle = document.getElementById('modal-title');
-        const modalDescription = document.getElementById('modal-description');
+        const modalProjectTitle = document.getElementById('modal-project-title');
+        const modalPurposeDescription = document.getElementById('modal-purpose-description');
+        const modalTechnologiesList = document.getElementById('modal-technologies-list');
+        const modalGithubLink = document.getElementById('modal-github-link');
 
         function filterProjects(e) {
             const filterValue = e.target.dataset.filter;
@@ -715,7 +715,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             projectCards.forEach(card => {
                 const cardCategories = card.dataset.category || '';
-                // A lógica agora checa se a string de categorias INCLUI o valor do filtro
                 const shouldShow = filterValue === 'all' || cardCategories.includes(filterValue);
 
                 card.style.display = shouldShow ? 'block' : 'none';
@@ -723,25 +722,62 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         function openModal(e) {
-            // Impede que o modal seja aberto se o clique foi no link do GitHub
             if (e.target.closest('.project-link')) {
                 return;
             }
 
             const card = e.currentTarget;
             const cardImg = card.querySelector('img');
-            const cardTitle = card.querySelector('h3');
-            const cardDescription = card.dataset.modalDescription || 'Detalhes do projeto não disponíveis.';
 
+            // Novos atributos para o modal
+            const fullTitle = card.dataset.modalTitleFull || 'Título do Projeto';
+            const purposeDescription = card.dataset.modalPurpose || 'Proposta não disponível.';
+            const technologiesString = card.dataset.modalTechnologies || ''; // String "Nome:Explicação|Nome2:Explicação2"
+            const githubLink = card.dataset.modalGithubLink || '#';
+
+            // Preenche o modal
             if (cardImg) modalImg.src = cardImg.dataset.src || cardImg.src;
-            if (cardTitle) modalTitle.textContent = cardTitle.textContent;
-            if (modalDescription) modalDescription.textContent = cardDescription;
+
+            modalProjectTitle.textContent = fullTitle;
+            modalPurposeDescription.textContent = purposeDescription;
+            modalGithubLink.href = githubLink;
+
+            // Limpa as tags antigas e adiciona as novas
+            modalTechnologiesList.innerHTML = ''; // Limpa o conteúdo anterior
+            if (technologiesString) {
+                const techItems = technologiesString.split('|').map(item => item.trim()); // Divide por pipe
+                techItems.forEach(item => {
+                    const parts = item.split(':'); // Divide Nome:Explicação
+                    const techName = parts[0].trim();
+                    const techExplanation = parts.length > 1 ? parts[1].trim() : '';
+
+                    const techDiv = document.createElement('div');
+                    techDiv.classList.add('tech-item'); // Container para nome e explicação
+
+                    const nameSpan = document.createElement('span');
+                    nameSpan.classList.add('tech-name');
+                    nameSpan.textContent = techName;
+                    techDiv.appendChild(nameSpan);
+
+                    if (techExplanation) {
+                        const explanationParagraph = document.createElement('p');
+                        explanationParagraph.classList.add('tech-explanation');
+                        explanationParagraph.textContent = techExplanation;
+                        techDiv.appendChild(explanationParagraph);
+                    }
+                    modalTechnologiesList.appendChild(techDiv);
+                });
+            } else {
+                modalTechnologiesList.textContent = 'Tecnologias não especificadas.';
+            }
 
             modal.classList.add('show');
+            document.body.style.overflow = 'hidden'; // Impede o scroll do body quando o modal está aberto
         }
 
         function closeModal() {
             modal.classList.remove('show');
+            document.body.style.overflow = ''; // Restaura o scroll do body
         }
 
         function init() {
@@ -756,7 +792,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
+                if (e.target === modal) { // Se clicou no overlay, fecha o modal
+                    closeModal();
+                }
+            });
+
+            // Adiciona listener para fechar o modal com a tecla ESC
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modal.classList.contains('show')) {
                     closeModal();
                 }
             });

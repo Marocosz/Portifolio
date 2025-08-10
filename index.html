@@ -202,8 +202,10 @@
 
             <div class="project-gallery smooth-slide-up">
                 <div class="project-card" data-category="ai automation"
-                    data-modal-description="Este projeto utiliza IA para analisar contratos em formato PDF, extraindo cláusulas importantes, identificando partes envolvidas e resumindo o conteúdo. Foi desenvolvido em Python com bibliotecas de PLN.">
-
+                    data-modal-title-full="Analisador de Contratos com Inteligência Artificial"
+                    data-modal-purpose="Este projeto utiliza inteligência artificial para otimizar o processo de análise de contratos em formato PDF. Ele é capaz de extrair automaticamente cláusulas importantes, identificar as partes envolvidas e gerar um resumo conciso do conteúdo. O objetivo principal é acelerar a revisão legal, minimizar erros humanos e fornecer insights rápidos sobre grandes volumes de documentos, transformando horas de trabalho manual em minutos de processamento automatizado, aumentando a eficiência e a precisão."
+                    data-modal-technologies="Python:Linguagem de programação de alto nível, interpretada, de script, imperativa, orientada a objetos, funcional e forte tipagem dinâmica. É conhecida por sua sintaxe clara e legibilidade, sendo amplamente usada em desenvolvimento web, análise de dados, inteligência artificial e automação.|NLTK:Natural Language Toolkit, uma suíte de bibliotecas e programas para processamento de linguagem natural (PLN) escrita em Python. Permite a tokenização, stemming, lematização, tagging, parsing e classificação de texto.|Spacy:Biblioteca de código aberto para processamento avançado de linguagem natural (PLN) em Python. É otimizada para desempenho e oferece modelos pré-treinados para várias linguagens, sendo excelente para extração de entidades nomeadas, análise de dependência e lematização.|Pandas:Biblioteca de software para manipulação e análise de dados, oferecendo estruturas de dados e operações para manipular tabelas numéricas e séries temporais. É fundamental para a organização e limpeza de grandes conjuntos de dados textuais extraídos de documentos.|Scikit-learn:Biblioteca de aprendizado de máquina em Python que oferece algoritmos de classificação, regressão, agrupamento e redução de dimensionalidade. Usada para treinar modelos de IA que podem identificar padrões e categorizar informações dentro dos contratos.|Flask:Micro-framework web para Python, leve e flexível, que permite construir aplicações web de forma rápida e eficiente. Ideal para criar as APIs RESTful que permitem a interação com o modelo de IA e a interface do usuário.|RESTful API:Um estilo de arquitetura de software para sistemas distribuídos que permite a comunicação entre diferentes componentes de software pela internet usando métodos HTTP padrão. Facilita a integração do módulo de análise de contratos com outras aplicações ou front-ends."
+                    data-modal-github-link="https://github.com/Marocosz/Analisador_Contrato">
                     <img class="lazy-load" data-src="img/analisadorcontrato.png"
                         alt="Analisador de Contrato - Imagem do Projeto" loading="lazy">
 
@@ -220,9 +222,35 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </section>
+
+        <div id="project-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <img id="modal-img" src="" alt="Imagem do Projeto">
+
+                <h3 id="modal-project-title"></h3>
+
+                <div class="modal-section">
+                    <h4>Proposta</h4>
+                    <p id="modal-purpose-description"></p>
+                </div>
+
+                <div class="modal-section">
+                    <h4>Tecnologias</h4>
+                    <div id="modal-technologies-list" class="tech-tags-container">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <a id="modal-github-link" href="#" target="_blank" rel="noopener noreferrer" class="project-link">
+                        <i class="ph-bold ph-github-logo"></i>
+                        <span>Ver no GitHub</span>
+                    </a>
+                </div>
+            </div>
+        </div>
 
         <section id="contact" class="fullscreen-section">
             <div class="terminal">
