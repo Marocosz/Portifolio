@@ -615,36 +615,93 @@ body {
 }
 
 /* ============================================= */
-/* SEÇÃO 5: LAB                                  */
+/* SEÇÃO 5: FERRAMENTAS (NOVO DESIGN)            */
 /* ============================================= */
-#lab .lab-container {
-    background: rgba(255, 255, 255, 0.03);
-    padding: 40px;
-    border-radius: 10px;
+.tools-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    /* Começa com uma coluna para mobile */
+    gap: 50px;
 }
 
-.neural-network {
-    width: 100%;
-    height: 300px;
+/* Em telas maiores, divide em duas colunas */
+@media (min-width: 992px) {
+    .tools-container {
+        grid-template-columns: 1.5fr 1fr;
+    }
+}
+
+.tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 20px;
+    align-content: start;
+}
+
+.tool-card {
+    aspect-ratio: 1 / 1;
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
-    position: relative;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.3s ease-out;
 }
 
-.nn-layer {
+.tool-card img {
+    width: 50%;
+    height: 50%;
+    object-fit: contain;
+    filter: grayscale(1);
+    opacity: 0.6;
+    transition: all 0.3s ease-out;
+}
+
+.tool-card:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: var(--color-primary);
+}
+
+.tool-card:hover img,
+.tool-card.active img {
+    filter: grayscale(0);
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.tool-card.active {
+    background: rgba(0, 247, 255, 0.1);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 20px rgba(0, 247, 255, 0.3);
+}
+
+.tool-description-panel {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 30px;
+    border-radius: 10px;
+    border-left: 3px solid var(--color-primary);
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
-    height: 100%;
+    justify-content: center;
+    transition: opacity 0.2s ease-out;
 }
 
-.neuron {
-    width: 20px;
-    height: 20px;
-    background: var(--color-text-dark);
-    border-radius: 50%;
-    position: relative;
+.tool-description-panel.fading {
+    opacity: 0;
+}
+
+#tool-name-display {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: var(--color-primary);
+    margin-bottom: 15px;
+}
+
+#tool-desc-display {
+    line-height: 1.8;
+    color: var(--color-text-dark);
 }
 
 /* ============================================= */

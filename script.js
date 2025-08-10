@@ -493,91 +493,163 @@ document.addEventListener('DOMContentLoaded', () => {
     // =============================================
     // MÓDULO DA TIMELINE INTERATIVA (VERSÃO FINAL DEFINITIVA)
     // =============================================
+    // =============================================
+    // MÓDULO DA TIMELINE INTERATIVA (COM REANIMAÇÃO)
+    // =============================================
     const timelineModule = (() => {
         let timelineItems;
-        let frameWrappers; // Agora vamos controlar os wrappers
-        let descriptionBox;
+        let frameWrapper; // Alterado para uma única variável
         let contentWrapper;
         let timelineText;
         let timelineImage;
 
         function handleItemClick(e) {
             const clickedItem = e.currentTarget;
-            const targetWrapper = clickedItem.closest('section').querySelector('.timeline-frame-wrapper');
-
             const isAlreadyActive = clickedItem.classList.contains('active');
 
-            // Remove a classe 'active' de todos
-            timelineItems.forEach(item => item.classList.remove('active'));
-            frameWrappers.forEach(wrapper => wrapper.classList.remove('active'));
+            // 1. Esconde a moldura e a linha antigas PRIMEIRO
+            // Isso dispara a animação de "saída"
+            frameWrapper.classList.remove('active');
+            contentWrapper.classList.add('fading');
 
+            // Se clicou em um item que já estava ativo, apenas o desativa e limpa o texto.
             if (isAlreadyActive) {
-                targetWrapper.querySelector('.timeline-content-wrapper').classList.add('fading');
+                timelineItems.forEach(item => item.classList.remove('active'));
                 setTimeout(() => {
-                    targetWrapper.querySelector('.timeline-text').textContent = 'Clique em um marco para ver os detalhes.';
-                    targetWrapper.querySelector('.timeline-image').style.display = 'none';
-                    targetWrapper.querySelector('.timeline-content-wrapper').classList.remove('fading');
-                }, 400);
+                    timelineText.textContent = 'Clique em um marco para ver os detalhes.';
+                    timelineImage.style.display = 'none';
+                    contentWrapper.classList.remove('fading');
+                }, 400); // Espera o fade-out do texto
                 return;
             }
 
-            clickedItem.classList.add('active');
-            targetWrapper.classList.add('active');
-
-            // --- LÓGICA DE CÁLCULO PARA DUAS LINHAS ---
-            const dot = clickedItem.querySelector('.timeline-dot');
-            const year = clickedItem.querySelector('.timeline-year');
-
-            const dotRect = dot.getBoundingClientRect();
-            const yearRect = year.getBoundingClientRect();
-            const wrapperRect = targetWrapper.getBoundingClientRect();
-
-            const gap = 6; // Espaço em pixels ao redor do ano
-
-            // Calcula a posição horizontal (a mesma para as duas linhas)
-            const connectorLeft = (dotRect.left + dotRect.width / 2) - wrapperRect.left;
-            targetWrapper.style.setProperty('--connector-left', `${connectorLeft}px`);
-
-            // Calcula as duas linhas
-            const line1_top = dotRect.bottom - wrapperRect.top;
-            const line1_height = yearRect.top - dotRect.bottom - gap;
-
-            const line2_top = yearRect.bottom - wrapperRect.top + gap;
-            const line2_height = (wrapperRect.top - 10) - yearRect.bottom - gap;
-
-            // Envia os valores para o CSS
-            targetWrapper.style.setProperty('--line1-top', `${line1_top}px`);
-            targetWrapper.style.setProperty('--line1-height', `${line1_height > 0 ? line1_height : 0}px`);
-            targetWrapper.style.setProperty('--line2-top', `${line2_top}px`);
-            targetWrapper.style.setProperty('--line2-height', `${line2_height > 0 ? line2_height : 0}px`);
-
-            // Atualiza o conteúdo da caixa
-            const newDescription = clickedItem.dataset.description;
-            const newImage = clickedItem.dataset.image;
-
-            const content = targetWrapper.querySelector('.timeline-content-wrapper');
-            content.classList.add('fading');
-
+            // 2. Usa um setTimeout para dar tempo para a animação de saída começar
+            // Este pequeno atraso é a chave para a reanimação
             setTimeout(() => {
-                targetWrapper.querySelector('.timeline-text').textContent = newDescription;
-                const imgEl = targetWrapper.querySelector('.timeline-image');
-                if (newImage) {
-                    imgEl.src = newImage;
-                    imgEl.style.display = 'block';
+                // 3. ATUALIZA OS ESTADOS E POSIÇÕES
+                timelineItems.forEach(item => item.classList.remove('active'));
+                clickedItem.classList.add('active');
+
+                const dot = clickedItem.querySelector('.timeline-dot');
+                const year = clickedItem.querySelector('.timeline-year');
+
+                const dotRect = dot.getBoundingClientRect();
+                const yearRect = year.getBoundingClientRect();
+                const wrapperRect = frameWrapper.getBoundingClientRect();
+
+                const gap = 6;
+                const frameTopY = wrapperRect.top + (frameWrapper.offsetHeight - descriptionBox.offsetHeight) / 2 - 10;
+
+                // Lógica para anos acima ou abaixo
+                const isYearAbove = yearRect.top < dotRect.top;
+                const line1_start = isYearAbove ? dotRect.bottom : dotRect.bottom;
+                const line1_end = isYearAbove ? yearRect.top - gap : yearRect.top - gap;
+
+                const line2_start = isYearAbove ? yearRect.bottom + gap : yearRect.bottom + gap;
+                const line2_end = frameTopY;
+
+                const line1_top = line1_start - wrapperRect.top;
+                const line1_height = line1_end - line1_start;
+
+                const line2_top = line2_start - wrapperRect.top;
+                const line2_height = line2_end - line2_start;
+
+                const connectorLeft = (dotRect.left + dotRect.width / 2) - wrapperRect.left;
+
+                frameWrapper.style.setProperty('--connector-left', `${connectorLeft}px`);
+
+                // Define as propriedades para as duas linhas
+                if (isYearAbove) {
+                    frameWrapper.style.setProperty('--line1-top', `${line2_top}px`);
+                    frameWrapper.style.setProperty('--line1-height', `${line2_height > 0 ? line2_height : 0}px`);
+                    frameWrapper.style.setProperty('--line2-top', `${line1_top}px`);
+                    frameWrapper.style.setProperty('--line2-height', `${line1_height > 0 ? line1_height : 0}px`);
                 } else {
-                    imgEl.style.display = 'none';
+                    frameWrapper.style.setProperty('--line1-top', `${line1_top}px`);
+                    frameWrapper.style.setProperty('--line1-height', `${line1_height > 0 ? line1_height : 0}px`);
+                    frameWrapper.style.setProperty('--line2-top', `${line2_top}px`);
+                    frameWrapper.style.setProperty('--line2-height', `${line2_height > 0 ? line2_height : 0}px`);
                 }
-                content.classList.remove('fading');
-            }, 400);
+
+                // 4. REATIVA a animação com a nova posição
+                frameWrapper.classList.add('active');
+
+                // 5. ATUALIZA O CONTEÚDO
+                const newDescription = clickedItem.dataset.description;
+                const newImage = clickedItem.dataset.image;
+
+                // O conteúdo só é trocado depois que o fade-out inicial termina
+                setTimeout(() => {
+                    timelineText.textContent = newDescription;
+                    if (newImage) {
+                        timelineImage.src = newImage;
+                        timelineImage.style.display = 'block';
+                    } else {
+                        imgEl.style.display = 'none';
+                    }
+                    contentWrapper.classList.remove('fading');
+                }, 400);
+
+            }, 150); // Atraso de 150ms para a transição
         }
 
         function init() {
             timelineItems = document.querySelectorAll('.timeline-item');
-            frameWrappers = document.querySelectorAll('.timeline-frame-wrapper');
-            if (!timelineItems.length || !frameWrappers.length) return;
+            frameWrapper = document.querySelector('.timeline-frame-wrapper');
+            if (!timelineItems.length || !frameWrapper) return;
+
+            descriptionBox = frameWrapper.querySelector('.timeline-description-box');
+            contentWrapper = frameWrapper.querySelector('.timeline-content-wrapper');
+            timelineText = frameWrapper.querySelector('.timeline-text');
+            timelineImage = frameWrapper.querySelector('.timeline-image');
+
+            if (!descriptionBox || !contentWrapper || !timelineText || !timelineImage) return;
 
             timelineItems.forEach(item => {
                 item.addEventListener('click', handleItemClick);
+            });
+        }
+
+        return { init };
+    })();
+
+    // =============================================
+    // MÓDULO DE FERRAMENTAS INTERATIVO
+    // =============================================
+    const toolsModule = (() => {
+        let toolCards, nameDisplay, descDisplay, descPanel;
+
+        function updateDescription(e) {
+            const card = e.currentTarget;
+            const name = card.dataset.toolName;
+            const description = card.dataset.toolDescription;
+
+            // Adiciona um efeito de fade para a troca de texto
+            descPanel.classList.add('fading');
+
+            setTimeout(() => {
+                nameDisplay.textContent = name;
+                descDisplay.textContent = description;
+                descPanel.classList.remove('fading');
+            }, 200);
+        }
+
+        function setActive(e) {
+            toolCards.forEach(card => card.classList.remove('active'));
+            e.currentTarget.classList.add('active');
+        }
+
+        function init() {
+            toolCards = document.querySelectorAll('.tool-card');
+            nameDisplay = document.getElementById('tool-name-display');
+            descDisplay = document.getElementById('tool-desc-display');
+            descPanel = document.querySelector('.tool-description-panel');
+
+            if (toolCards.length === 0 || !nameDisplay || !descDisplay) return;
+
+            toolCards.forEach(card => {
+                card.addEventListener('mouseenter', updateDescription);
+                card.addEventListener('click', setActive);
             });
         }
 
@@ -595,4 +667,5 @@ document.addEventListener('DOMContentLoaded', () => {
     imageAnimationModule.init();
     contentAnimationModule.init();
     timelineModule.init();
+    toolsModule.init();
 });
