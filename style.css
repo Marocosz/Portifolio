@@ -522,7 +522,6 @@ body {
     flex-wrap: wrap;
     gap: 10px;
     justify-content: flex-start;
-    /* ALTERADO: Alinha os botões à esquerda */
 }
 
 .filter-btn {
@@ -550,7 +549,6 @@ body {
     grid-template-columns: repeat(auto-fill, minmax(300px, 400px));
     gap: 25px;
     justify-content: start;
-    /* ALTERADO: Alinha a grade de cards à esquerda */
 }
 
 .project-card {
@@ -561,14 +559,32 @@ body {
     transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
     aspect-ratio: 16 / 9;
     background-color: rgba(30, 30, 50, 0.5);
+    /* Fundo sutil para o card */
     display: flex;
-    align-items: center;
+    align-items: flex-end;
+    /* Alinha o conteúdo na parte inferior */
     justify-content: center;
 }
 
-.project-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+/* Pseudo-elemento para o efeito de escurecimento da imagem */
+.project-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0);
+    /* Inicialmente transparente */
+    transition: background-color 0.4s ease;
+    /* Transição para o escurecimento */
+    z-index: 1;
+    /* Garante que fique acima da imagem, mas abaixo do .project-info */
+}
+
+.project-card:hover::before {
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Escurece a imagem ao hover (ajuste a opacidade 0.5 conforme desejar) */
 }
 
 .project-card img {
@@ -577,14 +593,13 @@ body {
     object-fit: cover;
     transition: transform 0.4s ease-out, opacity 0.6s ease;
     opacity: 0;
+    /* Imagem inicialmente invisível */
+    z-index: 0;
+    /* Garante que a imagem esteja por baixo do overlay */
 }
 
 .project-card img.loaded {
     opacity: 1;
-}
-
-.project-card:hover img {
-    transform: scale(1.05);
 }
 
 .project-info {
@@ -592,14 +607,61 @@ body {
     bottom: 0;
     left: 0;
     width: 100%;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.95), transparent);
-    padding: 40px 20px 20px;
-    color: #fff;
-    transform: translateY(100%);
-    transition: transform 0.4s ease-out;
+    background: var(--color-primary);
+    /* Cor azul inicial sólida */
+    padding: 10px 20px;
+    /* Padding para o título */
+    color: var(--color-background);
+    transform: translateY(calc(100% - 40px));
+    /* Ajuste este valor (40px) */
+    transition: transform 0.4s ease-out, background 0.4s ease, color 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    text-align: left;
+    box-sizing: border-box;
+    z-index: 2;
 }
 
 .project-card:hover .project-info {
+    transform: translateY(0);
+    /* Puxa para cima para mostrar todo o conteúdo */
+    /* NOVO: Gradiente no hover para o retângulo */
+    background: linear-gradient(to top, #8A2BE2 70%, rgba(138, 43, 226, 0.2) 100%);
+    /* Começa roxo sólido na parte de baixo (70%) e vai para roxo transparente no topo (100%) */
+    color: var(--color-text);
+    /* Cor do texto do .project-info para --color-text no hover */
+    padding-left: 20px;
+}
+
+.project-info h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.2rem;
+    color: inherit;
+    /* Herda a cor do pai (.project-info) */
+    line-height: 1.2;
+    width: 100%;
+    transition: color 0.4s ease;
+}
+
+.project-info p {
+    display: none;
+}
+
+.project-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    width: 100%;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.project-card:hover .project-actions {
+    opacity: 1;
     transform: translateY(0);
 }
 
@@ -607,14 +669,13 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    margin-top: 15px;
     padding: 8px 15px;
     border-radius: 5px;
     background-color: rgba(255, 255, 255, 0.1);
     color: var(--color-text);
     text-decoration: none;
     font-weight: bold;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .project-link:hover {
@@ -624,6 +685,13 @@ body {
 
 .project-link i {
     font-size: 1.2rem;
+}
+
+.project-more-info {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.85rem;
+    margin-left: 5px;
+    line-height: 1.2;
 }
 
 /* Modal do Projeto (sem alterações) */
