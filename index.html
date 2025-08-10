@@ -5,6 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Marcos Rodrigues</title>
+
+    <!-- SEO -->
+    <meta name="description" content="Portfólio de Marcos Rodrigues - Desenvolvedor de IA, Automação e Web.">
+    <meta name="keywords" content="Marcos Rodrigues, Desenvolvedor, IA, Automação, Web, Portfólio">
+    <meta name="author" content="Marcos Rodrigues">
+
     <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/phosphor-icons"></script>
 </head>
@@ -18,13 +24,17 @@
 
     <nav class="main-nav">
         <ul>
-            <li data-section="hero" class="active"><span class="nav-tooltip">Início</span><i
+            <li data-section="hero" class="active" aria-label="Início"><span class="nav-tooltip">Início</span><i
                     class="ph-light ph-rocket-launch"></i></li>
-            <li data-section="about"><span class="nav-tooltip">Me Conheça</span><i class="ph-light ph-user"></i></li>
-            <li data-section="timeline"><span class="nav-tooltip">Jornada</span><i class="ph-light ph-path"></i></li>
-            <li data-section="projects"><span class="nav-tooltip">Projetos</span><i class="ph-light ph-kanban"></i></li>
-            <li data-section="lab"><span class="nav-tooltip">Lab</span><i class="ph-light ph-flask"></i></li>
-            <li data-section="contact"><span class="nav-tooltip">Contato</span><i
+            <li data-section="about" aria-label="Sobre mim"><span class="nav-tooltip">Me Conheça</span><i
+                    class="ph-light ph-user"></i></li>
+            <li data-section="timeline" aria-label="Linha do tempo"><span class="nav-tooltip">Jornada</span><i
+                    class="ph-light ph-path"></i></li>
+            <li data-section="tools" aria-label="Ferramentas"><span class="nav-tooltip">Ferramentas</span><i
+                    class="ph-light ph-flask"></i></li>
+            <li data-section="projects" aria-label="Projetos"><span class="nav-tooltip">Projetos</span><i
+                    class="ph-light ph-kanban"></i></li>
+            <li data-section="contact" aria-label="Contato"><span class="nav-tooltip">Contato</span><i
                     class="ph-light ph-terminal-window"></i></li>
         </ul>
     </nav>
@@ -32,7 +42,6 @@
     <main>
         <section id="hero" class="fullscreen-section">
             <div class="hero-content">
-
                 <div class="hero-text">
                     <h1 class="hero-title">
                         <span class="hero-title-line">Marcos</span>
@@ -40,7 +49,6 @@
                     </h1>
                     <p class="hero-subtitle">Desenvolvedor • IA & Automação</p>
                 </div>
-
             </div>
         </section>
 
@@ -55,8 +63,8 @@
                         visual de como eu conecto código, dados e criatividade para inovar.</p>
                 </div>
                 <div class="about-image-wrapper">
-                    <img src="img/logodev.png" alt="Foto de [Seu Nome]" class="lazy-load"
-                        data-src="img/minha-foto.png">
+                    <img src="img/img3r.png" alt="Foto de Marcos Rodrigues" class="lazy-load"
+                        data-src="img/img3r.png" loading="lazy">
                 </div>
             </div>
         </section>
@@ -91,6 +99,20 @@
             </div>
         </section>
 
+        <!-- Ferramentas -->
+        <section id="tools" class="content-section">
+            <div class="section-title reveal-text">Ferramentas</div>
+            <div class="lab-container">
+                <p class="reveal-text">Coleção de recursos, utilitários e experimentos que utilizo para criar, testar e otimizar soluções tecnológicas.</p>
+                <div class="lab-experiment">
+                    <h4>Simulador de Rede Neural</h4>
+                    <p>Passe o mouse sobre os neurônios para ver as conexões se ativarem.</p>
+                    <div class="neural-network"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projetos -->
         <section id="projects" class="content-section">
             <div class="section-title reveal-text">Projetos</div>
             <div class="project-filters">
@@ -102,7 +124,7 @@
             <div class="project-gallery">
                 <div class="project-card" data-category="ai">
                     <img class="lazy-load" data-src="https://via.placeholder.com/600x400.webp?text=Projeto+IA"
-                        alt="Projeto 1">
+                        alt="Projeto de Inteligência Artificial" loading="lazy">
                     <div class="project-info">
                         <h3>Sistema de Reconhecimento Facial</h3>
                         <p>IA</p>
@@ -110,7 +132,7 @@
                 </div>
                 <div class="project-card" data-category="automation">
                     <img class="lazy-load" data-src="https://via.placeholder.com/600x400.webp?text=Projeto+Automação"
-                        alt="Projeto 2">
+                        alt="Projeto de Automação" loading="lazy">
                     <div class="project-info">
                         <h3>RPA para Setor Financeiro</h3>
                         <p>Automação</p>
@@ -118,23 +140,11 @@
                 </div>
                 <div class="project-card" data-category="web">
                     <img class="lazy-load" data-src="https://via.placeholder.com/600x400.webp?text=Projeto+Web"
-                        alt="Projeto 3">
+                        alt="Projeto Web" loading="lazy">
                     <div class="project-info">
                         <h3>Dashboard Interativo de Dados</h3>
                         <p>Web</p>
                     </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="lab" class="content-section">
-            <div class="section-title reveal-text">Lab Experimental</div>
-            <div class="lab-container">
-                <p class="reveal-text">Um lugar para protótipos, ideias e experimentos de código. Interaja abaixo.</p>
-                <div class="lab-experiment">
-                    <h4>Simulador de Rede Neural</h4>
-                    <p>Passe o mouse sobre os neurônios para ver as conexões se ativarem.</p>
-                    <div class="neural-network"></div>
                 </div>
             </div>
         </section>
@@ -147,7 +157,7 @@
                         <span class="btn-min"></span>
                         <span class="btn-max"></span>
                     </div>
-                    <div class="terminal-title">contato@seu-nome: ~</div>
+                    <div class="terminal-title">contato@marcos-rodrigues: ~</div>
                 </div>
                 <div class="terminal-body" id="terminal-body">
                     <div id="terminal-output"></div>
@@ -176,8 +186,12 @@
         </div>
     </div>
 
+    <!-- Fallback para JS desativado -->
+    <noscript>
+        <p style="text-align:center; color:red;">Este site é interativo e requer JavaScript habilitado para funcionar corretamente.</p>
+    </noscript>
 
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
 </body>
 
 </html>

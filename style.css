@@ -285,6 +285,7 @@ body {
 /* ============================================= */
 /* SEÇÃO 2: ABOUT                                */
 /* ============================================= */
+/* Estilos de layout da seção (sem alterações) */
 #about .about-container {
     display: grid;
     grid-template-columns: 2fr 1fr;
@@ -298,6 +299,7 @@ body {
     margin-bottom: 20px;
 }
 
+/* Estilos da imagem e seu efeito hover (sem alterações) */
 #about .about-image-wrapper {
     position: relative;
     filter: grayscale(100%);
@@ -319,17 +321,21 @@ body {
     transform: rotate(0deg);
 }
 
-/* Estilos para a animação de revelação de texto com scroll */
+/* --- CÓDIGO CORRIGIDO DA ANIMAÇÃO --- */
+
+/* Estilos para a animação de revelação de CADA ELEMENTO com scroll */
 .reveal-text {
     opacity: 0;
-    /* MUDANÇA AQUI: Começa deslocado para a esquerda */
-    transform: translateX(-100px); /* ou -100% dependendo do efeito desejado */
+    /* Começa deslocado para a esquerda. Você pode usar -100px ou -50px, etc. */
+    transform: translateX(-100px); 
     transition: transform 1.5s ease, opacity 1.5s ease;
 }
 
+/* QUANDO o elemento se torna visível, ele volta para a posição original */
 .reveal-text.visible {
     opacity: 1;
-    transform: translateY(0); /* volta para a posição original */
+    /* Anima para a posição X original (0), corrigindo o movimento diagonal */
+    transform: translateX(0); 
 }
 
 /* ============================================= */

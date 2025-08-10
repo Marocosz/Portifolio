@@ -232,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // MÓDULO DE ANIMAÇÕES DE SCROLL (REVEAL)
     // =============================================
     const scrollAnimationModule = (() => {
-        const revealElements = document.querySelectorAll('.reveal-text, .timeline-container');
+        const revealElements = document.querySelectorAll('.reveal-text, .timeline-container, .about-image-wrapper');
 
         const revealOnScroll = () => {
             const windowHeight = window.innerHeight;
