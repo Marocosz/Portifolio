@@ -273,7 +273,7 @@ body {
 }
 
 /* ================================================================ */
-/* SEÇÃO 3: TIMELINE (VERSÃO FINAL COM CONECTOR INTELIGENTE)      */
+/* SEÇÃO 3: TIMELINE (VERSÃO FINAL COM CONECTOR DUPLO)              */
 /* ================================================================ */
 
 .timeline-container {
@@ -324,19 +324,7 @@ body {
         background-color 0.3s ease;
 }
 
-/* --- ESTA É A MUDANÇA IMPORTANTE NO ANO --- */
 .timeline-year {
-    position: relative;
-    /* Necessário para o z-index funcionar */
-    z-index: 2;
-    /* Garante que o ano fique ACIMA da linha de conexão */
-    background: var(--color-background);
-    /* Fundo sólido para criar o "buraco" na linha */
-    padding: 2px 6px;
-    /* Pequeno espaçamento para o fundo cobrir a linha */
-    border-radius: 4px;
-
-    /* Estilos anteriores */
     position: absolute;
     bottom: 30px;
     left: 50%;
@@ -375,37 +363,77 @@ body {
     background-color: var(--color-secondary);
 }
 
-/* --- CAIXA DE DESCRIÇÃO E CONEXÃO --- */
+
+/* --- CAIXA DE DESCRIÇÃO, MOLDURA E CONEXÃO --- */
+
+.timeline-frame-wrapper {
+    position: relative;
+    margin-top: 100px;
+}
 
 .timeline-description-box {
     position: relative;
-    margin-top: 100px;
     padding: 25px;
     min-height: 250px;
     background: rgba(30, 30, 50, 0.5);
     border-radius: 8px;
 }
 
-/* ::before -> A LINHA VERTICAL ÚNICA E CONTÍNUA */
-.timeline-description-box::before {
+/* A MOLDURA COMPLETA (agora no wrapper) */
+.timeline-frame-wrapper::after {
     content: '';
     position: absolute;
-    z-index: 1;
-    /* Garante que a linha fique ABAIXO do ano */
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border: 2px solid var(--color-secondary);
+    border-radius: 12px;
+    opacity: 0;
+    transform: scale(0.98);
+    transition: opacity 0.4s 0.1s ease-out, transform 0.4s 0.1s ease-out;
+}
+
+/* O CONECTOR (dividido em duas partes, no wrapper) */
+.timeline-frame-wrapper::before,
+.timeline-frame-wrapper::after {
+    /* Estilos comuns para as duas partes da linha */
+    content: '';
+    position: absolute;
     left: var(--connector-left, 50%);
     width: 2px;
     background: var(--color-secondary);
-
-    /* Altura e Topo são calculados pelo JavaScript */
-    top: var(--connector-top);
-    height: var(--connector-height);
-
     transform: translateX(-50%) scaleY(0);
     transform-origin: top;
     transition: transform 0.4s ease-out;
 }
 
-/* ::after -> A MOLDURA COMPLETA */
+/* ::before -> Segmento 1 da linha */
+.timeline-frame-wrapper::before {
+    top: var(--line1-top);
+    height: var(--line1-height);
+}
+
+/* ::after -> Segmento 2 da linha. Reutilizamos o ::after da moldura, mas com estilos diferentes */
+.timeline-frame-wrapper::after {
+    top: var(--line2-top);
+    height: var(--line2-height);
+    /* Sobrescrevemos os estilos da moldura para a linha */
+    border: none;
+    border-radius: 0;
+    opacity: 1;
+    /* A linha é controlada pelo transform, não opacity */
+    transform-origin: top;
+}
+
+
+/* ANIMAÇÃO QUANDO O WRAPPER ESTIVER ATIVO */
+.timeline-frame-wrapper.active::before,
+.timeline-frame-wrapper.active::after {
+    transform: translateX(-50%) scaleY(1);
+}
+
+/* A MOLDURA em si */
 .timeline-description-box::after {
     content: '';
     position: absolute;
@@ -420,13 +448,7 @@ body {
     transition: opacity 0.4s 0.1s ease-out, transform 0.4s 0.1s ease-out;
 }
 
-/* ANIMAÇÃO QUANDO A CAIXA ESTIVER ATIVA */
-
-.timeline-description-box.active::before {
-    transform: translateX(-50%) scaleY(1);
-}
-
-.timeline-description-box.active::after {
+.timeline-frame-wrapper.active .timeline-description-box::after {
     opacity: 1;
     transform: scale(1);
 }

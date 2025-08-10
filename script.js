@@ -491,10 +491,11 @@ document.addEventListener('DOMContentLoaded', () => {
     })();
 
     // =============================================
-    // MÓDULO DA TIMELINE INTERATIVA (VERSÃO FINAL E ROBUSTA)
+    // MÓDULO DA TIMELINE INTERATIVA (VERSÃO FINAL DEFINITIVA)
     // =============================================
     const timelineModule = (() => {
         let timelineItems;
+        let frameWrappers; // Agora vamos controlar os wrappers
         let descriptionBox;
         let contentWrapper;
         let timelineText;
@@ -502,73 +503,78 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function handleItemClick(e) {
             const clickedItem = e.currentTarget;
+            const targetWrapper = clickedItem.closest('section').querySelector('.timeline-frame-wrapper');
 
             const isAlreadyActive = clickedItem.classList.contains('active');
 
-            // Remove a classe 'active' de todos os itens e da caixa
+            // Remove a classe 'active' de todos
             timelineItems.forEach(item => item.classList.remove('active'));
-            descriptionBox.classList.remove('active');
+            frameWrappers.forEach(wrapper => wrapper.classList.remove('active'));
 
-            // Se clicou em um item que já estava ativo, apenas o desativa
             if (isAlreadyActive) {
-                contentWrapper.classList.add('fading');
+                targetWrapper.querySelector('.timeline-content-wrapper').classList.add('fading');
                 setTimeout(() => {
-                    timelineText.textContent = 'Clique em um marco para ver os detalhes.';
-                    timelineImage.style.display = 'none';
-                    contentWrapper.classList.remove('fading');
+                    targetWrapper.querySelector('.timeline-text').textContent = 'Clique em um marco para ver os detalhes.';
+                    targetWrapper.querySelector('.timeline-image').style.display = 'none';
+                    targetWrapper.querySelector('.timeline-content-wrapper').classList.remove('fading');
                 }, 400);
                 return;
             }
 
-            // Se clicou em um novo item, ativa-o
             clickedItem.classList.add('active');
+            targetWrapper.classList.add('active');
 
-            // 1. Pegar posições
+            // --- LÓGICA DE CÁLCULO PARA DUAS LINHAS ---
             const dot = clickedItem.querySelector('.timeline-dot');
-            const boxRect = descriptionBox.getBoundingClientRect();
+            const year = clickedItem.querySelector('.timeline-year');
+
             const dotRect = dot.getBoundingClientRect();
+            const yearRect = year.getBoundingClientRect();
+            const wrapperRect = targetWrapper.getBoundingClientRect();
 
-            // 2. Calcular a linha contínua
-            const frameTopY = boxRect.top - 10; // Onde a moldura começa
-            const connectorStartY = dotRect.bottom; // De onde a linha sai
+            const gap = 6; // Espaço em pixels ao redor do ano
 
-            const connectorHeight = frameTopY - connectorStartY;
-            const connectorTop = connectorStartY - boxRect.top;
-            const connectorLeft = (dotRect.left + dotRect.width / 2) - boxRect.left;
+            // Calcula a posição horizontal (a mesma para as duas linhas)
+            const connectorLeft = (dotRect.left + dotRect.width / 2) - wrapperRect.left;
+            targetWrapper.style.setProperty('--connector-left', `${connectorLeft}px`);
 
-            // 3. Enviar os valores para o CSS
-            descriptionBox.style.setProperty('--connector-left', `${connectorLeft}px`);
-            descriptionBox.style.setProperty('--connector-top', `${connectorTop}px`);
-            descriptionBox.style.setProperty('--connector-height', `${connectorHeight}px`);
+            // Calcula as duas linhas
+            const line1_top = dotRect.bottom - wrapperRect.top;
+            const line1_height = yearRect.top - dotRect.bottom - gap;
 
-            // 4. Atualizar o conteúdo
+            const line2_top = yearRect.bottom - wrapperRect.top + gap;
+            const line2_height = (wrapperRect.top - 10) - yearRect.bottom - gap;
+
+            // Envia os valores para o CSS
+            targetWrapper.style.setProperty('--line1-top', `${line1_top}px`);
+            targetWrapper.style.setProperty('--line1-height', `${line1_height > 0 ? line1_height : 0}px`);
+            targetWrapper.style.setProperty('--line2-top', `${line2_top}px`);
+            targetWrapper.style.setProperty('--line2-height', `${line2_height > 0 ? line2_height : 0}px`);
+
+            // Atualiza o conteúdo da caixa
             const newDescription = clickedItem.dataset.description;
             const newImage = clickedItem.dataset.image;
 
-            contentWrapper.classList.add('fading');
-            descriptionBox.classList.add('active');
+            const content = targetWrapper.querySelector('.timeline-content-wrapper');
+            content.classList.add('fading');
 
             setTimeout(() => {
-                timelineText.textContent = newDescription;
+                targetWrapper.querySelector('.timeline-text').textContent = newDescription;
+                const imgEl = targetWrapper.querySelector('.timeline-image');
                 if (newImage) {
-                    timelineImage.src = newImage;
-                    timelineImage.style.display = 'block';
+                    imgEl.src = newImage;
+                    imgEl.style.display = 'block';
                 } else {
-                    timelineImage.style.display = 'none';
+                    imgEl.style.display = 'none';
                 }
-                contentWrapper.classList.remove('fading');
+                content.classList.remove('fading');
             }, 400);
         }
 
         function init() {
             timelineItems = document.querySelectorAll('.timeline-item');
-            descriptionBox = document.querySelector('.timeline-description-box');
-            if (!timelineItems.length || !descriptionBox) return;
-
-            contentWrapper = descriptionBox.querySelector('.timeline-content-wrapper');
-            timelineText = descriptionBox.querySelector('.timeline-text');
-            timelineImage = descriptionBox.querySelector('.timeline-image');
-            if (!contentWrapper || !timelineText || !timelineImage) return;
+            frameWrappers = document.querySelectorAll('.timeline-frame-wrapper');
+            if (!timelineItems.length || !frameWrappers.length) return;
 
             timelineItems.forEach(item => {
                 item.addEventListener('click', handleItemClick);
