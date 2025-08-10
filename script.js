@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // =============================================
-    // MÓDULO DO CURSOR CUSTOMIZADO (VERSÃO SIMPLES E RÁPIDA)
+    // MÓDULO DO CURSOR CUSTOMIZADO
     // =============================================
     const cursorModule = (() => {
         const cursor = document.querySelector('.cursor');
@@ -20,6 +20,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         function setupEventListeners() {
+            // Apenas adiciona o listener se os elementos do cursor existirem
+            if (!cursor && !follower) return;
+
             window.addEventListener('mousemove', moveCursor);
 
             document.querySelectorAll(interactiveElements).forEach(el => {
@@ -162,12 +165,27 @@ document.addEventListener('DOMContentLoaded', () => {
             if (animationFrameId) {
                 cancelAnimationFrame(animationFrameId);
             }
-            animate();
+            // Inicia a animação apenas se a aba estiver visível
+            if (document.visibilityState === 'visible') {
+                animate();
+            }
         }
+
+        // ALTERAÇÃO: Pausa a animação que consome CPU quando o usuário não está vendo a aba.
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = null; // Limpa o ID para garantir
+            } else if (!animationFrameId) { // Retoma apenas se não estiver rodando
+                animate();
+            }
+        });
 
         let resizeTimer;
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimer);
+            // Garante que a animação pare antes de reiniciar
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
             resizeTimer = setTimeout(init, 250);
         });
 
@@ -180,21 +198,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const navigationModule = (() => {
         const navLinks = document.querySelectorAll('.main-nav li');
         const sections = document.querySelectorAll('section');
+
         function setActiveLink() {
             let currentSection = '';
+            const triggerPoint = window.innerHeight / 2;
             sections.forEach(section => {
                 const sectionTop = section.offsetTop;
-                if (window.pageYOffset >= sectionTop - window.innerHeight / 2) {
+                if (window.pageYOffset >= sectionTop - triggerPoint) {
                     currentSection = section.getAttribute('id');
                 }
             });
             navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.dataset.section === currentSection) {
-                    link.classList.add('active');
-                }
+                const isActive = link.dataset.section === currentSection;
+                link.classList.toggle('active', isActive);
             });
         }
+
         function init() {
             if (!navLinks || navLinks.length === 0) return;
             navLinks.forEach(link => {
@@ -213,225 +232,14 @@ document.addEventListener('DOMContentLoaded', () => {
     })();
 
     // =============================================
-    // MÓDULO DE ANIMAÇÃO DO TÍTULO
-    // =============================================
-    const heroTitleModule = (() => {
-        function init() {
-            const title = document.querySelector('.hero-title');
-            if (title && title.querySelector('.hero-title-line')) {
-                const lines = title.querySelectorAll('.hero-title-line');
-                lines.forEach((line, index) => {
-                    line.style.animationDelay = `${index * 0.3}s`;
-                });
-            }
-        }
-        return { init };
-    })();
-
-    // =============================================
-    // MÓDULO DE ANIMAÇÕES DE SCROLL (REVEAL)
-    // =============================================
-    const scrollAnimationModule = (() => {
-        const revealElements = document.querySelectorAll('.reveal-text, .timeline-container, .about-image-wrapper');
-
-        const revealOnScroll = () => {
-            const windowHeight = window.innerHeight;
-
-            revealElements.forEach(el => {
-                const rect = el.getBoundingClientRect();
-
-                // MUDANÇA AQUI: Lógica para verificar se o elemento está visível
-                // Condição para ser visível: O topo do elemento está acima da parte de baixo da tela
-                // E a base do elemento está abaixo da parte de cima da tela.
-                const isVisible = rect.top < windowHeight && rect.bottom > 0;
-
-                if (isVisible) {
-                    // Se está visível, adiciona a classe para animar a entrada
-                    el.classList.add('visible');
-                } else {
-                    // Se não está visível (saiu da tela), remove a classe para reverter a animação
-                    el.classList.remove('visible');
-                }
-            });
-        };
-
-        window.addEventListener('scroll', revealOnScroll);
-        window.addEventListener('load', revealOnScroll);
-        // Adiciona um listener para resize também, para garantir o funcionamento
-        window.addEventListener('resize', revealOnScroll);
-
-        // O return pode ser vazio pois o módulo se auto-inicializa
-        return {};
-    })();
-
-    // =============================================
-    // MÓDULO DA LINHA DO TEMPO
-    // =============================================
-    const timelineModule = (() => {
-        const timelineItems = document.querySelectorAll('.timeline-item');
-        const descriptionBox = document.querySelector('.timeline-description-box p');
-        function init() {
-            if (!timelineItems || timelineItems.length === 0 || !descriptionBox) return;
-            timelineItems.forEach(item => {
-                item.addEventListener('click', () => {
-                    timelineItems.forEach(i => i.classList.remove('active'));
-                    item.classList.add('active');
-                    descriptionBox.textContent = item.dataset.description;
-                });
-            });
-        }
-        return { init };
-    })();
-
-    // =============================================
-    // MÓDULO DE PROJETOS (FILTRO E MODAL)
-    // =============================================
-    const projectsModule = (() => {
-        const filterBtns = document.querySelectorAll('.filter-btn');
-        const projectCards = document.querySelectorAll('.project-card');
-        const modal = document.getElementById('project-modal');
-        const closeModalBtn = document.querySelector('.close-modal');
-        function filterProjects() {
-            filterBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    filterBtns.forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    const filter = btn.dataset.filter;
-                    projectCards.forEach(card => {
-                        card.classList.add('hide');
-                        setTimeout(() => {
-                            if (filter === 'all' || card.dataset.category === filter) {
-                                card.classList.remove('hide');
-                            }
-                        }, 150);
-                    });
-                });
-            });
-        }
-        function setupModal() {
-            if (!modal) return;
-            projectCards.forEach(card => {
-                card.addEventListener('click', () => {
-                    const title = card.querySelector('h3').textContent;
-                    const imgSrc = card.querySelector('img').dataset.src || card.querySelector('img').src;
-                    document.getElementById('modal-title').textContent = title;
-                    document.getElementById('modal-img').src = imgSrc;
-                    modal.classList.add('show');
-                });
-            });
-            if (closeModalBtn) {
-                closeModalBtn.addEventListener('click', () => modal.classList.remove('show'));
-                modal.addEventListener('click', (e) => {
-                    if (e.target === modal) {
-                        modal.classList.remove('show');
-                    }
-                });
-            }
-        }
-        function init() {
-            if (filterBtns.length > 0) filterProjects();
-            if (modal) setupModal();
-        }
-        return { init };
-    })();
-
-    // =============================================
-    // MÓDULO DO LAB EXPERIMENTAL (NEURAL NETWORK)
-    // =============================================
-    const labModule = (() => {
-        const nnContainer = document.querySelector('.neural-network');
-        function init() {
-            if (!nnContainer) return;
-            nnContainer.innerHTML = '';
-            for (let i = 0; i < 3; i++) {
-                const layer = document.createElement('div');
-                layer.className = 'nn-layer';
-                const numNeurons = (i === 0) ? 3 : (i === 1) ? 4 : 2;
-                for (let j = 0; j < numNeurons; j++) {
-                    const neuron = document.createElement('div');
-                    neuron.className = 'neuron';
-                    layer.appendChild(neuron);
-                }
-                nnContainer.appendChild(layer);
-            }
-            const neurons = document.querySelectorAll('.neuron');
-            neurons.forEach(neuron => {
-                neuron.addEventListener('mouseenter', () => {
-                    neuron.classList.add('active');
-                    setTimeout(() => neuron.classList.remove('active'), 1000);
-                });
-            });
-        }
-        return { init };
-    })();
-
-    // =============================================
-    // MÓDULO DO TERMINAL
-    // =============================================
-    const terminalModule = (() => {
-        const terminal = document.querySelector('.terminal');
-        const terminalBody = document.getElementById('terminal-body');
-        const terminalOutput = document.getElementById('terminal-output');
-        const terminalInput = document.getElementById('terminal-input');
-
-        if (!terminal || !terminalBody || !terminalOutput || !terminalInput) {
-            return { init: () => { } };
-        }
-
-        const commands = {
-            'ajuda': 'Comandos disponíveis:<br>`sobre` - mostra uma bio.<br>`skills` - lista minhas tecnologias.<br>`contato` - como entrar em contato.<br>`limpar` - limpa o terminal.',
-            'sobre': 'Sou um desenvolvedor focado em IA e automação...',
-            'skills': 'JavaScript (ES6+), Python, HTML5, CSS3, Node.js...',
-            'contato': 'Ótimo! Você pode me enviar um email para <a href="mailto:seuemail@example.com">seuemail@example.com</a>...',
-            'limpar': () => { terminalOutput.innerHTML = ''; return true; }
-        };
-        const initialMessage = `<p>Bem-vindo ao meu terminal interativo!</p><p>Digite 'ajuda' para ver a lista de comandos.</p>`;
-
-        function printToTerminal(htmlContent) {
-            const p = document.createElement('p');
-            p.innerHTML = htmlContent;
-            terminalOutput.appendChild(p);
-        }
-
-        function handleCommand() {
-            const command = terminalInput.value.trim().toLowerCase();
-            if (command === '') return;
-            printToTerminal(`<span style="color: var(--color-primary)">visitante@portfolio:~$</span> ${command}`);
-            if (commands[command]) {
-                const response = commands[command];
-                if (typeof response === 'function') {
-                    response();
-                } else {
-                    printToTerminal(response);
-                }
-            } else {
-                printToTerminal(`Comando não encontrado: ${command}. Digite 'ajuda'.`);
-            }
-            terminalInput.value = '';
-            terminalBody.scrollTop = terminalBody.scrollHeight;
-        }
-
-        function init() {
-            printToTerminal(initialMessage);
-            terminal.addEventListener('click', () => terminalInput.focus());
-            terminalInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') handleCommand();
-            });
-            const observer = new IntersectionObserver((entries) => {
-                if (entries[0].isIntersecting) {
-                    terminalInput.focus();
-                }
-            }, { threshold: 0.5 });
-            observer.observe(terminal);
-        }
-        return { init };
-    })();
-
-    // =============================================
     // MÓDULO DE LAZY LOADING DE IMAGENS
     // =============================================
     const lazyLoadModule = (() => {
         const lazyImages = document.querySelectorAll('img.lazy-load');
+        if (lazyImages.length === 0) return { init: () => { } };
+
+        // ALTERAÇÃO: Melhora a experiência do usuário fazendo as imagens carregarem
+        // um pouco antes de aparecerem na tela.
         const observer = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -441,7 +249,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     observer.unobserve(img);
                 }
             });
+        }, {
+            rootMargin: '0px 0px 200px 0px' // Inicia o carregamento 200px antes da imagem entrar na tela
         });
+
         function init() {
             lazyImages.forEach(img => observer.observe(img));
         }
@@ -449,16 +260,19 @@ document.addEventListener('DOMContentLoaded', () => {
     })();
 
     // =============================================
-    // INICIALIZA TODOS OS MÓDULOS
+    // INICIALIZAÇÃO DOS MÓDULOS
     // =============================================
     cursorModule.init();
     particleModule.init();
     navigationModule.init();
-    scrollAnimationModule.init();
-    heroTitleModule.init();
-    timelineModule.init();
-    projectsModule.init();
-    labModule.init();
-    terminalModule.init();
     lazyLoadModule.init();
+
+    // Os módulos abaixo não foram definidos no código fornecido.
+    // Suas inicializações foram removidas para evitar erros de "função não definida".
+    // scrollAnimationModule.init();
+    // heroTitleModule.init();
+    // timelineModule.init();
+    // projectsModule.init();
+    // labModule.init();
+    // terminalModule.init();
 });

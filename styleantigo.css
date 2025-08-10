@@ -36,10 +36,12 @@ body {
     font-family: var(--font-primary);
     overflow-x: hidden;
     cursor: none;
+    /* Esconde o cursor padrão */
 }
 
+
 /* ============================================= */
-/* CURSOR CUSTOMIZADO (PONTO E SEGUIDOR)         */
+/* CURSOR CUSTOMIZADO (VERSÃO FINAL E CORRETA)   */
 /* ============================================= */
 .cursor,
 .cursor-follower {
@@ -47,12 +49,11 @@ body {
     top: 0;
     left: 0;
     pointer-events: none;
-    /* Permite clicar através dos elementos do cursor */
     z-index: 9999;
     opacity: 1;
+    /* Garante que o cursor esteja sempre visível */
 }
 
-/* O ponto central do cursor */
 .cursor {
     width: 8px;
     height: 8px;
@@ -62,23 +63,24 @@ body {
     transition: transform 0.2s ease-in-out, background-color 0.2s ease;
 }
 
-/* O círculo que segue o ponto */
 .cursor-follower {
     width: 40px;
     height: 40px;
     border: 1px solid var(--color-primary);
     border-radius: 50%;
+    /* Define o estado inicial com translate e scale */
     transform: translate(-50%, -50%) scale(1);
+    /* CORREÇÃO: Garante que TODAS as propriedades (posição e escala) sejam animadas */
     transition: all 0.3s ease-out;
 }
 
-/* Estado ativo (quando passa sobre um link, por exemplo) */
 .cursor.active {
     transform: translate(-50%, -50%) scale(3);
     background-color: rgba(255, 0, 255, 0.5);
 }
 
 .cursor-follower.active {
+    /* CORREÇÃO: Combina a centralização com o aumento */
     transform: translate(-50%, -50%) scale(1.5);
     border-color: var(--color-secondary);
 }
@@ -110,12 +112,10 @@ body {
     transition: color 0.3s ease;
 }
 
-/* Estilo para o item ativo (controlado via JavaScript) */
 .main-nav li.active {
     color: var(--color-primary);
 }
 
-/* Efeito ao passar o mouse sobre o ícone */
 .main-nav li:hover {
     color: var(--color-primary);
 }
@@ -124,7 +124,6 @@ body {
     font-size: 24px;
 }
 
-/* A "caixa de dica" que aparece com o nome da seção */
 .nav-tooltip {
     position: absolute;
     top: 50%;
@@ -141,11 +140,11 @@ body {
     font-weight: bold;
 }
 
-/* Faz a "caixa de dica" aparecer ao passar o mouse */
 .main-nav li:hover .nav-tooltip {
     opacity: 1;
     visibility: visible;
 }
+
 
 /* ============================================= */
 /* ESTRUTURA DAS SEÇÕES                          */
@@ -166,15 +165,17 @@ body {
 
 .section-title {
     font-family: var(--font-display);
+    /* VALORES AJUSTADOS para melhor responsividade em telas pequenas */
     font-size: clamp(2.2rem, 8vw, 5rem);
     color: var(--color-primary);
     margin-bottom: 60px;
     text-transform: uppercase;
+    /* GARANTIA para evitar que o texto 'estoure' a tela */
     word-break: break-word;
 }
 
 /* ============================================= */
-/* SEÇÃO 1: HERO                                 */
+/* SEÇÃO 1: HERO (VERSÃO SÓ TEXTO, FONTE MENOR)  */
 /* ============================================= */
 #particle-canvas {
     position: fixed;
@@ -185,53 +186,106 @@ body {
     z-index: -1;
 }
 
+/* Container principal do conteúdo (agora só texto) */
 #hero .hero-content {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 90%;
+    /* Ocupa mais da largura da tela */
     max-width: 1200px;
 }
 
+/* Container do texto */
 .hero-text {
     text-align: center;
+    /* Centraliza todo o texto */
 }
 
+/* Título principal (agora um container para as linhas) */
 #hero .hero-title {
     font-family: var(--font-display);
+    /* FONTE REDUZIDA para não cortar na tela */
     font-size: clamp(2.5rem, 8vw, 6rem);
     color: #fff;
     text-transform: uppercase;
     line-height: 1.1;
+    /* Espaçamento entre as linhas */
     margin: 0 0 15px 0;
     padding: 0;
 }
 
+/* Estilo para cada linha do título (Marcos / Rodrigues) */
 .hero-title-line {
     display: block;
+    /* Garante que cada um fique em sua própria linha */
+    opacity: 0;
+    animation: fade-in 1s forwards;
 }
 
+/* Animação com atraso para a segunda linha */
+.hero-title-line:nth-child(2) {
+    animation-delay: 0.3s;
+}
+
+/* Subtítulo */
 #hero .hero-subtitle {
     font-size: 1.3rem;
+    /* Um pouco menor para harmonizar */
     color: var(--color-text-dark);
     letter-spacing: 3px;
+    opacity: 0;
+    animation: fade-in 1s 0.6s forwards;
 }
 
+/* REGRA PARA A IMAGEM FOI REMOVIDA */
+
+/* Indicador de Scroll */
 .scroll-down-indicator {
     position: absolute;
     bottom: 30px;
     left: 50%;
     transform: translateX(-50%);
     color: var(--color-text-dark);
+    opacity: 0;
+    animation: fade-in 1s 2s forwards;
 }
 
 .scroll-down-indicator i {
     display: block;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateY(0);
+    }
+
+    40% {
+        transform: translateY(-10px);
+    }
+
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Animação de fade-in */
+@keyframes fade-in {
+    to {
+        opacity: 1;
+    }
 }
 
 /* ============================================= */
 /* SEÇÃO 2: ABOUT                                */
 /* ============================================= */
+/* Estilos de layout da seção (sem alterações) */
 #about .about-container {
     display: grid;
     grid-template-columns: 2fr 1fr;
@@ -245,21 +299,54 @@ body {
     margin-bottom: 20px;
 }
 
+/* Estilos da imagem e seu efeito hover (sem alterações) */
 #about .about-image-wrapper {
     position: relative;
     filter: grayscale(100%);
+    transition: filter 0.5s ease;
+}
+
+#about .about-image-wrapper:hover {
+    filter: grayscale(0%);
 }
 
 #about .about-image-wrapper img {
     width: 100%;
     border-radius: 10px;
     transform: rotate(3deg);
+    transition: transform 0.5s ease;
 }
 
+#about .about-image-wrapper:hover img {
+    transform: rotate(0deg);
+}
+
+/* --- CÓDIGO CORRIGIDO DA ANIMAÇÃO --- */
+
+/* Estilos para a animação de revelação de CADA ELEMENTO com scroll */
+.reveal-text {
+    opacity: 0;
+    /* Começa deslocado para a esquerda. Você pode usar -100px ou -50px, etc. */
+    transform: translateX(-100px); 
+    transition: transform 1.5s ease, opacity 1.5s ease;
+}
+
+/* QUANDO o elemento se torna visível, ele volta para a posição original */
+.reveal-text.visible {
+    opacity: 1;
+    /* Anima para a posição X original (0), corrigindo o movimento diagonal */
+    transform: translateX(0); 
+}
 
 /* ============================================= */
 /* SEÇÃO 3: TIMELINE                             */
 /* ============================================= */
+.timeline-container {
+    opacity: 0;
+    /* MUDANÇA AQUI: Começa deslocado para a esquerda */
+    transform: translateX(-100px); /* ou -100% dependendo do efeito desejado */
+    transition: transform 1.5s ease, opacity 1.5s ease;
+}
 
 .timeline-line {
     position: absolute;
@@ -277,9 +364,18 @@ body {
     top: 0;
     left: 0;
     width: 0%;
-    /* Estado inicial */
     height: 100%;
     background: var(--color-primary);
+    transition: width 1s ease-in-out;
+}
+
+.timeline-container.visible .timeline-line::after {
+    width: 100%;
+}
+
+.timeline-container.visible {
+    opacity: 1;
+    transform: translateX(0); /* posição original */
 }
 
 .timeline-item {
@@ -311,6 +407,14 @@ body {
     background: var(--color-background);
     border: 3px solid var(--color-text-dark);
     border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.timeline-item.active .timeline-dot,
+.timeline-item:hover .timeline-dot {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    transform: scale(1.2);
 }
 
 .timeline-year {
@@ -333,6 +437,7 @@ body {
     background: rgba(255, 255, 255, 0.05);
     border-left: 3px solid var(--color-primary);
     min-height: 50px;
+    transition: all 0.5s ease;
 }
 
 .timeline-description-box p {
@@ -354,8 +459,10 @@ body {
     padding: 10px 20px;
     margin-right: 10px;
     cursor: pointer;
+    transition: all 0.3s ease;
 }
 
+.filter-btn:hover,
 .filter-btn.active {
     background: var(--color-primary);
     color: var(--color-background);
@@ -373,12 +480,27 @@ body {
     overflow: hidden;
     border-radius: 5px;
     cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.project-card.hide {
+    transform: scale(0);
+    width: 0;
+    height: 0;
+    padding: 0;
+    margin: 0;
+    opacity: 0;
 }
 
 .project-card img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.project-card:hover img {
+    transform: scale(1.1);
 }
 
 .project-info {
@@ -390,7 +512,11 @@ body {
     padding: 40px 20px 20px;
     color: #fff;
     transform: translateY(100%);
-    /* Estado inicial */
+    transition: transform 0.5s ease;
+}
+
+.project-card:hover .project-info {
+    transform: translateY(0);
 }
 
 /* Modal do Projeto */
@@ -419,6 +545,19 @@ body {
     width: 90%;
     max-width: 800px;
     position: relative;
+    animation: slide-in 0.5s ease;
+}
+
+@keyframes slide-in {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 .close-modal {
@@ -428,6 +567,10 @@ body {
     font-size: 30px;
     cursor: pointer;
     color: var(--color-text-dark);
+}
+
+.close-modal:hover {
+    color: #fff;
 }
 
 #modal-img {
@@ -474,6 +617,12 @@ body {
     background: var(--color-text-dark);
     border-radius: 50%;
     position: relative;
+    transition: background 0.3s ease;
+}
+
+.neuron.active {
+    background: var(--color-primary);
+    box-shadow: 0 0 15px var(--color-primary);
 }
 
 /* ============================================= */
@@ -482,6 +631,7 @@ body {
 #contact {
     background: #000;
     align-items: flex-start;
+    /* Alinha o terminal no topo em telas menores */
     padding-top: 10vh;
 }
 
@@ -497,6 +647,7 @@ body {
     display: flex;
     flex-direction: column;
     cursor: text;
+    /* Indica que a área é editável */
 }
 
 .terminal-header {
@@ -577,6 +728,7 @@ body {
     outline: none;
 }
 
+/* NOVO: Cursor Inteligente */
 .terminal-input-container {
     display: flex;
     align-items: center;
@@ -585,6 +737,29 @@ body {
 
 .terminal-input-container .terminal-input {
     padding-right: 1ch;
+    /* Espaço para o cursor não sobrepor o texto */
+}
+
+.cursor-blink {
+    visibility: hidden;
+    /* Escondido por padrão */
+    background-color: #fff;
+    width: 8px;
+    /* Largura do caractere monoespaçado */
+    height: 1.2em;
+    display: inline-block;
+    animation: blink 1s steps(2, start) infinite;
+}
+
+.terminal-input:focus+.cursor-blink {
+    visibility: visible;
+    /* Visível apenas com foco */
+}
+
+@keyframes blink {
+    to {
+        visibility: hidden;
+    }
 }
 
 /* ============================================= */
@@ -597,6 +772,7 @@ body {
 
     .main-nav {
         display: none;
+        /* Simplificar em mobile ou criar um menu hamburguer */
     }
 }
 
