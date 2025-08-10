@@ -80,6 +80,43 @@ body {
 }
 
 /* ============================================= */
+/* CURSOR GEOMÉTRICO PARA O TERMINAL (CLI)       */
+/* ============================================= */
+
+/* Animação de piscar, como um cursor de terminal de verdade */
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+}
+
+/* Quando o cursor principal estiver dentro do terminal... */
+.cursor.cli-hover {
+    width: 3px;
+    /* Largura de um cursor de texto */
+    height: 22px;
+    /* Altura para combinar com a fonte */
+    background-color: var(--color-primary);
+    border-radius: 0;
+    /* Remove as bordas arredondadas, criando um retângulo */
+    animation: blink 1.2s infinite;
+    /* Aplica a animação de piscar */
+    /* Garante que ele não aumente de tamanho ao passar sobre um link */
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* Esconde o cursor "seguidor" (o círculo externo) quando estiver no terminal */
+.cursor-follower.cli-hover {
+    opacity: 0;
+}
+
+/* ============================================= */
 /* NAVEGAÇÃO NÃO-LINEAR                          */
 /* ============================================= */
 .main-nav {
@@ -481,6 +518,11 @@ body {
 /* ============================================= */
 .project-filters {
     margin-bottom: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: flex-start;
+    /* ALTERADO: Alinha os botões à esquerda */
 }
 
 .filter-btn {
@@ -488,7 +530,6 @@ body {
     border: 1px solid var(--color-text-dark);
     color: var(--color-text-dark);
     padding: 10px 20px;
-    margin-right: 10px;
     cursor: pointer;
     transition: all 0.3s ease;
 }
@@ -506,29 +547,40 @@ body {
 
 .project-gallery {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 400px));
+    gap: 25px;
+    justify-content: start;
+    /* ALTERADO: Alinha a grade de cards à esquerda */
 }
 
 .project-card {
     position: relative;
     overflow: hidden;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: transform 0.3s ease, opacity 0.3s ease;
+    transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
+    aspect-ratio: 16 / 9;
+    background-color: rgba(30, 30, 50, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.project-card.hide {
-    transform: scale(0.9);
-    opacity: 0;
-    display: none;
+.project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
 
 .project-card img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.4s ease-out;
+    transition: transform 0.4s ease-out, opacity 0.6s ease;
+    opacity: 0;
+}
+
+.project-card img.loaded {
+    opacity: 1;
 }
 
 .project-card:hover img {
@@ -551,6 +603,30 @@ body {
     transform: translateY(0);
 }
 
+.project-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 15px;
+    padding: 8px 15px;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--color-text);
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.project-link:hover {
+    background-color: var(--color-primary);
+    color: var(--color-background);
+}
+
+.project-link i {
+    font-size: 1.2rem;
+}
+
+/* Modal do Projeto (sem alterações) */
 .modal {
     display: none;
     position: fixed;
@@ -833,6 +909,58 @@ body {
 .contact-list a:hover {
     color: var(--color-primary);
     border-bottom-color: var(--color-primary);
+}
+
+/* ============================================= */
+/* CURSOR GEOMÉTRICO PARA O TERMINAL (CLI)       */
+/* ============================================= */
+
+/* Animação de piscar, como um cursor de terminal de verdade */
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+}
+
+/* Quando o cursor principal estiver dentro do terminal... */
+.cursor.cli-hover {
+    width: 3px;
+    /* Largura de um cursor de texto */
+    height: 22px;
+    /* Altura para combinar com a fonte */
+    background-color: var(--color-primary);
+    border-radius: 0;
+    /* Remove as bordas arredondadas, criando um retângulo */
+    animation: blink 1.2s infinite;
+    /* Aplica a animação de piscar */
+    /* Garante que ele não aumente de tamanho ao passar sobre um link */
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* Esconde o cursor "seguidor" (o círculo externo) quando estiver no terminal */
+.cursor-follower.cli-hover {
+    opacity: 0;
+}
+
+/* ============================================= */
+/* GARANTE QUE O CURSOR CUSTOMIZADO PREVALEÇA    */
+/* ============================================= */
+
+/* Esconde o cursor padrão do navegador em todos os elementos interativos */
+a,
+button,
+[data-section],
+.timeline-item,
+.project-card,
+.terminal-buttons span,
+.filter-btn {
+    cursor: none;
 }
 
 /* ============================================= */

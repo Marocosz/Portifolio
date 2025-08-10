@@ -232,30 +232,40 @@ document.addEventListener('DOMContentLoaded', () => {
     })();
 
     // =============================================
-    // MÓDULO DE LAZY LOADING DE IMAGENS
+    // MÓDULO DE LAZY LOADING DE IMAGENS (ATUALIZADO)
     // =============================================
     const lazyLoadModule = (() => {
         const lazyImages = document.querySelectorAll('img.lazy-load');
+
         if (lazyImages.length === 0) return { init: () => { } };
 
-        // ALTERAÇÃO: Melhora a experiência do usuário fazendo as imagens carregarem
-        // um pouco antes de aparecerem na tela.
         const observer = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const img = entry.target;
+
+                    // Define o 'src' para começar o carregamento
                     img.src = img.dataset.src;
+
+                    // NOVO: Adiciona um ouvinte para o evento 'load'
+                    // A classe 'loaded' só é adicionada DEPOIS que a imagem foi baixada
+                    img.addEventListener('load', () => {
+                        img.classList.add('loaded');
+                    });
+
+                    // Remove a classe 'lazy-load' e para de observar
                     img.classList.remove('lazy-load');
                     observer.unobserve(img);
                 }
             });
         }, {
-            rootMargin: '0px 0px 200px 0px' // Inicia o carregamento 200px antes da imagem entrar na tela
+            rootMargin: '0px 0px 200px 0px'
         });
 
         function init() {
             lazyImages.forEach(img => observer.observe(img));
         }
+
         return { init };
     })();
 
@@ -679,6 +689,83 @@ document.addEventListener('DOMContentLoaded', () => {
     })();
 
     // =============================================
+    // MÓDULO DE PROJETOS (FILTROS E MODAL ATUALIZADO)
+    // =============================================
+    const projectsModule = (() => {
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const projectCards = document.querySelectorAll('.project-card');
+        const modal = document.getElementById('project-modal');
+
+        // Checa se o modal existe antes de tentar selecionar elementos dentro dele
+        if (!modal) {
+            // Se o modal não existe, cria uma função init vazia para não dar erro.
+            return { init: () => console.warn('Módulo de Projetos: Modal não encontrado.') };
+        }
+
+        const closeModalBtn = modal.querySelector('.close-modal');
+        const modalImg = document.getElementById('modal-img');
+        const modalTitle = document.getElementById('modal-title');
+        const modalDescription = document.getElementById('modal-description');
+
+        function filterProjects(e) {
+            const filterValue = e.target.dataset.filter;
+
+            filterBtns.forEach(btn => btn.classList.remove('active'));
+            e.target.classList.add('active');
+
+            projectCards.forEach(card => {
+                const cardCategories = card.dataset.category || '';
+                // A lógica agora checa se a string de categorias INCLUI o valor do filtro
+                const shouldShow = filterValue === 'all' || cardCategories.includes(filterValue);
+
+                card.style.display = shouldShow ? 'block' : 'none';
+            });
+        }
+
+        function openModal(e) {
+            // Impede que o modal seja aberto se o clique foi no link do GitHub
+            if (e.target.closest('.project-link')) {
+                return;
+            }
+
+            const card = e.currentTarget;
+            const cardImg = card.querySelector('img');
+            const cardTitle = card.querySelector('h3');
+            const cardDescription = card.dataset.modalDescription || 'Detalhes do projeto não disponíveis.';
+
+            if (cardImg) modalImg.src = cardImg.dataset.src || cardImg.src;
+            if (cardTitle) modalTitle.textContent = cardTitle.textContent;
+            if (modalDescription) modalDescription.textContent = cardDescription;
+
+            modal.classList.add('show');
+        }
+
+        function closeModal() {
+            modal.classList.remove('show');
+        }
+
+        function init() {
+            if (filterBtns.length > 0) {
+                filterBtns.forEach(btn => btn.addEventListener('click', filterProjects));
+            }
+            if (projectCards.length > 0) {
+                projectCards.forEach(card => card.addEventListener('click', openModal));
+            }
+            if (closeModalBtn) {
+                closeModalBtn.addEventListener('click', closeModal);
+            }
+
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+        }
+
+        return { init };
+    })();
+
+    // =============================================
     // INICIALIZAÇÃO DOS MÓDULOS
     // =============================================
     cursorModule.init();
@@ -690,4 +777,5 @@ document.addEventListener('DOMContentLoaded', () => {
     contentAnimationModule.init();
     timelineModule.init();
     toolsModule.init();
+    projectsModule.init();
 });

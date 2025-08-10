@@ -1,12 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // =============================================
-    // MÓDULO DO CURSOR CUSTOMIZADO (VERSÃO SIMPLES E RÁPIDA)
+    // MÓDULO DO CURSOR CUSTOMIZADO (ATUALIZADO)
     // =============================================
     const cursorModule = (() => {
         const cursor = document.querySelector('.cursor');
         const follower = document.querySelector('.cursor-follower');
-        const interactiveElements = 'a, button, [data-section], .timeline-item, .project-card, .terminal-buttons span, .filter-btn';
+        const interactiveElements = 'a, button, [data-section], .timeline-item, .project-card, .terminal-buttons span, .filter-btn, #contact a';
 
         function moveCursor(e) {
             if (cursor) {
@@ -20,6 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         function setupEventListeners() {
+            if (!cursor && !follower) return;
+
             window.addEventListener('mousemove', moveCursor);
 
             document.querySelectorAll(interactiveElements).forEach(el => {
@@ -37,6 +39,20 @@ document.addEventListener('DOMContentLoaded', () => {
             if (terminalBody) {
                 terminalBody.addEventListener('mouseenter', () => { if (follower) follower.style.borderWidth = '2px'; });
                 terminalBody.addEventListener('mouseleave', () => { if (follower) follower.style.borderWidth = '1px'; });
+            }
+
+            // --- NOVO CÓDIGO ADICIONADO AQUI ---
+            // Lógica para o cursor geométrico dentro do terminal
+            const terminal = document.querySelector('.terminal');
+            if (terminal) {
+                terminal.addEventListener('mouseenter', () => {
+                    if (cursor) cursor.classList.add('cli-hover');
+                    if (follower) follower.classList.add('cli-hover');
+                });
+                terminal.addEventListener('mouseleave', () => {
+                    if (cursor) cursor.classList.remove('cli-hover');
+                    if (follower) follower.classList.remove('cli-hover');
+                });
             }
         }
 
