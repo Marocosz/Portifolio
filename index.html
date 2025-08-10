@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Marcos Rodrigues</title>
 
-    <!-- SEO -->
     <meta name="description" content="Portfólio de Marcos Rodrigues - Desenvolvedor de IA, Automação e Web.">
     <meta name="keywords" content="Marcos Rodrigues, Desenvolvedor, IA, Automação, Web, Portfólio">
     <meta name="author" content="Marcos Rodrigues">
@@ -53,8 +52,10 @@
         </section>
 
         <section id="about" class="content-section">
-            <div class="section-title">Me Conheça</div>
-            <div class="about-container">
+            <div class="title-wrapper">
+                <div class="section-title">Me Conheça</div>
+            </div>
+            <div class="about-container smooth-slide-up">
                 <div class="about-text">
                     <p class="">Olá! Eu sou um apaixonado por transformar problemas complexos em soluções
                         elegantes e automatizadas. Minha jornada no mundo da tecnologia é movida pela curiosidade e pelo
@@ -62,48 +63,65 @@
                     <p class="">Aqui, você não encontrará apenas uma lista de habilidades, mas uma narrativa
                         visual de como eu conecto código, dados e criatividade para inovar.</p>
                 </div>
-                <div class="about-image-wrapper">
-                    <img src="img/img3r.png" alt="Foto de Marcos Rodrigues" class="lazy-load"
-                        data-src="img/img3r.png" loading="lazy">
+                <div class="about-image-wrapper image-to-animate">
+                    <img src="img/img3r.png" alt="Foto de Marcos Rodrigues" class="lazy-load" data-src="img/img3r.png"
+                        loading="lazy">
                 </div>
             </div>
         </section>
 
         <section id="timeline" class="content-section">
-            <div class="section-title">Minha Jornada</div>
+            <div class="title-wrapper">
+                <div class="section-title">Minha Jornada</div>
+            </div>
             <div class="timeline-container">
                 <div class="timeline-line"></div>
+
                 <div class="timeline-item" data-year="2018"
-                    data-description="Iniciei minha graduação em Ciência da Computação, mergulhando de cabeça em algoritmos e estruturas de dados.">
+                    data-description="Iniciei minha graduação em Ciência da Computação, mergulhando de cabeça em algoritmos, estruturas de dados e na paixão por resolver problemas com código."
+                    data-image="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800">
                     <div class="timeline-dot"></div>
                     <div class="timeline-year">2018</div>
                 </div>
+
                 <div class="timeline-item" data-year="2020"
-                    data-description="Primeiro estágio em automação de processos, onde desenvolvi bots que otimizaram mais de 200 horas de trabalho manual por mês.">
+                    data-description="Primeiro estágio em automação de processos, onde desenvolvi bots que otimizaram mais de 200 horas de trabalho manual por mês usando Python e RPA."
+                    data-image="https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=800">
                     <div class="timeline-dot"></div>
                     <div class="timeline-year">2020</div>
                 </div>
+
                 <div class="timeline-item" data-year="2022"
-                    data-description="Liderei um projeto de IA para análise preditiva de dados, aumentando a eficiência da empresa em 15%.">
+                    data-description="Liderei meu primeiro projeto de IA para análise preditiva de dados de clientes, o que resultou em um aumento de 15% na eficiência da tomada de decisão da empresa."
+                    data-image="https://images.unsplash.com/photo-1620712943543-2fd61722c790?w=800">
                     <div class="timeline-dot"></div>
                     <div class="timeline-year">2022</div>
                 </div>
+
                 <div class="timeline-item" data-year="2024"
-                    data-description="Concluí minha especialização em Machine Learning e comecei a atuar como desenvolvedor sênior em projetos de IA generativa.">
+                    data-description="Concluí minha especialização em Machine Learning e comecei a atuar como desenvolvedor sênior, focando em projetos de IA generativa e LLMs."
+                    data-image="https://images.unsplash.com/photo-1677756119517-756a188d2d94?w=800">
                     <div class="timeline-dot"></div>
                     <div class="timeline-year">2024</div>
                 </div>
             </div>
+
             <div class="timeline-description-box">
-                <p>Clique em um marco para ver os detalhes.</p>
+                <div class="timeline-content-wrapper">
+                    <img src="" alt="Imagem do marco da timeline" class="timeline-image" style="display: none;">
+                    <p class="timeline-text">Clique em um marco para ver os detalhes.</p>
+                </div>
             </div>
         </section>
 
-        <!-- Ferramentas -->
         <section id="tools" class="content-section">
-            <div class="section-title">Ferramentas</div>
-            <div class="lab-container">
-                <p class="">Coleção de recursos, utilitários e experimentos que utilizo para criar, testar e otimizar soluções tecnológicas.</p>
+            <div class="title-wrapper">
+                <div class="section-title">Ferramentas</div>
+            </div>
+
+            <div class="lab-container smooth-slide-up">
+                <p class="">Coleção de recursos, utilitários e experimentos que utilizo para criar, testar e otimizar
+                    soluções tecnológicas.</p>
                 <div class="lab-experiment">
                     <h4>Simulador de Rede Neural</h4>
                     <p>Passe o mouse sobre os neurônios para ver as conexões se ativarem.</p>
@@ -112,16 +130,17 @@
             </div>
         </section>
 
-        <!-- Projetos -->
         <section id="projects" class="content-section">
-            <div class="section-title">Projetos</div>
-            <div class="project-filters">
+            <div class="title-wrapper">
+                <div class="section-title">Projetos</div>
+            </div>
+            <div class="project-filters smooth-slide-up">
                 <button class="filter-btn active" data-filter="all">Todos</button>
                 <button class="filter-btn" data-filter="ai">Inteligência Artificial</button>
                 <button class="filter-btn" data-filter="automation">Automação</button>
                 <button class="filter-btn" data-filter="web">Web</button>
             </div>
-            <div class="project-gallery">
+            <div class="project-gallery smooth-slide-up">
                 <div class="project-card" data-category="ai">
                     <img class="lazy-load" data-src="https://via.placeholder.com/600x400.webp?text=Projeto+IA"
                         alt="Projeto de Inteligência Artificial" loading="lazy">
@@ -186,9 +205,9 @@
         </div>
     </div>
 
-    <!-- Fallback para JS desativado -->
     <noscript>
-        <p style="text-align:center; color:red;">Este site é interativo e requer JavaScript habilitado para funcionar corretamente.</p>
+        <p style="text-align:center; color:red;">Este site é interativo e requer JavaScript habilitado para funcionar
+            corretamente.</p>
     </noscript>
 
     <script src="script.js" defer></script>

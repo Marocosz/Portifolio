@@ -260,19 +260,333 @@ document.addEventListener('DOMContentLoaded', () => {
     })();
 
     // =============================================
+    // MÓDULO DE ANIMAÇÃO DE SCROLL (VERSÃO SUAVIZADA)
+    // =============================================
+    const scrollAnimationModule = (() => {
+        const titleWrappers = document.querySelectorAll('.title-wrapper');
+        const smoothingFactor = 0.04; // Fator de suavização. Ajuste este valor.
+        let animationFrameId;
+
+        // Esta função agora APENAS define os alvos da animação
+        function updateAnimationTargets() {
+            const windowHeight = window.innerHeight;
+
+            titleWrappers.forEach(wrapper => {
+                const title = wrapper.querySelector('.section-title');
+                if (!title) return;
+
+                const wrapperRect = wrapper.getBoundingClientRect();
+                const animationStartPoint = windowHeight;
+                const animationEndPoint = windowHeight * 0.4;
+
+                if (wrapperRect.top < animationStartPoint && wrapperRect.top > -wrapperRect.height) {
+                    const progressRange = animationStartPoint - animationEndPoint;
+                    const progress = animationStartPoint - wrapperRect.top;
+                    let animationProgress = progress / progressRange;
+                    animationProgress = Math.max(0, Math.min(1, animationProgress));
+
+                    // Define os alvos sem aplicar o estilo diretamente
+                    title.targetX = -100 * (1 - animationProgress);
+                    title.targetOpacity = Math.pow(animationProgress, 3);
+                }
+            });
+        }
+
+        // Esta nova função roda continuamente para criar a animação suave
+        function smoothAnimationLoop() {
+            titleWrappers.forEach(wrapper => {
+                const title = wrapper.querySelector('.section-title');
+                if (!title) return;
+
+                // Move a posição atual um pouco em direção ao alvo
+                let deltaX = title.targetX - title.currentX;
+                title.currentX += deltaX * smoothingFactor;
+
+                // Move a opacidade atual um pouco em direção ao alvo
+                let deltaOpacity = title.targetOpacity - title.currentOpacity;
+                title.currentOpacity += deltaOpacity * smoothingFactor;
+
+                // Para de calcular quando estiver muito próximo para otimizar
+                if (Math.abs(deltaX) < 0.01) title.currentX = title.targetX;
+                if (Math.abs(deltaOpacity) < 0.01) title.currentOpacity = title.targetOpacity;
+
+                // Aplica os estilos suavizados
+                title.style.transform = `translateX(${title.currentX}%)`;
+                title.style.opacity = title.currentOpacity;
+            });
+
+            animationFrameId = requestAnimationFrame(smoothAnimationLoop);
+        }
+
+        function init() {
+            if (titleWrappers.length === 0) return;
+
+            titleWrappers.forEach(wrapper => {
+                const title = wrapper.querySelector('.section-title');
+                if (title) {
+                    // Prepara o título com as propriedades necessárias
+                    title.targetX = -100;
+                    title.currentX = -100;
+                    title.targetOpacity = 0;
+                    title.currentOpacity = 0;
+                    title.style.willChange = 'transform, opacity';
+                }
+            });
+
+            // Ouve o scroll para ATUALIZAR OS ALVOS
+            window.addEventListener('scroll', updateAnimationTargets);
+
+            // Inicia o loop de animação que roda independentemente
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+            }
+            smoothAnimationLoop();
+            updateAnimationTargets(); // Roda uma vez para definir o estado inicial
+        }
+
+        return { init };
+    })();
+
+
+    // =============================================
+    // MÓDULO DE ANIMAÇÃO EXCLUSIVO PARA A IMAGEM
+    // =============================================
+    const imageAnimationModule = (() => {
+        let imageWrapper;
+        const smoothingFactor = 0.02; // Fator de suavização da animação
+        let animationFrameId;
+
+        // Esta é a função que roda em loop para criar a animação suave
+        function smoothAnimate() {
+            if (!imageWrapper) return;
+
+            // Calcula a distância que a imagem precisa percorrer
+            let deltaX = imageWrapper.targetX - imageWrapper.currentX;
+            let deltaOpacity = imageWrapper.targetOpacity - imageWrapper.currentOpacity;
+
+            // Move a imagem uma fração dessa distância a cada frame
+            imageWrapper.currentX += deltaX * smoothingFactor;
+            imageWrapper.currentOpacity += deltaOpacity * smoothingFactor;
+
+            // Aplica os estilos
+            imageWrapper.style.transform = `translateX(${imageWrapper.currentX}%)`;
+            imageWrapper.style.opacity = imageWrapper.currentOpacity;
+
+            // Continua o loop
+            animationFrameId = requestAnimationFrame(smoothAnimate);
+        }
+
+        function init() {
+            imageWrapper = document.querySelector('.image-to-animate');
+            if (!imageWrapper) return;
+
+            // Define as propriedades iniciais no próprio elemento
+            imageWrapper.targetX = 100; // Alvo inicial: 100% para a direita
+            imageWrapper.currentX = 100;
+            imageWrapper.targetOpacity = 0;
+            imageWrapper.currentOpacity = 0;
+            imageWrapper.style.opacity = '0'; // Garante o estado visual inicial
+            imageWrapper.style.willChange = 'transform, opacity';
+
+            // O Observer apenas define o ALVO da animação
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // Quando entra na tela, o alvo é a posição final (0% e opacidade 1)
+                        imageWrapper.targetX = 0;
+                        imageWrapper.targetOpacity = 1;
+                    } else {
+                        // Quando sai, o alvo volta a ser a posição inicial
+                        imageWrapper.targetX = 100;
+                        imageWrapper.targetOpacity = 0;
+                    }
+                });
+            }, {
+                threshold: 0.1 // Gatilho com 10% de visibilidade
+            });
+
+            observer.observe(imageWrapper);
+
+            // Inicia o loop de animação contínuo
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+            }
+            smoothAnimate();
+        }
+
+        return { init };
+    })();
+
+    // =============================================
+    // MÓDULO "SLIDE-UP" SUAVE PARA CONTEÚDO (MÚLTIPLOS ELEMENTOS)
+    // =============================================
+    const contentAnimationModule = (() => {
+        let elements;
+        const smoothingFactor = 0.02; // Fator de suavização (ajuste aqui a velocidade)
+        let animationFrameId;
+
+        function smoothAnimate() {
+            if (!elements || elements.length === 0) return;
+
+            elements.forEach(el => {
+                // Calcula a distância que o elemento precisa percorrer na vertical
+                let deltaY = el.targetY - el.currentY;
+                let deltaOpacity = el.targetOpacity - el.currentOpacity;
+
+                // Move o elemento uma fração dessa distância a cada frame
+                el.currentY += deltaY * smoothingFactor;
+                el.currentOpacity += deltaOpacity * smoothingFactor;
+
+                // Para de calcular quando estiver muito próximo para otimizar
+                if (Math.abs(deltaY) < 0.01) el.currentY = el.targetY;
+                if (Math.abs(deltaOpacity) < 0.01) el.currentOpacity = el.targetOpacity;
+
+                // Aplica os estilos
+                el.style.transform = `translateY(${el.currentY}px)`;
+                el.style.opacity = el.currentOpacity;
+            });
+
+            animationFrameId = requestAnimationFrame(smoothAnimate);
+        }
+
+        function init() {
+            elements = document.querySelectorAll('.smooth-slide-up');
+            if (!elements || elements.length === 0) return;
+
+            elements.forEach(el => {
+                // Define as propriedades iniciais em cada elemento
+                el.targetY = 80; // Alvo inicial: 80px para baixo
+                el.currentY = 80;
+                el.targetOpacity = 0;
+                el.currentOpacity = 0;
+                el.style.opacity = '0'; // Garante o estado visual inicial
+                el.style.willChange = 'transform, opacity';
+            });
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // Quando entra na tela, o alvo é a posição final
+                        entry.target.targetY = 0;
+                        entry.target.targetOpacity = 1;
+                    } else {
+                        // Quando sai, o alvo volta a ser a posição inicial
+                        entry.target.targetY = 80;
+                        entry.target.targetOpacity = 0;
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            elements.forEach(el => observer.observe(el));
+
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+            }
+            smoothAnimate();
+        }
+
+        return { init };
+    })();
+
+    // =============================================
+    // MÓDULO DA TIMELINE INTERATIVA (VERSÃO FINAL E ROBUSTA)
+    // =============================================
+    const timelineModule = (() => {
+        let timelineItems;
+        let descriptionBox;
+        let contentWrapper;
+        let timelineText;
+        let timelineImage;
+
+        function handleItemClick(e) {
+            const clickedItem = e.currentTarget;
+
+            const isAlreadyActive = clickedItem.classList.contains('active');
+
+            // Remove a classe 'active' de todos os itens e da caixa
+            timelineItems.forEach(item => item.classList.remove('active'));
+            descriptionBox.classList.remove('active');
+
+            // Se clicou em um item que já estava ativo, apenas o desativa
+            if (isAlreadyActive) {
+                contentWrapper.classList.add('fading');
+                setTimeout(() => {
+                    timelineText.textContent = 'Clique em um marco para ver os detalhes.';
+                    timelineImage.style.display = 'none';
+                    contentWrapper.classList.remove('fading');
+                }, 400);
+                return;
+            }
+
+            // Se clicou em um novo item, ativa-o
+            clickedItem.classList.add('active');
+
+            // 1. Pegar posições
+            const dot = clickedItem.querySelector('.timeline-dot');
+            const boxRect = descriptionBox.getBoundingClientRect();
+            const dotRect = dot.getBoundingClientRect();
+
+            // 2. Calcular a linha contínua
+            const frameTopY = boxRect.top - 10; // Onde a moldura começa
+            const connectorStartY = dotRect.bottom; // De onde a linha sai
+
+            const connectorHeight = frameTopY - connectorStartY;
+            const connectorTop = connectorStartY - boxRect.top;
+            const connectorLeft = (dotRect.left + dotRect.width / 2) - boxRect.left;
+
+            // 3. Enviar os valores para o CSS
+            descriptionBox.style.setProperty('--connector-left', `${connectorLeft}px`);
+            descriptionBox.style.setProperty('--connector-top', `${connectorTop}px`);
+            descriptionBox.style.setProperty('--connector-height', `${connectorHeight}px`);
+
+            // 4. Atualizar o conteúdo
+            const newDescription = clickedItem.dataset.description;
+            const newImage = clickedItem.dataset.image;
+
+            contentWrapper.classList.add('fading');
+            descriptionBox.classList.add('active');
+
+            setTimeout(() => {
+                timelineText.textContent = newDescription;
+                if (newImage) {
+                    timelineImage.src = newImage;
+                    timelineImage.style.display = 'block';
+                } else {
+                    timelineImage.style.display = 'none';
+                }
+                contentWrapper.classList.remove('fading');
+            }, 400);
+        }
+
+        function init() {
+            timelineItems = document.querySelectorAll('.timeline-item');
+            descriptionBox = document.querySelector('.timeline-description-box');
+            if (!timelineItems.length || !descriptionBox) return;
+
+            contentWrapper = descriptionBox.querySelector('.timeline-content-wrapper');
+            timelineText = descriptionBox.querySelector('.timeline-text');
+            timelineImage = descriptionBox.querySelector('.timeline-image');
+            if (!contentWrapper || !timelineText || !timelineImage) return;
+
+            timelineItems.forEach(item => {
+                item.addEventListener('click', handleItemClick);
+            });
+        }
+
+        return { init };
+    })();
+
+    // =============================================
     // INICIALIZAÇÃO DOS MÓDULOS
     // =============================================
     cursorModule.init();
     particleModule.init();
     navigationModule.init();
     lazyLoadModule.init();
-
-    // Os módulos abaixo não foram definidos no código fornecido.
-    // Suas inicializações foram removidas para evitar erros de "função não definida".
-    // scrollAnimationModule.init();
-    // heroTitleModule.init();
-    // timelineModule.init();
-    // projectsModule.init();
-    // labModule.init();
-    // terminalModule.init();
+    scrollAnimationModule.init();
+    imageAnimationModule.init();
+    contentAnimationModule.init();
+    timelineModule.init();
 });
