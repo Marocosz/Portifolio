@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const cursorModule = (() => {
         const cursor = document.querySelector('.cursor');
         const follower = document.querySelector('.cursor-follower');
-        const interactiveElements = 'a, button, [data-section], .timeline-item, .project-card, .terminal-buttons span, .filter-btn';
+        const interactiveElements = 'a, button, [data-section], .timeline-item, .project-card, .terminal-buttons span, .filter-btn, #contact a';
 
         function moveCursor(e) {
             if (cursor) {
@@ -490,58 +490,68 @@ document.addEventListener('DOMContentLoaded', () => {
         return { init };
     })();
 
+
     // =============================================
-    // MÓDULO DA TIMELINE INTERATIVA (VERSÃO FINAL DEFINITIVA)
-    // =============================================
-    // =============================================
-    // MÓDULO DA TIMELINE INTERATIVA (COM REANIMAÇÃO)
+    // MÓDULO DA TIMELINE INTERATIVA (COM RESET AO SAIR DA SEÇÃO)
     // =============================================
     const timelineModule = (() => {
         let timelineItems;
-        let frameWrapper; // Alterado para uma única variável
+        let frameWrapper;
         let contentWrapper;
         let timelineText;
         let timelineImage;
+        let descriptionBox;
+
+        // NOVO: Função centralizada para resetar o estado
+        function resetTimelineState() {
+            timelineItems.forEach(item => item.classList.remove('active'));
+            if (frameWrapper) {
+                frameWrapper.classList.remove('active');
+            }
+
+            // Se o conteúdo já estiver desaparecendo, não faz nada
+            if (contentWrapper && contentWrapper.classList.contains('fading')) return;
+
+            if (contentWrapper) {
+                contentWrapper.classList.add('fading');
+                setTimeout(() => {
+                    timelineText.textContent = 'Clique em um marco para ver os detalhes.';
+                    timelineImage.style.display = 'none';
+                    contentWrapper.classList.remove('fading');
+                }, 400);
+            }
+        }
 
         function handleItemClick(e) {
             const clickedItem = e.currentTarget;
             const isAlreadyActive = clickedItem.classList.contains('active');
 
-            // 1. Esconde a moldura e a linha antigas PRIMEIRO
-            // Isso dispara a animação de "saída"
-            frameWrapper.classList.remove('active');
-            contentWrapper.classList.add('fading');
-
-            // Se clicou em um item que já estava ativo, apenas o desativa e limpa o texto.
+            // Se clicou em um item que já estava ativo, apenas o desativa.
             if (isAlreadyActive) {
-                timelineItems.forEach(item => item.classList.remove('active'));
-                setTimeout(() => {
-                    timelineText.textContent = 'Clique em um marco para ver os detalhes.';
-                    timelineImage.style.display = 'none';
-                    contentWrapper.classList.remove('fading');
-                }, 400); // Espera o fade-out do texto
+                resetTimelineState();
                 return;
             }
 
-            // 2. Usa um setTimeout para dar tempo para a animação de saída começar
-            // Este pequeno atraso é a chave para a reanimação
-            setTimeout(() => {
-                // 3. ATUALIZA OS ESTADOS E POSIÇÕES
-                timelineItems.forEach(item => item.classList.remove('active'));
-                clickedItem.classList.add('active');
+            // Se clicou em um novo item, primeiro limpa o estado anterior
+            timelineItems.forEach(item => item.classList.remove('active'));
+            frameWrapper.classList.remove('active'); // Garante que a animação possa re-iniciar
 
+            // Adiciona um pequeno delay para a reanimação funcionar
+            setTimeout(() => {
+                clickedItem.classList.add('active');
+                frameWrapper.classList.add('active');
+
+                // --- Lógica de cálculo (permanece a mesma) ---
                 const dot = clickedItem.querySelector('.timeline-dot');
                 const year = clickedItem.querySelector('.timeline-year');
-
                 const dotRect = dot.getBoundingClientRect();
                 const yearRect = year.getBoundingClientRect();
                 const wrapperRect = frameWrapper.getBoundingClientRect();
 
                 const gap = 6;
                 const frameTopY = wrapperRect.top + (frameWrapper.offsetHeight - descriptionBox.offsetHeight) / 2 - 10;
-
-                // Lógica para anos acima ou abaixo
                 const isYearAbove = yearRect.top < dotRect.top;
+
                 const line1_start = isYearAbove ? dotRect.bottom : dotRect.bottom;
                 const line1_end = isYearAbove ? yearRect.top - gap : yearRect.top - gap;
 
@@ -550,15 +560,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const line1_top = line1_start - wrapperRect.top;
                 const line1_height = line1_end - line1_start;
-
                 const line2_top = line2_start - wrapperRect.top;
                 const line2_height = line2_end - line2_start;
 
                 const connectorLeft = (dotRect.left + dotRect.width / 2) - wrapperRect.left;
 
                 frameWrapper.style.setProperty('--connector-left', `${connectorLeft}px`);
-
-                // Define as propriedades para as duas linhas
                 if (isYearAbove) {
                     frameWrapper.style.setProperty('--line1-top', `${line2_top}px`);
                     frameWrapper.style.setProperty('--line1-height', `${line2_height > 0 ? line2_height : 0}px`);
@@ -571,31 +578,31 @@ document.addEventListener('DOMContentLoaded', () => {
                     frameWrapper.style.setProperty('--line2-height', `${line2_height > 0 ? line2_height : 0}px`);
                 }
 
-                // 4. REATIVA a animação com a nova posição
-                frameWrapper.classList.add('active');
-
-                // 5. ATUALIZA O CONTEÚDO
+                // Atualização do conteúdo
                 const newDescription = clickedItem.dataset.description;
                 const newImage = clickedItem.dataset.image;
 
-                // O conteúdo só é trocado depois que o fade-out inicial termina
+                contentWrapper.classList.add('fading');
                 setTimeout(() => {
                     timelineText.textContent = newDescription;
                     if (newImage) {
                         timelineImage.src = newImage;
                         timelineImage.style.display = 'block';
                     } else {
-                        imgEl.style.display = 'none';
+                        timelineImage.style.display = 'none';
                     }
                     contentWrapper.classList.remove('fading');
                 }, 400);
 
-            }, 150); // Atraso de 150ms para a transição
+            }, 50); // Delay mínimo para o navegador processar a remoção da classe .active
         }
 
         function init() {
-            timelineItems = document.querySelectorAll('.timeline-item');
-            frameWrapper = document.querySelector('.timeline-frame-wrapper');
+            const timelineSection = document.getElementById('timeline');
+            if (!timelineSection) return;
+
+            timelineItems = timelineSection.querySelectorAll('.timeline-item');
+            frameWrapper = timelineSection.querySelector('.timeline-frame-wrapper');
             if (!timelineItems.length || !frameWrapper) return;
 
             descriptionBox = frameWrapper.querySelector('.timeline-description-box');
@@ -608,6 +615,21 @@ document.addEventListener('DOMContentLoaded', () => {
             timelineItems.forEach(item => {
                 item.addEventListener('click', handleItemClick);
             });
+
+            // NOVO: Observer para resetar a timeline ao sair da tela
+            const sectionObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    // Se a seção da timeline NÃO está mais visível...
+                    if (!entry.isIntersecting) {
+                        // ...chama a função de reset.
+                        resetTimelineState();
+                    }
+                });
+            }, {
+                threshold: 0.05 // Reseta quando menos de 5% da seção está visível
+            });
+
+            sectionObserver.observe(timelineSection);
         }
 
         return { init };

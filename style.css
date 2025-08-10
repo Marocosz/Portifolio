@@ -724,7 +724,6 @@ body {
     box-shadow: 0 0 30px rgba(0, 247, 255, 0.2);
     display: flex;
     flex-direction: column;
-    cursor: text;
 }
 
 .terminal-header {
@@ -768,51 +767,72 @@ body {
 
 .terminal-body {
     flex-grow: 1;
-    padding: 15px;
+    padding: 20px;
     overflow-y: auto;
     font-family: monospace;
     font-size: 1.1rem;
+    line-height: 1.6;
 }
 
-#terminal-output p {
-    margin-bottom: 10px;
+/* --- NOVOS ESTILOS PARA O CONTEÚDO DO TERMINAL --- */
+
+.terminal-line {
     white-space: pre-wrap;
-    line-height: 1.5;
     word-break: break-all;
 }
 
-#terminal-output a {
-    color: var(--color-secondary);
-    text-decoration: underline;
+.prompt-user {
+    color: var(--color-primary);
+    /* Ciano para o prompt */
+    margin-right: 8px;
 }
 
-.terminal-prompt {
-    display: flex;
-    align-items: center;
-}
-
-.terminal-input {
-    flex-grow: 1;
-    background: transparent;
-    border: none;
+.terminal-command {
     color: #fff;
-    font-family: monospace;
-    font-size: 1.1rem;
-    position: relative;
 }
 
-.terminal-input:focus {
-    outline: none;
+.terminal-text-bright {
+    color: #fff;
+    font-weight: bold;
 }
 
-.terminal-input-container {
+.contact-list {
+    margin-top: 15px;
+    padding-left: 10px;
+    border-left: 1px solid #444;
+}
+
+.contact-list .terminal-line {
     display: flex;
     align-items: center;
-    flex-grow: 1;
+    margin-bottom: 10px;
 }
 
-.terminal-input-container .terminal-input {
-    padding-right: 1ch;
+.contact-list i {
+    font-size: 1.2rem;
+    color: var(--color-secondary);
+    /* Magenta para os ícones */
+    margin-right: 15px;
+}
+
+.contact-list .contact-label {
+    font-weight: bold;
+    color: #fff;
+    width: 90px;
+    /* Alinha os links verticalmente */
+    flex-shrink: 0;
+}
+
+.contact-list a {
+    color: var(--color-text-dark);
+    text-decoration: none;
+    border-bottom: 1px dashed #555;
+    transition: all 0.3s ease;
+}
+
+.contact-list a:hover {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
 }
 
 /* ============================================= */
