@@ -566,6 +566,14 @@ body {
     justify-content: center;
 }
 
+/* Box-shadow roxo mais disperso e fraco no hover */
+.project-card:hover {
+    transform: translateY(-5px);
+    /* Mantém o levantamento */
+    box-shadow: 0 0 40px 10px rgba(138, 43, 226, 0.3);
+    /* Cor roxa (mesmo tom do retângulo) com desfoque e expansão maiores, opacidade reduzida */
+}
+
 /* Pseudo-elemento para o efeito de escurecimento da imagem */
 .project-card::before {
     content: '';
@@ -612,6 +620,7 @@ body {
     padding: 10px 20px;
     /* Padding para o título */
     color: var(--color-background);
+    /* Cor do texto inicial (branco) */
     transform: translateY(calc(100% - 40px));
     /* Ajuste este valor (40px) */
     transition: transform 0.4s ease-out, background 0.4s ease, color 0.4s ease;
@@ -627,22 +636,25 @@ body {
 .project-card:hover .project-info {
     transform: translateY(0);
     /* Puxa para cima para mostrar todo o conteúdo */
-    /* NOVO: Gradiente no hover para o retângulo */
-    background: linear-gradient(to top, #8A2BE2 70%, rgba(138, 43, 226, 0.2) 100%);
-    /* Começa roxo sólido na parte de baixo (70%) e vai para roxo transparente no topo (100%) */
-    color: var(--color-text);
-    /* Cor do texto do .project-info para --color-text no hover */
+    background: linear-gradient(to top, #8A2BE2 50%, rgba(138, 43, 226, 0) 100%);
+    color: initial;
+    /* Reinicia a herança de cor para que h3 possa definir o seu */
     padding-left: 20px;
 }
 
 .project-info h3 {
     margin: 0 0 10px 0;
     font-size: 1.2rem;
-    color: inherit;
-    /* Herda a cor do pai (.project-info) */
+    color: var(--color-background);
+    /* COR INICIAL: Usa a cor de fundo (branco) para o título */
     line-height: 1.2;
     width: 100%;
     transition: color 0.4s ease;
+}
+
+.project-card:hover .project-info h3 {
+    color: #FFFFFF;
+    /* Garante branco puro para o título no hover */
 }
 
 .project-info p {
@@ -694,7 +706,9 @@ body {
     line-height: 1.2;
 }
 
-/* Modal do Projeto (sem alterações) */
+/* ============================================= */
+/* CONFIGURAÇÕES MODAL                           */
+/* ============================================= */
 .modal {
     display: none;
     position: fixed;
@@ -703,12 +717,15 @@ body {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(5px);
+    background-color: rgba(0, 0, 0, 0.85);
+    /* Fundo mais escuro */
+    backdrop-filter: blur(8px);
+    /* Blur mais intenso para o fundo */
     justify-content: center;
     align-items: center;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.4s ease;
+    /* Transição mais suave */
 }
 
 .modal.show {
@@ -718,44 +735,154 @@ body {
 
 .modal-content {
     background: var(--color-background);
-    padding: 40px;
-    border-radius: 5px;
+    /* Fundo do modal do tema */
+    padding: 30px;
+    /* Padding ligeiramente ajustado */
+    border-radius: 10px;
+    /* Bordas mais arredondadas */
     width: 90%;
     max-width: 800px;
     position: relative;
-    transform: scale(0.95);
-    transition: transform 0.3s ease;
+    transform: scale(0.9);
+    /* Inicia menor para um pop-up mais pronunciado */
+    transition: transform 0.4s ease, opacity 0.4s ease;
+    /* Transição suave para escala e opacidade */
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+    /* Sombra mais pronunciada */
+    display: flex;
+    /* Usar flexbox para o conteúdo */
+    flex-direction: column;
+    /* Conteúdo em coluna */
+    max-height: 90vh;
+    /* Altura máxima para permitir scroll */
+    overflow-y: auto;
+    /* Permite scroll se o conteúdo for muito longo */
 }
 
 .modal.show .modal-content {
     transform: scale(1);
+    opacity: 1;
+    /* Garante que a opacidade seja 1 ao mostrar */
+}
+
+/* Scrollbar estilizada para o modal (Webkit browsers) */
+.modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: var(--color-background);
+    border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: var(--color-primary);
+    border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: #8A2BE2;
+    /* Cor roxa no hover do scrollbar */
 }
 
 .close-modal {
     position: absolute;
     top: 15px;
-    right: 25px;
-    font-size: 30px;
+    right: 20px;
+    /* Ajustado para ficar um pouco mais perto da borda */
+    font-size: 32px;
+    /* Ícone um pouco maior */
     cursor: pointer;
     color: var(--color-text-dark);
-    transition: color 0.3s ease;
+    transition: color 0.3s ease, transform 0.3s ease;
+    /* Adicionado transform na transição */
+    z-index: 2010;
+    /* Garante que fique acima de tudo no modal */
 }
 
 .close-modal:hover {
     color: var(--color-primary);
+    transform: rotate(90deg);
+    /* Gira o X ao passar o mouse */
 }
 
 #modal-img {
     width: 100%;
     height: 300px;
+    /* Altura fixa */
     object-fit: cover;
-    border-radius: 5px;
-    margin-bottom: 20px;
+    border-radius: 8px;
+    /* Bordas mais arredondadas */
+    margin-bottom: 25px;
+    /* Mais espaço abaixo da imagem */
+    filter: brightness(0.95);
+    /* Levemente mais escuro para combinar com o tema */
 }
 
 #modal-title {
     margin-bottom: 15px;
     color: var(--color-primary);
+    /* Mantém a cor primária */
+    font-size: 2.2rem;
+    /* Título maior */
+    text-align: center;
+    /* Centraliza o título */
+}
+
+#modal-description {
+    font-size: 1.1rem;
+    /* Tamanho de fonte um pouco maior */
+    line-height: 1.6;
+    /* Espaçamento de linha melhor para leitura */
+    color: var(--color-text);
+    /* Cor de texto padrão do seu tema */
+    text-align: justify;
+    /* Justifica o texto para um bloco mais limpo */
+    margin-bottom: 20px;
+    /* Espaço abaixo da descrição */
+}
+
+/* Opcional: Estilo para links dentro do modal (se houver) */
+.modal-content a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.modal-content a:hover {
+    color: #8A2BE2;
+    /* Roxo no hover */
+    text-decoration: underline;
+}
+
+/* ------------------------------------- */
+/* RESPONSIVIDADE DO MODAL               */
+/* ------------------------------------- */
+@media (max-width: 768px) {
+    .modal-content {
+        padding: 20px;
+        /* Menos padding em telas menores */
+        width: 95%;
+        /* Ocupa mais largura em telas menores */
+    }
+
+    #modal-title {
+        font-size: 1.8rem;
+        /* Título menor em telas menores */
+    }
+
+    #modal-img {
+        height: 200px;
+        /* Altura menor para imagem em telas menores */
+        margin-bottom: 15px;
+    }
+
+    .close-modal {
+        top: 10px;
+        right: 15px;
+        font-size: 28px;
+    }
 }
 
 /* ============================================= */
@@ -977,43 +1104,6 @@ body {
 .contact-list a:hover {
     color: var(--color-primary);
     border-bottom-color: var(--color-primary);
-}
-
-/* ============================================= */
-/* CURSOR GEOMÉTRICO PARA O TERMINAL (CLI)       */
-/* ============================================= */
-
-/* Animação de piscar, como um cursor de terminal de verdade */
-@keyframes blink {
-
-    0%,
-    100% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: 0;
-    }
-}
-
-/* Quando o cursor principal estiver dentro do terminal... */
-.cursor.cli-hover {
-    width: 3px;
-    /* Largura de um cursor de texto */
-    height: 22px;
-    /* Altura para combinar com a fonte */
-    background-color: var(--color-primary);
-    border-radius: 0;
-    /* Remove as bordas arredondadas, criando um retângulo */
-    animation: blink 1.2s infinite;
-    /* Aplica a animação de piscar */
-    /* Garante que ele não aumente de tamanho ao passar sobre um link */
-    transform: translate(-50%, -50%) scale(1);
-}
-
-/* Esconde o cursor "seguidor" (o círculo externo) quando estiver no terminal */
-.cursor-follower.cli-hover {
-    opacity: 0;
 }
 
 /* ============================================= */
