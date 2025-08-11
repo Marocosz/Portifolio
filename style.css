@@ -740,14 +740,17 @@ body {
     position: relative; /* Essencial para o posicionamento do close-modal */
     transform: scale(0.9); /* Inicia menor para um pop-up mais pronunciado */
     transition: transform 0.4s ease, opacity 0.4s ease; /* Transição suave para escala e opacidade */
-    /* REMOVIDO: Contorno flutuante (box-shadow complexo) */
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6); /* Sombra padrão do modal */
+    
+    /* EFEITO DE BRILHO AZUL FORTE */
+    box-shadow: 0 0 15px 4px rgba(141, 159, 178, 0.75), 
+                0 0 40px 12px rgba(129, 180, 234, 0.5); 
+
     display: flex; /* Usar flexbox para o conteúdo */
     flex-direction: column; /* Conteúdo em coluna */
     max-height: 90vh; /* Altura máxima para permitir scroll */
     overflow-y: auto; /* Permite scroll vertical se o conteúdo for muito longo */
     overflow-x: hidden; /* Garante que não haja scroll horizontal no conteúdo do modal */
-    border: 2px solid transparent; /* Borda inicial transparente (se ainda quiser) */
+    border: 5px solid var(--color-primary); /* Borda azul sutil opcional */
     z-index: 2001; /* Garante que o conteúdo do modal esteja ACIMA do fundo */
 }
 
@@ -755,9 +758,6 @@ body {
     transform: scale(1);
     opacity: 1; /* Garante que a opacidade seja 1 ao mostrar */
 }
-
-/* Removido o pseudo-elemento ::after que criava o contorno flutuante */
-/* .modal-content::after { ... } */
 
 
 /* Scrollbar estilizada para o modal (Webkit browsers) */
@@ -771,7 +771,7 @@ body {
 }
 
 .modal-content::-webkit-scrollbar-thumb {
-    background: var(--color-primary); /* Cor do polegar do scrollbar */
+    background: var(--color-secondary); /* Cor do polegar do scrollbar */
     border-radius: 10px;
 }
 
@@ -835,10 +835,8 @@ body {
 /* MODIFICADO: Container das tecnologias para garantir tamanhos iguais */
 .tech-tags-container {
     display: grid; 
-    /* Ajusta automaticamente colunas, com cada uma tendo no mínimo 180px, mas se expandindo para preencher */
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
     gap: 15px; 
-    /* Removido justify-items e align-items para que o item.tech preencha a célula do grid */
 }
 
 /* MODIFICADO: Item de tecnologia com altura mínima e flex-grow */
@@ -851,11 +849,9 @@ body {
     flex-direction: column;
     align-items: flex-start;
     white-space: normal;
-    /* CHAVE: Definir altura mínima para que o menor se expanda */
-    min-height: 100px; /* Ajuste este valor conforme o tamanho do seu maior conteúdo + padding */
-    /* CHAVE: Permite que os itens cresçam para preencher o espaço disponível na célula do grid */
+    min-height: 100px;
     flex-grow: 1; 
-    width: 100%; /* Garante que o item ocupe 100% da largura da sua célula no grid */
+    width: 100%;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); 
 }
 
@@ -871,7 +867,6 @@ body {
     font-size: 0.85rem; 
     line-height: 1.5;
     text-align: left;
-    /* CHAVE: Permite que a explicação ocupe o espaço restante */
     flex-grow: 1; 
     max-width: 100%; 
 }
@@ -935,7 +930,7 @@ body {
 
     .tech-item {
         padding: 8px 10px;
-        min-height: 90px; /* Ajuste para mobile se necessário */
+        min-height: 90px;
     }
     .tech-name {
         font-size: 0.9rem;
