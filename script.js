@@ -486,144 +486,58 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // =============================================
-    // MÓDULO DA TIMELINE INTERATIVA (COM RESET AO SAIR DA SEÇÃO)
+    // MÓDULO DA TIMELINE ("DATA SHARD" - VERSÃO FINAL)
     // =============================================
     const timelineModule = (() => {
-        let timelineItems;
-        let frameWrapper;
-        let contentWrapper;
-        let timelineText;
-        let timelineImage;
-        let descriptionBox;
-
-        // NOVO: Função centralizada para resetar o estado
-        function resetTimelineState() {
-            timelineItems.forEach(item => item.classList.remove('active'));
-            if (frameWrapper) {
-                frameWrapper.classList.remove('active');
-            }
-
-            // Se o conteúdo já estiver desaparecendo, não faz nada
-            if (contentWrapper && contentWrapper.classList.contains('fading')) return;
-
-            if (contentWrapper) {
-                contentWrapper.classList.add('fading');
-                setTimeout(() => {
-                    timelineText.textContent = 'Clique em um marco para ver os detalhes.';
-                    timelineImage.style.display = 'none';
-                    contentWrapper.classList.remove('fading');
-                }, 400);
-            }
-        }
-
-        function handleItemClick(e) {
-            const clickedItem = e.currentTarget;
-            const isAlreadyActive = clickedItem.classList.contains('active');
-
-            // Se clicou em um item que já estava ativo, apenas o desativa.
-            if (isAlreadyActive) {
-                resetTimelineState();
-                return;
-            }
-
-            // Se clicou em um novo item, primeiro limpa o estado anterior
-            timelineItems.forEach(item => item.classList.remove('active'));
-            frameWrapper.classList.remove('active'); // Garante que a animação possa re-iniciar
-
-            // Adiciona um pequeno delay para a reanimação funcionar
-            setTimeout(() => {
-                clickedItem.classList.add('active');
-                frameWrapper.classList.add('active');
-
-                // --- Lógica de cálculo (permanece a mesma) ---
-                const dot = clickedItem.querySelector('.timeline-dot');
-                const year = clickedItem.querySelector('.timeline-year');
-                const dotRect = dot.getBoundingClientRect();
-                const yearRect = year.getBoundingClientRect();
-                const wrapperRect = frameWrapper.getBoundingClientRect();
-
-                const gap = 6;
-                const frameTopY = wrapperRect.top + (frameWrapper.offsetHeight - descriptionBox.offsetHeight) / 2 - 10;
-                const isYearAbove = yearRect.top < dotRect.top;
-
-                const line1_start = isYearAbove ? dotRect.bottom : dotRect.bottom;
-                const line1_end = isYearAbove ? yearRect.top - gap : yearRect.top - gap;
-
-                const line2_start = isYearAbove ? yearRect.bottom + gap : yearRect.bottom + gap;
-                const line2_end = frameTopY;
-
-                const line1_top = line1_start - wrapperRect.top;
-                const line1_height = line1_end - line1_start;
-                const line2_top = line2_start - wrapperRect.top;
-                const line2_height = line2_end - line2_start;
-
-                const connectorLeft = (dotRect.left + dotRect.width / 2) - wrapperRect.left;
-
-                frameWrapper.style.setProperty('--connector-left', `${connectorLeft}px`);
-                if (isYearAbove) {
-                    frameWrapper.style.setProperty('--line1-top', `${line2_top}px`);
-                    frameWrapper.style.setProperty('--line1-height', `${line2_height > 0 ? line2_height : 0}px`);
-                    frameWrapper.style.setProperty('--line2-top', `${line1_top}px`);
-                    frameWrapper.style.setProperty('--line2-height', `${line1_height > 0 ? line1_height : 0}px`);
-                } else {
-                    frameWrapper.style.setProperty('--line1-top', `${line1_top}px`);
-                    frameWrapper.style.setProperty('--line1-height', `${line1_height > 0 ? line1_height : 0}px`);
-                    frameWrapper.style.setProperty('--line2-top', `${line2_top}px`);
-                    frameWrapper.style.setProperty('--line2-height', `${line2_height > 0 ? line2_height : 0}px`);
-                }
-
-                // Atualização do conteúdo
-                const newDescription = clickedItem.dataset.description;
-                const newImage = clickedItem.dataset.image;
-
-                contentWrapper.classList.add('fading');
-                setTimeout(() => {
-                    timelineText.textContent = newDescription;
-                    if (newImage) {
-                        timelineImage.src = newImage;
-                        timelineImage.style.display = 'block';
-                    } else {
-                        timelineImage.style.display = 'none';
-                    }
-                    contentWrapper.classList.remove('fading');
-                }, 400);
-
-            }, 50); // Delay mínimo para o navegador processar a remoção da classe .active
-        }
-
         function init() {
-            const timelineSection = document.getElementById('timeline');
-            if (!timelineSection) return;
+            const spine = document.querySelector('.timeline-spine');
+            const shards = document.querySelectorAll('.shard');
 
-            timelineItems = timelineSection.querySelectorAll('.timeline-item');
-            frameWrapper = timelineSection.querySelector('.timeline-frame-wrapper');
-            if (!timelineItems.length || !frameWrapper) return;
+            if (!spine || shards.length === 0) return;
 
-            descriptionBox = frameWrapper.querySelector('.timeline-description-box');
-            contentWrapper = frameWrapper.querySelector('.timeline-content-wrapper');
-            timelineText = frameWrapper.querySelector('.timeline-text');
-            timelineImage = frameWrapper.querySelector('.timeline-image');
+            // Limpa marcadores antigos para evitar duplicação em caso de re-inicialização
+            spine.innerHTML = '';
+            const markers = []; // Array para guardar os marcadores criados
 
-            if (!descriptionBox || !contentWrapper || !timelineText || !timelineImage) return;
+            // Cria e posiciona dinamicamente os marcadores na linha central
+            shards.forEach(shard => {
+                const marker = document.createElement('div');
+                marker.className = 'spine-marker';
 
-            timelineItems.forEach(item => {
-                item.addEventListener('click', handleItemClick);
+                // Pega a posição do shard e posiciona o marcador na mesma altura
+                const shardTop = shard.offsetTop;
+                marker.style.top = `${shardTop + 25}px`; // 25px é um ajuste para alinhar com a linha de conexão
+
+                spine.appendChild(marker);
+                markers.push(marker); // Guarda a referência do marcador
             });
 
-            // NOVO: Observer para resetar a timeline ao sair da tela
-            const sectionObserver = new IntersectionObserver((entries) => {
+            // Anima a entrada e saída dos elementos
+            const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
-                    // Se a seção da timeline NÃO está mais visível...
-                    if (!entry.isIntersecting) {
-                        // ...chama a função de reset.
-                        resetTimelineState();
+                    const shard = entry.target;
+                    const shardIndex = Array.from(shards).indexOf(shard);
+                    const marker = markers[shardIndex];
+
+                    if (entry.isIntersecting) {
+                        // Elemento entrou na tela
+                        shard.classList.add('is-visible');
+                        if (marker) {
+                            marker.classList.add('is-active');
+                        }
+                    } else {
+                        // Elemento saiu da tela
+                        shard.classList.remove('is-visible');
+                        if (marker) {
+                            marker.classList.remove('is-active');
+                        }
                     }
                 });
-            }, {
-                threshold: 0.05 // Reseta quando menos de 5% da seção está visível
-            });
+            }, { threshold: 0.3 }); // Você pode ajustar o threshold conforme necessário
 
-            sectionObserver.observe(timelineSection);
+            shards.forEach(shard => {
+                observer.observe(shard);
+            });
         }
 
         return { init };

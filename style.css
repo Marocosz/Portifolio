@@ -10,6 +10,16 @@
     font-style: normal;
 }
 
+@font-face {
+    font-family: 'capitolcity';
+    /* Dê um nome ÚNICO para a sua nova fonte */
+    src: url('font/Square\ Game.otf') format('opentype');
+    /* Substitua pelo nome real do arquivo */
+    font-weight: normal;
+    /* Ajuste se a fonte tiver pesos específicos (light, bold, etc.) */
+    font-style: normal;
+}
+
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Syncopate:wght@700&display=swap');
 
 :root {
@@ -24,6 +34,7 @@
     --color-text-dark: #a0a0a0;
     --font-primary: 'Space Grotesk', sans-serif;
     --font-display: 'Cyberpunk', sans-serif;
+    --font-secondary: 'capitolcity', sans-serif;
     --nav-width: 60px;
 }
 
@@ -296,22 +307,6 @@ body {
 }
 
 /* ============================================= */
-/* SEÇÃO 2: ABOUT (ANIMAÇÃO E HOVER 100% CSS)    */
-/* ============================================= */
-#about .about-container {
-    display: grid;
-    grid-template-columns: 1.5fr 1fr;
-    gap: 60px;
-    align-items: center;
-}
-
-#about .about-text p {
-    font-size: 1.2rem;
-    line-height: 1.8;
-    margin-bottom: 20px;
-}
-
-/* ============================================= */
 /* SEÇÃO 2: ABOUT (HOVER REVISADO)              */
 /* ============================================= */
 #about .about-container {
@@ -333,7 +328,6 @@ body {
     border: 3px solid transparent;
     border-right-color: #39FF14;
     border-bottom-color: #39FF14;
-    filter: drop-shadow(3px 3px 8px rgba(57, 255, 20, 0.6));
     opacity: 0;
     transform: translateX(50px);
     transition: transform 0.8s ease-out, opacity 0.6s ease, filter 0.4s ease, border-color 0.4s ease;
@@ -360,186 +354,144 @@ body {
     /* Garante a cor amarela */
     /* Brilho EXTERNO amarelo seguindo a forma (sem deslocamento para ser em volta) */
     filter: drop-shadow(0 0 10px var(--color-primary));
-    transform: translateY(-5px);
+    transform: translateY(-10px);
     /* Leve movimento para cima */
 }
 
-#about .about-image-wrapper:hover img {
-    transform: scale(1.05);
-    /* Zoom na imagem */
-}
 
 /* ================================================================ */
-/* SEÇÃO 3: TIMELINE (VERSÃO FINAL COM CONECTOR DUPLO)              */
+/* SEÇÃO 3: TIMELINE (NOVO DESIGN "DATA SHARD")                   */
 /* ================================================================ */
-.timeline-container {
+.timeline-datascape {
     position: relative;
-}
-
-.timeline-line {
-    position: absolute;
-    top: 50%;
-    left: 0;
     width: 100%;
-    height: 2px;
-    background: var(--color-text-dark);
-    transform: translateY(-50%);
+    max-width: 900px;
+    margin: 50px auto;
 }
 
-.timeline-item {
+.timeline-spine {
     position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 100%;
+    background: var(--color-secondary);
+    box-shadow: 0 0 15px var(--color-secondary);
+    /* Ciano sutil */
+    z-index: 1;
 }
 
-.timeline-item:nth-child(2) {
-    left: 10%;
-}
-
-.timeline-item:nth-child(3) {
-    left: 35%;
-}
-
-.timeline-item:nth-child(4) {
-    left: 65%;
-}
-
-.timeline-item:nth-child(5) {
-    left: 90%;
-}
-
-.timeline-dot {
+.spine-marker {
+    position: absolute;
+    left: 50%;
     width: 20px;
     height: 20px;
     background: var(--color-background);
-    border: 3px solid var(--color-text-dark);
-    border-radius: 50%;
-    transition: transform 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
+    border: 2px solid rgba(8, 217, 214, 0.5);
+    transform: translateX(-50%) rotate(45deg);
+    /* Formato de losango */
+    transition: all 0.5s ease;
+
 }
 
-.timeline-year {
-    position: absolute;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: var(--color-text-dark);
-    font-weight: bold;
-    transition: color 0.3s ease;
-}
-
-.timeline-item:nth-child(even) .timeline-year {
-    bottom: auto;
-    top: 30px;
-}
-
-#timeline .timeline-item:hover .timeline-dot,
-#timeline .timeline-item:hover .timeline-year {
-    color: var(--color-primary);
-}
-
-#timeline .timeline-item:hover .timeline-dot {
-    transform: scale(1.3);
+.spine-marker.is-active {
+    background: var(--color-primary);
     border-color: var(--color-primary);
-    background-color: var(--color-primary);
+    box-shadow: 0 0 15px var(--color-primary);
+    transform: translateX(-50%) rotate(45deg) scale(1.2);
 }
 
-#timeline .timeline-item.active .timeline-dot,
-#timeline .timeline-item.active .timeline-year {
+.timeline-shards {
+    position: relative;
+    z-index: 2;
+}
+
+.shard {
+    position: relative;
+    width: calc(50% - 40px);
+    background: rgba(15, 15, 25, 0.7);
+    backdrop-filter: blur(5px);
+    padding: 20px 25px;
+    margin-bottom: 50px;
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 0.5s ease-out;
+    /* "LED" verde na direita e embaixo */
+    border: 3px solid transparent;
+    border-right-color: #39FF14;
+    border-bottom-color: #39FF14;
+
+    /* Sombra interna (inset) que emana das bordas verdes */
+    box-shadow: inset -5px -5px 15px -5px rgba(57, 255, 20, 0.5);
+
+    /* AUMENTANDO O VALOR PARA UMA DIAGONAL MAIOR */
+    clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+}
+
+.shard:nth-child(odd) {
+    margin-left: 0;
+    transform-origin: left center;
+}
+
+.shard:nth-child(even) {
+    margin-left: calc(50% + 40px);
+    transform-origin: right center;
+}
+
+.shard.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* A LINHA DE CONEXÃO ANIMADA */
+.shard::before {
+    content: '';
+    position: absolute;
+    top: 25px;
+    height: 2px;
+    width: 38px;
+    background: var(--color-primary);
+    box-shadow: 0 0 10px var(--color-primary);
+    transform: scaleX(0);
+    transition: transform 0.5s ease-out 0.3s;
+}
+
+.shard:nth-child(odd)::before {
+    right: -39px;
+    transform-origin: right;
+}
+
+.shard:nth-child(even)::before {
+    left: -39px;
+    transform-origin: left;
+}
+
+.shard.is-visible::before {
+    transform: scaleX(1);
+}
+
+.shard h4 {
+    font-family: var(--font-secondary);
+    color: var(--color-primary);
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+/* Ano do evento */
+.shard h4::before {
+    content: attr(data-year);
+    display: block;
+    font-family: var(--font-primary);
+    font-size: 0.9rem;
     color: var(--color-secondary);
+    margin-bottom: 5px;
 }
 
-#timeline .timeline-item.active .timeline-dot {
-    transform: scale(1.4);
-    border-color: var(--color-secondary);
-    background-color: var(--color-secondary);
-}
-
-.timeline-frame-wrapper {
-    position: relative;
-    margin-top: 100px;
-}
-
-.timeline-description-box {
-    position: relative;
-    padding: 25px;
-    min-height: 250px;
-    background: rgba(30, 30, 50, 0.5);
-    border-radius: 8px;
-}
-
-.timeline-frame-wrapper::before,
-.timeline-frame-wrapper::after {
-    content: '';
-    position: absolute;
-    left: var(--connector-left, 50%);
-    width: 2px;
-    background: var(--color-secondary);
-    /* ALTERADO */
-    transform: translateX(-50%) scaleY(0);
-    transform-origin: top;
-    transition: transform 0.4s ease-out;
-}
-
-.timeline-frame-wrapper::before {
-    top: var(--line1-top);
-    height: var(--line1-height);
-}
-
-.timeline-frame-wrapper::after {
-    top: var(--line2-top);
-    height: var(--line2-height);
-    border: none;
-    border-radius: 0;
-    opacity: 1;
-    transform-origin: top;
-}
-
-.timeline-frame-wrapper.active::before,
-.timeline-frame-wrapper.active::after {
-    transform: translateX(-50%) scaleY(1);
-}
-
-.timeline-description-box::after {
-    content: '';
-    position: absolute;
-    top: -10px;
-    left: -10px;
-    right: -10px;
-    bottom: -10px;
-    border: 2px solid var(--color-secondary);
-    /* ALTERADO */
-    border-radius: 12px;
-    opacity: 0;
-    transform: scale(0.98);
-    transition: opacity 0.4s 0.1s ease-out, transform 0.4s 0.1s ease-out;
-}
-
-.timeline-frame-wrapper.active .timeline-description-box::after {
-    opacity: 1;
-    transform: scale(1);
-}
-
-.timeline-content-wrapper {
-    opacity: 1;
-    transition: opacity 0.4s ease-in-out;
-}
-
-.timeline-content-wrapper.fading {
-    opacity: 0;
-}
-
-.timeline-image {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-    border-radius: 5px;
-    margin-bottom: 20px;
-}
-
-.timeline-text {
-    font-size: 1.1rem;
+.shard p {
+    font-size: 1rem;
     line-height: 1.6;
+    color: var(--color-text-dark);
 }
 
 /* ============================================= */
@@ -550,44 +502,33 @@ body {
     display: flex;
     flex-wrap: wrap;
     gap: 15px;
-    /* Aumenta o espaçamento */
     justify-content: flex-start;
 }
 
 .filter-btn {
-    /* ESTILO BASE: Translúcido e angular */
     background: rgba(8, 217, 214, 0.15);
-    /* Fundo ciano bem sutil */
     color: var(--color-secondary);
-    /* Texto no tom ciano */
     border: 1px solid rgba(8, 217, 214, 0.4);
-    /* Borda ciano para definir a forma */
     padding: 10px 22px;
     cursor: pointer;
     transition: all 0.3s ease;
     font-weight: bold;
     text-transform: uppercase;
     font-size: 0.9rem;
-
-    /* A MÁGICA: Corta as pontas para um visual futurista/holográfico */
     clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
 }
 
 .filter-btn:hover {
-    /* HOVER: O botão "acende" com a cor primária */
     background: rgba(253, 227, 6, 0.2);
-    /* Fundo amarelo translúcido */
     color: var(--color-primary);
     border-color: var(--color-primary);
 }
 
 .filter-btn.active {
-    /* ATIVO: Preenchimento sólido e brilho */
     background: var(--color-primary);
     color: var(--color-background);
     border-color: var(--color-primary);
     box-shadow: 0 0 15px rgba(253, 227, 6, 0.5);
-    /* Brilho amarelo */
 }
 
 .project-gallery {
@@ -595,28 +536,41 @@ body {
     grid-template-columns: repeat(auto-fill, minmax(300px, 400px));
     gap: 25px;
     justify-content: start;
+    /* transition: grid-template-columns 0.5s ease-out; */
 }
 
 .project-card {
     position: relative;
-    overflow: hidden;
-    border-radius: 8px;
     cursor: pointer;
-    transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
+    /* Inclua box-shadow na transição para que o brilho apareça suavemente */
+    transition: transform 0.3s ease, opacity 0.5s ease, visibility 0.5s ease, box-shadow 0.3s ease;
     aspect-ratio: 16 / 9;
     background-color: rgba(30, 30, 50, 0.5);
     display: flex;
     align-items: flex-end;
     justify-content: center;
+
+    /* Forma angular do cartão */
+    clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
+    z-index: 1;
+    /* Garante que o card está na frente */
+
+    /* O brilho inicial é invisível */
+    box-shadow: 0 0 0px 0px rgba(253, 227, 6, 0.0);
 }
 
-.project-card:hover {
-    transform: translateY(-5px);
-    /* ALTERADO: Brilho Amarelo */
-    box-shadow: 0 0 50px 12px rgba(253, 227, 6, 0.5);
+/* NOVA CLASSE PARA ESCONDER PROJETOS COM TRANSIÇÃO */
+.project-card.hidden-project {
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
 }
 
-.project-card::before {
+/* Remova completamente os seletores ::before e ::after do .project-card para o brilho */
+/* Mantenha o ::after para o overlay de escurecimento se você ainda o estiver usando. */
+
+/* Se você ainda quiser o overlay de escurecimento, mantenha este bloco: */
+.project-card::after {
     content: '';
     position: absolute;
     top: 0;
@@ -626,11 +580,30 @@ body {
     background-color: rgba(0, 0, 0, 0);
     transition: background-color 0.4s ease;
     z-index: 1;
+    /* Acima da imagem, mas abaixo do project-info */
+    clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
 }
 
-.project-card:hover::before {
+.project-card:hover {
+    transform: translateY(-5px);
+    /* Movimento do cartão */
+    /* Agora, o brilho neon é aplicado DIRETAMENTE no project-card */
+    box-shadow:
+        0 0 5px var(--color-primary),
+        /* Sombra interna, mais nítida */
+        0 0 15px var(--color-primary),
+        /* Sombra média */
+        0 0 30px var(--color-primary),
+        /* Sombra externa, mais difusa */
+        0 0 50px var(--color-primary);
+    /* Sombra bem difusa para o glow */
+}
+
+/* Se você ainda quiser o overlay de escurecimento no hover, mantenha este bloco: */
+.project-card:hover::after {
     background-color: rgba(0, 0, 0, 0.5);
 }
+
 
 .project-card img {
     width: 100%;
@@ -639,6 +612,7 @@ body {
     transition: transform 0.4s ease-out, opacity 0.6s ease;
     opacity: 0;
     z-index: 0;
+    clip-path: inherit;
 }
 
 .project-card img.loaded {
@@ -651,7 +625,6 @@ body {
     left: 0;
     width: 100%;
     background: var(--color-secondary);
-    /* ALTERADO: Usa ciano como base */
     padding: 10px 20px;
     color: var(--color-background);
     transform: translateY(calc(100% - 40px));
@@ -663,11 +636,11 @@ body {
     text-align: left;
     box-sizing: border-box;
     z-index: 2;
+    clip-path: inherit;
 }
 
 .project-card:hover .project-info {
     transform: translateY(0);
-    /* ALTERADO: Gradiente escuro */
     background: linear-gradient(to top, #0A0A1F 50%, rgba(10, 10, 31, 0) 100%);
     color: initial;
     padding-left: 20px;
@@ -684,7 +657,6 @@ body {
 
 .project-card:hover .project-info h3 {
     color: var(--color-primary);
-    /* ALTERADO: Título em amarelo no hover */
 }
 
 .project-info p {
@@ -764,7 +736,6 @@ body {
 .modal-content {
     background: var(--color-background);
     padding: 30px;
-    border-radius: 10px;
     width: 90%;
     max-width: 800px;
     position: relative;
@@ -799,7 +770,7 @@ body {
 }
 
 .modal-content::-webkit-scrollbar-thumb {
-    background: var(--color-primary);
+    background: var(--color-secondary);
     /* ALTERADO */
     border-radius: 10px;
 }
@@ -837,7 +808,7 @@ body {
 #modal-project-title {
     margin-bottom: 20px;
     color: var(--color-secondary);
-    font-family: var(--font-display);
+    font-family: var(--font-secondary);
     font-size: clamp(0.9rem, 2vw, 1.5rem);
     text-align: center;
     line-height: 1.2;
@@ -1020,7 +991,7 @@ body {
 }
 
 #tool-name-display {
-    font-family: var(--font-display);
+    font-family: var(--font-secondary);
     font-size: 2rem;
     color: var(--color-primary);
     margin-bottom: 15px;
