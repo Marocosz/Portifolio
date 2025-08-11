@@ -72,9 +72,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // REFACTOR: Gradiente com opacidade reduzida para um fundo mais escuro
         function createGradient() {
             gradient = ctx.createLinearGradient(canvas.width, 0, 0, 0);
-            gradient.addColorStop(0, 'rgba(0, 255, 150, 0.06)');   // Verde (direita) - Opacidade de 15% para 6%
-            gradient.addColorStop(0.5, 'rgba(0, 180, 220, 0.04)');  // Ciano (meio) - Opacidade de 10% para 4%
-            gradient.addColorStop(1, 'rgba(0, 120, 255, 0.08)');   // Azul (esquerda) - Opacidade de 20% para 8%
+            gradient.addColorStop(0, 'rgba(0, 255, 150, 0.06)');   // Verde (direita) - Opacidade de 15% para 6%
+            gradient.addColorStop(0.5, 'rgba(0, 180, 220, 0.04)');  // Ciano (meio) - Opacidade de 10% para 4%
+            gradient.addColorStop(1, 'rgba(0, 120, 255, 0.08)');   // Azul (esquerda) - Opacidade de 20% para 8%
         }
 
         class EnergyLine {

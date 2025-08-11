@@ -296,12 +296,28 @@ body {
 }
 
 /* ============================================= */
-/* SEÇÃO 2: ABOUT                                */
+/* SEÇÃO 2: ABOUT (ANIMAÇÃO E HOVER 100% CSS)    */
 /* ============================================= */
 #about .about-container {
     display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 50px;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+#about .about-text p {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    margin-bottom: 20px;
+}
+
+/* ============================================= */
+/* SEÇÃO 2: ABOUT (HOVER REVISADO)              */
+/* ============================================= */
+#about .about-container {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 60px;
     align-items: center;
 }
 
@@ -313,23 +329,44 @@ body {
 
 #about .about-image-wrapper {
     position: relative;
-    filter: grayscale(100%);
-    transition: filter 0.4s ease-in-out;
+    clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+    border: 3px solid transparent;
+    border-right-color: #39FF14;
+    border-bottom-color: #39FF14;
+    filter: drop-shadow(3px 3px 8px rgba(57, 255, 20, 0.6));
+    opacity: 0;
+    transform: translateX(50px);
+    transition: transform 0.8s ease-out, opacity 0.6s ease, filter 0.4s ease, border-color 0.4s ease;
+}
+
+#about .about-image-wrapper.is-visible {
+    opacity: 1;
+    transform: translateX(0);
 }
 
 #about .about-image-wrapper img {
     width: 100%;
-    border-radius: 10px;
-    transform: rotate(3deg);
-    transition: transform 0.4s ease-in-out;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease-out;
 }
 
+/* HOVER REVISADO COM MAIS ÊNFASE NO BRILHO E COR */
 #about .about-image-wrapper:hover {
-    filter: grayscale(0%);
+    border-right-color: var(--color-primary);
+    /* Garante a cor amarela */
+    border-bottom-color: var(--color-primary);
+    /* Garante a cor amarela */
+    /* Brilho EXTERNO amarelo seguindo a forma (sem deslocamento para ser em volta) */
+    filter: drop-shadow(0 0 10px var(--color-primary));
+    transform: translateY(-5px);
+    /* Leve movimento para cima */
 }
 
 #about .about-image-wrapper:hover img {
-    transform: rotate(0deg);
+    transform: scale(1.05);
+    /* Zoom na imagem */
 }
 
 /* ================================================================ */
