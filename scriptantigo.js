@@ -69,6 +69,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const ctx = canvas.getContext('2d');
         let animationFrameId;
 
+        // --- CONFIGURAÇÕES DA PALETA CYBERPUNK: EDGERUNNERS ---
+        /* ALTERADO: Novas constantes de cor */
         const nodeSpeed = 0.75;
         const baseMaxDistance = 100;
         const pulseAmountDistance = 50;
@@ -76,11 +78,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const maxNumNodes = 300;
         const minNumNodes = 250;
         const pulseSpeedDensity = 0.005;
-        const baseHue = 260;
-        const hueVariation = 40;
-        const scrollHueShift = 80;
-        const saturation = 40;
-        const lightness = 35;
+
+        // Define os Hues para Amarelo e Ciano
+        const primaryHue = 55;       // Amarelo Edgerunners (aprox. 60)
+        const secondaryHue = 185;      // Ciano Elétrico (aprox. 180)
+        const hueVariation = 15;       // Variação leve em torno das cores base
+        const scrollHueShift = 60;       // Quanto a cor muda com o scroll
+        const saturation = 95;       // Saturação alta para efeito neon
+        const lightness = 55;        // Brilho para as cores se destacarem
 
         let time = 0;
         let nodes = [];
@@ -107,8 +112,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.size = Math.random() * 2.5 + 1;
                 this.speedX = (Math.random() - 0.5) * nodeSpeed;
                 this.speedY = (Math.random() - 0.5) * nodeSpeed;
-                this.baseHue = baseHue + (Math.random() - 0.5) * hueVariation;
                 this.opacity = 0;
+
+                /* ALTERADO: Lógica para escolher entre amarelo e ciano */
+                // Decide aleatoriamente se a partícula será da cor primária (amarelo) ou secundária (ciano)
+                if (Math.random() > 0.5) {
+                    this.baseHue = primaryHue + (Math.random() - 0.5) * hueVariation;
+                } else {
+                    this.baseHue = secondaryHue + (Math.random() - 0.5) * hueVariation;
+                }
             }
 
             update(targetOpacity) {
@@ -123,6 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (this.opacity < 0.01) return;
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                // A cor é definida aqui usando as novas constantes de saturação e brilho
                 ctx.fillStyle = `hsla(${this.baseHue + scrollHueOffset}, ${saturation}%, ${lightness}%, ${this.opacity * 0.9})`;
                 ctx.fill();
             }
@@ -142,6 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             ctx.beginPath();
                             ctx.moveTo(nodesToConnect[i].x, nodesToConnect[i].y);
                             ctx.lineTo(nodesToConnect[j].x, nodesToConnect[j].y);
+                            // A cor da linha também usa as novas constantes
                             ctx.strokeStyle = `hsla(${avgHue + scrollHueOffset}, ${saturation}%, ${lightness}%, ${finalOpacity * 0.8})`;
                             ctx.lineWidth = 0.7;
                             ctx.stroke();
@@ -189,7 +203,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         return { init };
     })();
-
     // =============================================
     // MÓDULO DE NAVEGAÇÃO E SCROLL
     // =============================================

@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })();
 
     // =============================================
-    // MÓDULO DO FUNDO ANIMADO
+    // MÓDULO DO FUNDO ANIMADO (VERSÃO COM GRADIENTE ESCURO E SUTIL)
     // =============================================
     const particleModule = (() => {
         const canvas = document.getElementById('particle-canvas');
@@ -56,127 +56,112 @@ document.addEventListener('DOMContentLoaded', () => {
         const ctx = canvas.getContext('2d');
         let animationFrameId;
 
-        const nodeSpeed = 0.75;
-        const baseMaxDistance = 100;
-        const pulseAmountDistance = 50;
-        const pulseSpeedDistance = 0.002;
-        const maxNumNodes = 300;
-        const minNumNodes = 250;
-        const pulseSpeedDensity = 0.005;
-        const baseHue = 260;
-        const hueVariation = 40;
-        const scrollHueShift = 80;
-        const saturation = 40;
-        const lightness = 35;
+        const numLines = 100;
+        const lineSpeed = 1;
 
-        let time = 0;
-        let nodes = [];
-        let scrollHueOffset = 0;
+        let lines = [];
+        let gradient;
 
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
+            createGradient();
+            initializeLines();
         }
 
-        function handleScroll() {
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            if (scrollHeight > 0) {
-                const scrollPercent = scrollTop / scrollHeight;
-                scrollHueOffset = scrollPercent * scrollHueShift;
-            }
+        // REFACTOR: Gradiente com opacidade reduzida para um fundo mais escuro
+        function createGradient() {
+            gradient = ctx.createLinearGradient(canvas.width, 0, 0, 0);
+            gradient.addColorStop(0, 'rgba(0, 255, 150, 0.06)');   // Verde (direita) - Opacidade de 15% para 6%
+            gradient.addColorStop(0.5, 'rgba(0, 180, 220, 0.04)');  // Ciano (meio) - Opacidade de 10% para 4%
+            gradient.addColorStop(1, 'rgba(0, 120, 255, 0.08)');   // Azul (esquerda) - Opacidade de 20% para 8%
         }
 
-        class Node {
+        class EnergyLine {
             constructor() {
                 this.x = Math.random() * canvas.width;
                 this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 2.5 + 1;
-                this.speedX = (Math.random() - 0.5) * nodeSpeed;
-                this.speedY = (Math.random() - 0.5) * nodeSpeed;
-                this.baseHue = baseHue + (Math.random() - 0.5) * hueVariation;
-                this.opacity = 0;
+                this.z = Math.random() * 20 + 1; // Profundidade
+                this.angle = Math.random() * Math.PI * 2;
             }
 
-            update(targetOpacity) {
-                this.opacity += (targetOpacity - this.opacity) * 0.05;
-                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
-                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
-                this.x += this.speedX;
-                this.y += this.speedY;
+            update() {
+                const speed = (lineSpeed * (22 - this.z)) / 15;
+                this.x += Math.cos(this.angle) * speed;
+                this.y += Math.sin(this.angle) * speed;
+
+                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+                    const side = Math.floor(Math.random() * 4);
+                    switch (side) {
+                        case 0: this.x = 0; this.y = Math.random() * canvas.height; break;
+                        case 1: this.x = canvas.width; this.y = Math.random() * canvas.height; break;
+                        case 2: this.y = 0; this.x = Math.random() * canvas.width; break;
+                        case 3: this.y = canvas.height; this.x = Math.random() * canvas.width; break;
+                    }
+                }
             }
 
             draw() {
-                if (this.opacity < 0.01) return;
+                const length = (22 - this.z) * 5 + 10;
+                // REFACTOR: Opacidade das linhas reduzida para serem mais sutis
+                const opacity = (22 - this.z) / 80; // Divisor aumentado de 40 para 80
+                const hue = 160 + (this.x / canvas.width) * 80;
+                const lineWidth = (22 - this.z) / 10;
+
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fillStyle = `hsla(${this.baseHue + scrollHueOffset}, ${saturation}%, ${lightness}%, ${this.opacity * 0.9})`;
-                ctx.fill();
+                ctx.moveTo(this.x, this.y);
+                ctx.lineTo(this.x - Math.cos(this.angle) * length, this.y - Math.sin(this.angle) * length);
+
+                ctx.strokeStyle = `hsla(${hue}, 90%, 60%, ${opacity})`;
+                ctx.lineWidth = lineWidth;
+
+                ctx.shadowColor = `hsla(${hue}, 90%, 60%, ${opacity * 0.5})`;
+                ctx.shadowBlur = 10;
+
+                ctx.stroke();
             }
         }
 
-        function drawConnections(currentMaxDistance, nodesToConnect) {
-            for (let i = 0; i < nodesToConnect.length; i++) {
-                if (nodesToConnect[i].opacity < 0.01) continue;
-                for (let j = i + 1; j < nodesToConnect.length; j++) {
-                    if (nodesToConnect[j].opacity < 0.01) continue;
-                    const distance = Math.hypot(nodesToConnect[i].x - nodesToConnect[j].x, nodesToConnect[i].y - nodesToConnect[j].y);
-                    if (distance < currentMaxDistance) {
-                        const distanceOpacity = 1 - (distance / currentMaxDistance);
-                        const finalOpacity = distanceOpacity * Math.min(nodesToConnect[i].opacity, nodesToConnect[j].opacity);
-                        if (finalOpacity > 0) {
-                            const avgHue = (nodesToConnect[i].baseHue + nodesToConnect[j].baseHue) / 2;
-                            ctx.beginPath();
-                            ctx.moveTo(nodesToConnect[i].x, nodesToConnect[i].y);
-                            ctx.lineTo(nodesToConnect[j].x, nodesToConnect[j].y);
-                            ctx.strokeStyle = `hsla(${avgHue + scrollHueOffset}, ${saturation}%, ${lightness}%, ${finalOpacity * 0.8})`;
-                            ctx.lineWidth = 0.7;
-                            ctx.stroke();
-                        }
-                    }
-                }
+        function initializeLines() {
+            lines = [];
+            for (let i = 0; i < numLines; i++) {
+                lines.push(new EnergyLine());
             }
         }
 
         function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            const distancePulse = Math.sin(time * pulseSpeedDistance) * pulseAmountDistance;
-            const currentMaxDistance = baseMaxDistance + distancePulse;
-            const densityPulse = (Math.sin(time * pulseSpeedDensity) + 1) / 2;
-            const targetVisibleNodeCount = Math.floor(minNumNodes + (maxNumNodes - minNumNodes) * densityPulse);
+            // REFACTOR: Efeito de rastro mais transparente para escurecer o fundo
+            ctx.fillStyle = 'rgba(10, 10, 31, 0.15)'; // Opacidade aumentada de 0.1 para 0.15 para "limpar" mais
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            nodes.forEach((node, index) => {
-                const targetOpacity = index < targetVisibleNodeCount ? 1 : 0;
-                node.update(targetOpacity);
-                node.draw();
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            lines.forEach(line => {
+                line.update();
+                line.draw();
             });
-            drawConnections(currentMaxDistance, nodes);
-            time++;
+
+            ctx.shadowBlur = 0;
+
             animationFrameId = requestAnimationFrame(animate);
         }
 
         function init() {
             resizeCanvas();
-            nodes = [];
-            for (let i = 0; i < maxNumNodes; i++) {
-                nodes.push(new Node());
-            }
-            window.addEventListener('scroll', handleScroll);
             if (animationFrameId) {
                 cancelAnimationFrame(animationFrameId);
             }
-            // Inicia a animação apenas se a aba estiver visível
             if (document.visibilityState === 'visible') {
                 animate();
             }
         }
 
-        // ALTERAÇÃO: Pausa a animação que consome CPU quando o usuário não está vendo a aba.
         document.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'hidden') {
                 cancelAnimationFrame(animationFrameId);
-                animationFrameId = null; // Limpa o ID para garantir
-            } else if (!animationFrameId) { // Retoma apenas se não estiver rodando
+                animationFrameId = null;
+            } else if (!animationFrameId) {
                 animate();
             }
         });
@@ -184,7 +169,6 @@ document.addEventListener('DOMContentLoaded', () => {
         let resizeTimer;
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimer);
-            // Garante que a animação pare antes de reiniciar
             if (animationFrameId) cancelAnimationFrame(animationFrameId);
             resizeTimer = setTimeout(init, 250);
         });

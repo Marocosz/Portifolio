@@ -1,24 +1,34 @@
 /* ============================================= */
-/* FONTES E VARIÁVEIS GLOBAIS                    */
+/* FONTES CUSTOMIZADAS                         */
 /* ============================================= */
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Syne:wght@800&display=swap');
+@font-face {
+    font-family: 'Cyberpunk';
+    /* Dê um nome para a sua fonte */
+    src: url('font/Cyberpunk-Regular.ttf') format('truetype');
+    /* Caminho para o arquivo da fonte */
+    font-weight: normal;
+    font-style: normal;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Syncopate:wght@700&display=swap');
 
 :root {
-    --color-primary: #00f7ff;
-    /* Ciano vibrante */
-    --color-secondary: #f0f;
-    /* Magenta */
-    --color-background: #0d0d1a;
-    /* Azul-escuro profundo */
-    --color-text: #e0e0e0;
+    /* ALTERADO: Paleta de Cores Cyberpunk: Edgerunners */
+    --color-primary: #FDE306;
+    /* Amarelo Edgerunners */
+    --color-secondary: #08D9D6;
+    /* Ciano Elétrico */
+    --color-background: #0A0A1F;
+    /* Azul de Night City */
+    --color-text: #EAEAEA;
     --color-text-dark: #a0a0a0;
     --font-primary: 'Space Grotesk', sans-serif;
-    --font-display: 'Syne', sans-serif;
+    --font-display: 'Cyberpunk', sans-serif;
     --nav-width: 60px;
 }
 
 /* ============================================= */
-/* RESET E ESTILOS GERAIS                        */
+/* RESET E ESTILOS GERAIS                      */
 /* ============================================= */
 * {
     margin: 0;
@@ -71,7 +81,8 @@ body {
 
 .cursor.active {
     transform: translate(-50%, -50%) scale(3);
-    background-color: rgba(255, 0, 255, 0.5);
+    background-color: rgba(8, 217, 214, 0.5);
+    /* ALTERADO */
 }
 
 .cursor-follower.active {
@@ -83,7 +94,6 @@ body {
 /* CURSOR GEOMÉTRICO PARA O TERMINAL (CLI)       */
 /* ============================================= */
 
-/* Animação de piscar, como um cursor de terminal de verdade */
 @keyframes blink {
 
     0%,
@@ -96,22 +106,15 @@ body {
     }
 }
 
-/* Quando o cursor principal estiver dentro do terminal... */
 .cursor.cli-hover {
     width: 3px;
-    /* Largura de um cursor de texto */
     height: 22px;
-    /* Altura para combinar com a fonte */
     background-color: var(--color-primary);
     border-radius: 0;
-    /* Remove as bordas arredondadas, criando um retângulo */
     animation: blink 1.2s infinite;
-    /* Aplica a animação de piscar */
-    /* Garante que ele não aumente de tamanho ao passar sobre um link */
     transform: translate(-50%, -50%) scale(1);
 }
 
-/* Esconde o cursor "seguidor" (o círculo externo) quando estiver no terminal */
 .cursor-follower.cli-hover {
     opacity: 0;
 }
@@ -143,10 +146,7 @@ body {
     transition: color 0.3s ease;
 }
 
-.main-nav li.active {
-    color: var(--color-primary);
-}
-
+.main-nav li.active,
 .main-nav li:hover {
     color: var(--color-primary);
 }
@@ -214,6 +214,29 @@ body {
     white-space: nowrap;
     will-change: transform;
     padding: 0 15% 0 10%;
+}
+
+.hero-title,
+.section-title {
+    font-family: var(--font-display);
+    font-weight: normal;
+    color: var(--color-primary);
+    /* Mantém a cor amarela padrão */
+
+    /* Efeito de brilho VERDE nas bordas inferiores e laterais */
+    text-shadow:
+        1px 1px 2px rgba(0, 255, 0, 0.7),
+        /* Inferior direita (sutil) */
+        -1px 1px 2px rgba(0, 255, 0, 0.7),
+        /* Inferior esquerda (sutil) */
+        2px 2px 5px rgba(0, 255, 0, 0.5),
+        /* Inferior direita (mais visível e suave) */
+        -2px 2px 5px rgba(0, 255, 0, 0.5),
+        /* Inferior esquerda (mais visível e suave) */
+        1px 0 3px rgba(0, 255, 0, 0.4),
+        /* Lado direito (sutil) */
+        -1px 0 3px rgba(0, 255, 0, 0.4);
+    /* Lado esquerdo (sutil) */
 }
 
 /* ============================================= */
@@ -312,7 +335,6 @@ body {
 /* ================================================================ */
 /* SEÇÃO 3: TIMELINE (VERSÃO FINAL COM CONECTOR DUPLO)              */
 /* ================================================================ */
-
 .timeline-container {
     position: relative;
 }
@@ -356,9 +378,7 @@ body {
     background: var(--color-background);
     border: 3px solid var(--color-text-dark);
     border-radius: 50%;
-    transition: transform 0.3s ease,
-        border-color 0.3s ease,
-        background-color 0.3s ease;
+    transition: transform 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
 }
 
 .timeline-year {
@@ -375,8 +395,6 @@ body {
     bottom: auto;
     top: 30px;
 }
-
-/* --- EFEITOS DE INTERAÇÃO DOS ITENS --- */
 
 #timeline .timeline-item:hover .timeline-dot,
 #timeline .timeline-item:hover .timeline-year {
@@ -400,9 +418,6 @@ body {
     background-color: var(--color-secondary);
 }
 
-
-/* --- CAIXA DE DESCRIÇÃO, MOLDURA E CONEXÃO --- */
-
 .timeline-frame-wrapper {
     position: relative;
     margin-top: 100px;
@@ -416,61 +431,38 @@ body {
     border-radius: 8px;
 }
 
-/* A MOLDURA COMPLETA (agora no wrapper) */
-.timeline-frame-wrapper::after {
-    content: '';
-    position: absolute;
-    top: -10px;
-    left: -10px;
-    right: -10px;
-    bottom: -10px;
-    border: 2px solid var(--color-secondary);
-    border-radius: 12px;
-    opacity: 0;
-    transform: scale(0.98);
-    transition: opacity 0.4s 0.1s ease-out, transform 0.4s 0.1s ease-out;
-}
-
-/* O CONECTOR (dividido em duas partes, no wrapper) */
 .timeline-frame-wrapper::before,
 .timeline-frame-wrapper::after {
-    /* Estilos comuns para as duas partes da linha */
     content: '';
     position: absolute;
     left: var(--connector-left, 50%);
     width: 2px;
     background: var(--color-secondary);
+    /* ALTERADO */
     transform: translateX(-50%) scaleY(0);
     transform-origin: top;
     transition: transform 0.4s ease-out;
 }
 
-/* ::before -> Segmento 1 da linha */
 .timeline-frame-wrapper::before {
     top: var(--line1-top);
     height: var(--line1-height);
 }
 
-/* ::after -> Segmento 2 da linha. Reutilizamos o ::after da moldura, mas com estilos diferentes */
 .timeline-frame-wrapper::after {
     top: var(--line2-top);
     height: var(--line2-height);
-    /* Sobrescrevemos os estilos da moldura para a linha */
     border: none;
     border-radius: 0;
     opacity: 1;
-    /* A linha é controlada pelo transform, não opacity */
     transform-origin: top;
 }
 
-
-/* ANIMAÇÃO QUANDO O WRAPPER ESTIVER ATIVO */
 .timeline-frame-wrapper.active::before,
 .timeline-frame-wrapper.active::after {
     transform: translateX(-50%) scaleY(1);
 }
 
-/* A MOLDURA em si */
 .timeline-description-box::after {
     content: '';
     position: absolute;
@@ -479,6 +471,7 @@ body {
     right: -10px;
     bottom: -10px;
     border: 2px solid var(--color-secondary);
+    /* ALTERADO */
     border-radius: 12px;
     opacity: 0;
     transform: scale(0.98);
@@ -490,7 +483,6 @@ body {
     transform: scale(1);
 }
 
-/* Estilos do conteúdo interno (sem alterações) */
 .timeline-content-wrapper {
     opacity: 1;
     transition: opacity 0.4s ease-in-out;
@@ -520,28 +512,45 @@ body {
     margin-bottom: 40px;
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 15px;
+    /* Aumenta o espaçamento */
     justify-content: flex-start;
 }
 
 .filter-btn {
-    background: transparent;
-    border: 1px solid var(--color-text-dark);
-    color: var(--color-text-dark);
-    padding: 10px 20px;
+    /* ESTILO BASE: Translúcido e angular */
+    background: rgba(8, 217, 214, 0.15);
+    /* Fundo ciano bem sutil */
+    color: var(--color-secondary);
+    /* Texto no tom ciano */
+    border: 1px solid rgba(8, 217, 214, 0.4);
+    /* Borda ciano para definir a forma */
+    padding: 10px 22px;
     cursor: pointer;
     transition: all 0.3s ease;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+
+    /* A MÁGICA: Corta as pontas para um visual futurista/holográfico */
+    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
 }
 
 .filter-btn:hover {
+    /* HOVER: O botão "acende" com a cor primária */
+    background: rgba(253, 227, 6, 0.2);
+    /* Fundo amarelo translúcido */
     color: var(--color-primary);
     border-color: var(--color-primary);
 }
 
 .filter-btn.active {
+    /* ATIVO: Preenchimento sólido e brilho */
     background: var(--color-primary);
     color: var(--color-background);
     border-color: var(--color-primary);
+    box-shadow: 0 0 15px rgba(253, 227, 6, 0.5);
+    /* Brilho amarelo */
 }
 
 .project-gallery {
@@ -559,22 +568,17 @@ body {
     transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
     aspect-ratio: 16 / 9;
     background-color: rgba(30, 30, 50, 0.5);
-    /* Fundo sutil para o card */
     display: flex;
     align-items: flex-end;
-    /* Alinha o conteúdo na parte inferior */
     justify-content: center;
 }
 
-/* Box-shadow roxo mais disperso e fraco no hover */
 .project-card:hover {
     transform: translateY(-5px);
-    /* Mantém o levantamento */
-    box-shadow: 0 0 40px 10px rgba(138, 43, 226, 0.3);
-    /* Cor roxa (mesmo tom do retângulo) com desfoque e expansão maiores, opacidade reduzida */
+    /* ALTERADO: Brilho Amarelo */
+    box-shadow: 0 0 50px 12px rgba(253, 227, 6, 0.5);
 }
 
-/* Pseudo-elemento para o efeito de escurecimento da imagem */
 .project-card::before {
     content: '';
     position: absolute;
@@ -583,16 +587,12 @@ body {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0);
-    /* Inicialmente transparente */
     transition: background-color 0.4s ease;
-    /* Transição para o escurecimento */
     z-index: 1;
-    /* Garante que fique acima da imagem, mas abaixo do .project-info */
 }
 
 .project-card:hover::before {
     background-color: rgba(0, 0, 0, 0.5);
-    /* Escurece a imagem ao hover (ajuste a opacidade 0.5 conforme desejar) */
 }
 
 .project-card img {
@@ -601,9 +601,7 @@ body {
     object-fit: cover;
     transition: transform 0.4s ease-out, opacity 0.6s ease;
     opacity: 0;
-    /* Imagem inicialmente invisível */
     z-index: 0;
-    /* Garante que a imagem esteja por baixo do overlay */
 }
 
 .project-card img.loaded {
@@ -615,14 +613,11 @@ body {
     bottom: 0;
     left: 0;
     width: 100%;
-    background: var(--color-primary);
-    /* Cor azul inicial sólida */
+    background: var(--color-secondary);
+    /* ALTERADO: Usa ciano como base */
     padding: 10px 20px;
-    /* Padding para o título */
     color: var(--color-background);
-    /* Cor do texto inicial (branco) */
     transform: translateY(calc(100% - 40px));
-    /* Ajuste este valor (40px) */
     transition: transform 0.4s ease-out, background 0.4s ease, color 0.4s ease;
     display: flex;
     flex-direction: column;
@@ -635,10 +630,9 @@ body {
 
 .project-card:hover .project-info {
     transform: translateY(0);
-    /* Puxa para cima para mostrar todo o conteúdo */
-    background: linear-gradient(to top, #8A2BE2 50%, rgba(138, 43, 226, 0) 100%);
+    /* ALTERADO: Gradiente escuro */
+    background: linear-gradient(to top, #0A0A1F 50%, rgba(10, 10, 31, 0) 100%);
     color: initial;
-    /* Reinicia a herança de cor para que h3 possa definir o seu */
     padding-left: 20px;
 }
 
@@ -646,15 +640,14 @@ body {
     margin: 0 0 10px 0;
     font-size: 1.2rem;
     color: var(--color-background);
-    /* COR INICIAL: Usa a cor de fundo (branco) para o título */
     line-height: 1.2;
     width: 100%;
     transition: color 0.4s ease;
 }
 
 .project-card:hover .project-info h3 {
-    color: #FFFFFF;
-    /* Garante branco puro para o título no hover */
+    color: var(--color-primary);
+    /* ALTERADO: Título em amarelo no hover */
 }
 
 .project-info p {
@@ -717,13 +710,13 @@ body {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.85); /* Fundo mais escuro */
-    backdrop-filter: blur(8px); /* Blur mais intenso para o fundo */
+    background-color: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
     justify-content: center;
     align-items: center;
     opacity: 0;
-    overflow-x: hidden; /* Garante que não haja scroll horizontal no overlay */
-    transition: opacity 0.4s ease; /* Transição mais suave */
+    overflow-x: hidden;
+    transition: opacity 0.4s ease;
 }
 
 .modal.show {
@@ -732,33 +725,31 @@ body {
 }
 
 .modal-content {
-    background: var(--color-background); /* Fundo do modal do tema */
-    padding: 30px; /* Padding ajustado */
-    border-radius: 10px; /* Bordas mais arredondadas */
+    background: var(--color-background);
+    padding: 30px;
+    border-radius: 10px;
     width: 90%;
     max-width: 800px;
-    position: relative; /* Essencial para o posicionamento do close-modal */
-    transform: scale(0.9); /* Inicia menor para um pop-up mais pronunciado */
-    transition: transform 0.4s ease, opacity 0.4s ease; /* Transição suave para escala e opacidade */
-    
-    /* EFEITO DE BRILHO AZUL FORTE */
-    box-shadow: 0 0 15px 4px rgba(141, 159, 178, 0.75), 
-                0 0 40px 12px rgba(129, 180, 234, 0.5); 
-
-    display: flex; /* Usar flexbox para o conteúdo */
-    flex-direction: column; /* Conteúdo em coluna */
-    max-height: 90vh; /* Altura máxima para permitir scroll */
-    overflow-y: auto; /* Permite scroll vertical se o conteúdo for muito longo */
-    overflow-x: hidden; /* Garante que não haja scroll horizontal no conteúdo do modal */
-    border: 5px solid var(--color-primary); /* Borda azul sutil opcional */
-    z-index: 2001; /* Garante que o conteúdo do modal esteja ACIMA do fundo */
+    position: relative;
+    transform: scale(0.9);
+    transition: transform 0.4s ease, opacity 0.4s ease;
+    /* ALTERADO: Efeito de brilho amarelo */
+    box-shadow: 0 0 20px 5px rgba(253, 227, 6, 0.4),
+        0 0 50px 15px rgba(253, 227, 6, 0.2);
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border: 2px solid var(--color-primary);
+    /* ALTERADO: Borda mais fina */
+    z-index: 2001;
 }
 
 .modal.show .modal-content {
     transform: scale(1);
-    opacity: 1; /* Garante que a opacidade seja 1 ao mostrar */
+    opacity: 1;
 }
-
 
 /* Scrollbar estilizada para o modal (Webkit browsers) */
 .modal-content::-webkit-scrollbar {
@@ -766,17 +757,19 @@ body {
 }
 
 .modal-content::-webkit-scrollbar-track {
-    background: rgba(var(--color-background), 0.5); /* Fundo da trilha do scrollbar */
-    border-radius: 10px;
+    background: rgba(10, 10, 31, 0.5);
+    /* ALTERADO */
 }
 
 .modal-content::-webkit-scrollbar-thumb {
-    background: var(--color-secondary); /* Cor do polegar do scrollbar */
+    background: var(--color-primary);
+    /* ALTERADO */
     border-radius: 10px;
 }
 
 .modal-content::-webkit-scrollbar-thumb:hover {
-    background: #8A2BE2; /* Cor roxa no hover do scrollbar */
+    background: #FFF500;
+    /* ALTERADO: Amarelo mais claro no hover */
 }
 
 .close-modal {
@@ -787,7 +780,7 @@ body {
     cursor: pointer;
     color: var(--color-text-dark);
     transition: color 0.3s ease, transform 0.3s ease;
-    z-index: 2010; /* Garante que o botão de fechar esteja no topo */
+    z-index: 2010;
 }
 
 .close-modal:hover {
@@ -797,7 +790,7 @@ body {
 
 #modal-img {
     width: 100%;
-    height: 200px; /* Imagem menor */
+    height: 200px;
     object-fit: cover;
     border-radius: 8px;
     margin-bottom: 25px;
@@ -808,7 +801,7 @@ body {
     margin-bottom: 20px;
     color: var(--color-secondary);
     font-family: var(--font-display);
-    font-size: clamp(0.9rem, 2vw, 1.5rem); /* Título significativamente menor */
+    font-size: clamp(0.9rem, 2vw, 1.5rem);
     text-align: center;
     line-height: 1.2;
 }
@@ -821,7 +814,7 @@ body {
     font-size: 1.5rem;
     color: var(--color-primary);
     margin-bottom: 10px;
-    border-bottom: none; /* SEM A LINHA DE BAIXO */
+    border-bottom: none;
     padding-bottom: 0;
 }
 
@@ -832,49 +825,50 @@ body {
     text-align: justify;
 }
 
-/* MODIFICADO: Container das tecnologias para garantir tamanhos iguais */
 .tech-tags-container {
-    display: grid; 
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
-    gap: 15px; 
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
 }
 
-/* MODIFICADO: Item de tecnologia com altura mínima e flex-grow */
 .tech-item {
-    background-color: rgba(var(--color-primary), 0.1);
+    background-color: rgba(var(--color-primary-rgb), 0.1);
+    /* Necessita definir --color-primary-rgb se usar rgba() */
+    background-color: rgba(253, 227, 6, 0.1);
+    /* ALTERADO: Fundo do item de tecnologia */
     border: 1px solid var(--color-primary);
     border-radius: 5px;
-    padding: 10px 15px; 
+    padding: 10px 15px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     white-space: normal;
     min-height: 100px;
-    flex-grow: 1; 
+    flex-grow: 1;
     width: 100%;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); 
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .tech-name {
     color: var(--color-primary);
-    font-size: 1rem; 
+    font-size: 1rem;
     font-weight: bold;
     margin-bottom: 5px;
 }
 
 .tech-explanation {
     color: var(--color-text-dark);
-    font-size: 0.85rem; 
+    font-size: 0.85rem;
     line-height: 1.5;
     text-align: left;
-    flex-grow: 1; 
-    max-width: 100%; 
+    flex-grow: 1;
+    max-width: 100%;
 }
 
 .modal-footer {
     margin-top: 30px;
     padding-top: 20px;
-    border-top: none; /* SEM A BORDA DO FOOTER */
+    border-top: none;
     text-align: center;
 }
 
@@ -890,73 +884,21 @@ body {
 }
 
 .modal-footer .project-link:hover {
-    background-color: #8A2BE2;
-    color: #FFFFFF;
+    background-color: var(--color-secondary);
+    /* ALTERADO */
+    color: var(--color-background);
     transform: translateY(-3px);
 }
 
-/* ------------------------------------- */
-/* RESPONSIVIDADE DO MODAL               */
-/* ------------------------------------- */
-@media (max-width: 768px) {
-    .modal-content {
-        padding: 20px;
-        width: 95%;
-    }
-
-    #modal-project-title {
-        font-size: clamp(1rem, 4vw, 1.6rem); 
-        margin-bottom: 15px;
-    }
-
-    #modal-img {
-        height: 150px;
-        margin-bottom: 20px;
-    }
-
-    .modal-section h4 {
-        font-size: 1.3rem;
-        margin-bottom: 8px;
-    }
-
-    #modal-purpose-description {
-        font-size: 1rem;
-    }
-
-    .tech-tags-container {
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); 
-        gap: 10px;
-    }
-
-    .tech-item {
-        padding: 8px 10px;
-        min-height: 90px;
-    }
-    .tech-name {
-        font-size: 0.9rem;
-    }
-    .tech-explanation {
-        font-size: 0.8rem;
-    }
-
-    .close-modal {
-        top: 10px;
-        right: 15px;
-        font-size: 28px;
-    }
-}
-
 /* ============================================= */
-/* SEÇÃO 5: FERRAMENTAS (NOVO DESIGN)            */
+/* SEÇÃO 5: FERRAMENTAS (DIAGONAL MAIOR)         */
 /* ============================================= */
 .tools-container {
     display: grid;
     grid-template-columns: 1fr;
-    /* Começa com uma coluna para mobile */
     gap: 50px;
 }
 
-/* Em telas maiores, divide em duas colunas */
 @media (min-width: 992px) {
     .tools-container {
         grid-template-columns: 1.5fr 1fr;
@@ -970,16 +912,18 @@ body {
     align-content: start;
 }
 
+/* CARDS DAS FERRAMENTAS COM DIAGONAL MAIOR */
 .tool-card {
     aspect-ratio: 1 / 1;
     display: flex;
     justify-content: center;
     align-items: center;
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 10px;
     cursor: pointer;
-    border: 1px solid transparent;
     transition: all 0.3s ease-out;
+    background: rgba(8, 217, 214, 0.15);
+    border: 1px solid rgba(8, 217, 214, 0.4);
+    /* AUMENTANDO O VALOR PARA UMA DIAGONAL MAIOR */
+    clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
 }
 
 .tool-card img {
@@ -987,12 +931,12 @@ body {
     height: 50%;
     object-fit: contain;
     filter: grayscale(1);
-    opacity: 0.6;
+    opacity: 0.75;
     transition: all 0.3s ease-out;
 }
 
 .tool-card:hover {
-    background: rgba(255, 255, 255, 0.07);
+    background: rgba(253, 227, 6, 0.2);
     border-color: var(--color-primary);
 }
 
@@ -1004,20 +948,34 @@ body {
 }
 
 .tool-card.active {
-    background: rgba(0, 247, 255, 0.1);
+    background: rgba(253, 227, 6, 0.1);
     border-color: var(--color-primary);
-    box-shadow: 0 0 20px rgba(0, 247, 255, 0.3);
+    box-shadow: 0 0 20px rgba(253, 227, 6, 0.4);
 }
 
+/* PAINEL DE DESCRIÇÃO COM DIAGONAL MAIOR */
 .tool-description-panel {
-    background: rgba(255, 255, 255, 0.03);
+    /* Efeito de vidro amarelado fraco */
+    background: rgba(253, 227, 6, 0.05);
+    backdrop-filter: blur(10px);
     padding: 30px;
-    border-radius: 10px;
-    border-left: 3px solid var(--color-primary);
+    border-radius: 4px;
+
+    /* "LED" verde na direita e embaixo */
+    border: 3px solid transparent;
+    border-right-color: #39FF14;
+    border-bottom-color: #39FF14;
+
+    /* Sombra interna (inset) que emana das bordas verdes */
+    box-shadow: inset -5px -5px 15px -5px rgba(57, 255, 20, 0.5);
+
+    /* AUMENTANDO O VALOR PARA UMA DIAGONAL MAIOR */
+    clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+
     display: flex;
     flex-direction: column;
     justify-content: center;
-    transition: opacity 0.2s ease-out;
+    transition: all 0.3s ease-out;
 }
 
 .tool-description-panel.fading {
@@ -1029,6 +987,8 @@ body {
     font-size: 2rem;
     color: var(--color-primary);
     margin-bottom: 15px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
 }
 
 #tool-desc-display {
@@ -1053,7 +1013,8 @@ body {
     background: rgba(20, 20, 20, 0.9);
     border: 1px solid #444;
     border-radius: 10px;
-    box-shadow: 0 0 30px rgba(0, 247, 255, 0.2);
+    box-shadow: 0 0 35px var(--color-secondary);
+    /* ALTERADO */
     display: flex;
     flex-direction: column;
 }
@@ -1106,8 +1067,6 @@ body {
     line-height: 1.6;
 }
 
-/* --- NOVOS ESTILOS PARA O CONTEÚDO DO TERMINAL --- */
-
 .terminal-line {
     white-space: pre-wrap;
     word-break: break-all;
@@ -1115,7 +1074,7 @@ body {
 
 .prompt-user {
     color: var(--color-primary);
-    /* Ciano para o prompt */
+    /* Já usa a variável correta */
     margin-right: 8px;
 }
 
@@ -1143,7 +1102,7 @@ body {
 .contact-list i {
     font-size: 1.2rem;
     color: var(--color-secondary);
-    /* Magenta para os ícones */
+    /* Já usa a variável correta */
     margin-right: 15px;
 }
 
@@ -1151,7 +1110,6 @@ body {
     font-weight: bold;
     color: #fff;
     width: 90px;
-    /* Alinha os links verticalmente */
     flex-shrink: 0;
 }
 
@@ -1168,10 +1126,9 @@ body {
 }
 
 /* ============================================= */
-/* GARANTE QUE O CURSOR CUSTOMIZADO PREVALEÇA    */
+/* CURSOR E RESPONSIVIDADE (SEM ALTERAÇÕES)      */
 /* ============================================= */
 
-/* Esconde o cursor padrão do navegador em todos os elementos interativos */
 a,
 button,
 [data-section],
@@ -1182,9 +1139,6 @@ button,
     cursor: none;
 }
 
-/* ============================================= */
-/* RESPONSIVIDADE                                */
-/* ============================================= */
 @media (max-width: 1024px) {
     .content-section {
         padding: 80px 10%;
@@ -1206,5 +1160,53 @@ button,
 
     .timeline-container {
         width: 95%;
+    }
+
+    .modal-content {
+        padding: 20px;
+        width: 95%;
+    }
+
+    #modal-project-title {
+        font-size: clamp(1rem, 4vw, 1.6rem);
+        margin-bottom: 15px;
+    }
+
+    #modal-img {
+        height: 150px;
+        margin-bottom: 20px;
+    }
+
+    .modal-section h4 {
+        font-size: 1.3rem;
+        margin-bottom: 8px;
+    }
+
+    #modal-purpose-description {
+        font-size: 1rem;
+    }
+
+    .tech-tags-container {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 10px;
+    }
+
+    .tech-item {
+        padding: 8px 10px;
+        min-height: 90px;
+    }
+
+    .tech-name {
+        font-size: 0.9rem;
+    }
+
+    .tech-explanation {
+        font-size: 0.8rem;
+    }
+
+    .close-modal {
+        top: 10px;
+        right: 15px;
+        font-size: 28px;
     }
 }
