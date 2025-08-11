@@ -62,6 +62,34 @@ document.addEventListener('DOMContentLoaded', () => {
         let lines = [];
         let gradient;
 
+        // Função para obter as cores do tema ativas no CSS para o canvas
+        function getThemeCanvasColors() {
+            const style = getComputedStyle(document.body);
+
+            // Funções auxiliares para converter strings de RGB para números
+            const getRgbValue = (prop) => {
+                const rgbString = style.getPropertyValue(prop).trim();
+                // Remove o "rgb(" ou "rgba(" e ")", depois divide por vírgulas
+                const parts = rgbString.replace(/rgba?\(|\)/g, '').split(',');
+                return parts.slice(0, 3).map(Number); // Pega apenas os 3 primeiros (R, G, B)
+            };
+
+            return {
+                gradientColor1: getRgbValue('--canvas-gradient-color1'),
+                gradientOpacity1: parseFloat(style.getPropertyValue('--canvas-gradient-opacity1')),
+                gradientColor2: getRgbValue('--canvas-gradient-color2'),
+                gradientOpacity2: parseFloat(style.getPropertyValue('--canvas-gradient-opacity2')),
+                gradientColor3: getRgbValue('--canvas-gradient-color3'),
+                gradientOpacity3: parseFloat(style.getPropertyValue('--canvas-gradient-opacity3')),
+
+                lineBaseHue: parseFloat(style.getPropertyValue('--canvas-line-base-hue')),
+                lineHueRange: parseFloat(style.getPropertyValue('--canvas-line-hue-range')),
+
+                trailColor: getRgbValue('--canvas-trail-color'),
+                trailOpacity: parseFloat(style.getPropertyValue('--canvas-trail-opacity'))
+            };
+        }
+
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
@@ -71,10 +99,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // REFACTOR: Gradiente com opacidade reduzida para um fundo mais escuro
         function createGradient() {
+            const colors = getThemeCanvasColors();
             gradient = ctx.createLinearGradient(canvas.width, 0, 0, 0);
-            gradient.addColorStop(0, 'rgba(0, 255, 150, 0.06)');   // Verde (direita) - Opacidade de 15% para 6%
-            gradient.addColorStop(0.5, 'rgba(0, 180, 220, 0.04)');  // Ciano (meio) - Opacidade de 10% para 4%
-            gradient.addColorStop(1, 'rgba(0, 120, 255, 0.08)');   // Azul (esquerda) - Opacidade de 20% para 8%
+            gradient.addColorStop(0, `rgba(${colors.gradientColor1.join(',')}, ${colors.gradientOpacity1})`);
+            gradient.addColorStop(0.5, `rgba(${colors.gradientColor2.join(',')}, ${colors.gradientOpacity2})`);
+            gradient.addColorStop(1, `rgba(${colors.gradientColor3.join(',')}, ${colors.gradientOpacity3})`);
         }
 
         class EnergyLine {
@@ -102,10 +131,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             draw() {
+                const colors = getThemeCanvasColors(); // Pega as cores mais recentes ao desenhar
                 const length = (22 - this.z) * 5 + 10;
-                // REFACTOR: Opacidade das linhas reduzida para serem mais sutis
-                const opacity = (22 - this.z) / 80; // Divisor aumentado de 40 para 80
-                const hue = 160 + (this.x / canvas.width) * 80;
+                const opacity = (22 - this.z) / 80;
+                // Usa as variáveis CSS para definir o matiz das linhas
+                const hue = colors.lineBaseHue + (this.x / canvas.width) * colors.lineHueRange;
                 const lineWidth = (22 - this.z) / 10;
 
                 ctx.beginPath();
@@ -130,16 +160,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         function animate() {
+            const colors = getThemeCanvasColors(); // Pega as cores mais recentes para o rastro
+
             // REFACTOR: Efeito de rastro mais transparente para escurecer o fundo
-            ctx.fillStyle = 'rgba(10, 10, 31, 0.15)'; // Opacidade aumentada de 0.1 para 0.15 para "limpar" mais
+            ctx.fillStyle = `rgba(${colors.trailColor.join(',')}, ${colors.trailOpacity})`;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            ctx.fillStyle = gradient;
+            ctx.fillStyle = gradient; // O gradiente é recriado no resizeCanvas
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             lines.forEach(line => {
                 line.update();
-                line.draw();
+                line.draw(); // A cor da linha é lida dentro do draw para maior dinamismo
             });
 
             ctx.shadowBlur = 0;
@@ -155,23 +187,37 @@ document.addEventListener('DOMContentLoaded', () => {
             if (document.visibilityState === 'visible') {
                 animate();
             }
+
+            // Listener para mudanças de tema (ou qualquer mudança na classe do body)
+            const body = document.body;
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.attributeName === 'class') {
+                        // Recria o gradiente e reinicializa as linhas quando o tema muda
+                        createGradient();
+                        initializeLines();
+                    }
+                });
+            });
+            observer.observe(body, { attributes: true });
+
+
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'hidden') {
+                    cancelAnimationFrame(animationFrameId);
+                    animationFrameId = null;
+                } else if (!animationFrameId) {
+                    animate();
+                }
+            });
+
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                if (animationFrameId) cancelAnimationFrame(animationFrameId);
+                resizeTimer = setTimeout(init, 250);
+            });
         }
-
-        document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'hidden') {
-                cancelAnimationFrame(animationFrameId);
-                animationFrameId = null;
-            } else if (!animationFrameId) {
-                animate();
-            }
-        });
-
-        let resizeTimer;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimer);
-            if (animationFrameId) cancelAnimationFrame(animationFrameId);
-            resizeTimer = setTimeout(init, 250);
-        });
 
         return { init };
     })();
@@ -707,6 +753,56 @@ document.addEventListener('DOMContentLoaded', () => {
     })();
 
     // =============================================
+    // MÓDULO DO SELETOR DE TEMA
+    // =============================================
+    const themeSwitcherModule = (() => {
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const body = document.body;
+        const icon = themeToggleBtn ? themeToggleBtn.querySelector('i') : null;
+
+        // Função para aplicar o tema salvo ou o padrão
+        function applyTheme(theme) {
+            if (theme === 'theme-light') {
+                body.classList.add('theme-light');
+                if (icon) icon.className = 'ph-light ph-moon'; // Ícone de lua para tema claro
+            } else {
+                body.classList.remove('theme-light');
+                if (icon) icon.className = 'ph-light ph-sun'; // Ícone de sol para tema escuro
+            }
+            localStorage.setItem('portfolioTheme', theme); // Salva a preferência do usuário
+        }
+
+        // Função para alternar o tema
+        function toggleTheme() {
+            if (body.classList.contains('theme-light')) {
+                applyTheme('theme-dark');
+            } else {
+                applyTheme('theme-light');
+            }
+        }
+
+        function init() {
+            if (!themeToggleBtn) {
+                console.warn('Módulo de Seletor de Tema: Botão de alternância de tema não encontrado.');
+                return;
+            }
+
+            // Carrega o tema salvo do localStorage ao iniciar
+            const savedTheme = localStorage.getItem('portfolioTheme');
+            if (savedTheme) {
+                applyTheme(savedTheme);
+            } else {
+                // Aplica o tema padrão se não houver um salvo (ex: dark por padrão)
+                applyTheme('theme-dark');
+            }
+
+            themeToggleBtn.addEventListener('click', toggleTheme);
+        }
+
+        return { init };
+    })();
+
+    // =============================================
     // INICIALIZAÇÃO DOS MÓDULOS
     // =============================================
     cursorModule.init();
@@ -719,4 +815,5 @@ document.addEventListener('DOMContentLoaded', () => {
     timelineModule.init();
     toolsModule.init();
     projectsModule.init();
+    themeSwitcherModule.init();
 });

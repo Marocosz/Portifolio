@@ -1,29 +1,28 @@
 /* ============================================= */
-/* FONTES CUSTOMIZADAS                         */
+/* IMPORTAÇÃO E DECLARAÇÃO DE FONTES             */
 /* ============================================= */
 @font-face {
     font-family: 'Cyberpunk';
-    /* Dê um nome para a sua fonte */
     src: url('font/Cyberpunk-Regular.ttf') format('truetype');
-    /* Caminho para o arquivo da fonte */
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'capitolcity';
-    /* Dê um nome ÚNICO para a sua nova fonte */
-    src: url('font/Square\ Game.otf') format('opentype');
-    /* Substitua pelo nome real do arquivo */
+    src: url('font/Square Game.otf') format('opentype');
     font-weight: normal;
-    /* Ajuste se a fonte tiver pesos específicos (light, bold, etc.) */
     font-style: normal;
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Syncopate:wght@700&display=swap');
 
+
+/* ============================================= */
+/* VARIÁVEIS CSS (PALETA DE CORES E FONTES)      */
+/* ============================================= */
 :root {
-    /* ALTERADO: Paleta de Cores Cyberpunk: Edgerunners */
+    /* Paleta de Cores Cyberpunk: Edgerunners */
     --color-primary: #FDE306;
     /* Amarelo Edgerunners */
     --color-secondary: #08D9D6;
@@ -32,14 +31,64 @@
     /* Azul de Night City */
     --color-text: #EAEAEA;
     --color-text-dark: #a0a0a0;
+
+    /* Novas variáveis para o Canvas de Partículas */
+    --canvas-gradient-color1: 0, 255, 150;
+    /* Verde, para rgba() */
+    --canvas-gradient-opacity1: 0.06;
+    --canvas-gradient-color2: 0, 180, 220;
+    /* Ciano, para rgba() */
+    --canvas-gradient-opacity2: 0.04;
+    --canvas-gradient-color3: 0, 120, 255;
+    /* Azul, para rgba() */
+    --canvas-gradient-opacity3: 0.08;
+    --canvas-line-base-hue: 160;
+    /* Matiz base para as linhas (início da faixa de cor) */
+    --canvas-line-hue-range: 80;
+    /* Amplitude do matiz das linhas */
+    --canvas-trail-color: 10, 10, 31;
+    /* Cor para o rastro, geralmente igual ao background, mas para rgba() */
+    --canvas-trail-opacity: 0.15;
+
+    /* Fontes */
     --font-primary: 'Space Grotesk', sans-serif;
     --font-display: 'Cyberpunk', sans-serif;
     --font-secondary: 'capitolcity', sans-serif;
+
+    /* Dimensões */
     --nav-width: 60px;
 }
 
+/* NOVO TEMA: Exemplo de tema "Light" */
+body.theme-light {
+/* Paleta de Cores Cyberpunk Alternativa - Tema Escuro */
+--color-primary: #FF00A8; /* Magenta neon */
+--color-secondary: #00FF9F; /* Verde ácido */
+--color-background: #0B0014; /* Preto profundo com leve tom púrpura */
+--color-text: #F4EFFF; /* Branco com tom lilás suave */
+--color-text-dark: #A187B3; /* Roxo acinzentado para textos secundários */
+
+/* Novas variáveis para o Canvas de Partículas (Tema Escuro) */
+--canvas-gradient-color1: 255, 0, 168; /* Magenta */
+--canvas-gradient-opacity1: 0.06;
+
+--canvas-gradient-color2: 0, 255, 159; /* Verde ácido */
+--canvas-gradient-opacity2: 0.05;
+
+--canvas-gradient-color3: 0, 120, 255; /* Azul elétrico */
+--canvas-gradient-opacity3: 0.07;
+
+--canvas-line-base-hue: 300; /* Base puxando para o roxo */
+--canvas-line-hue-range: 120; /* Pegando magenta, azul e verde */
+
+--canvas-trail-color: 11, 0, 20; /* Fundo muito escuro com roxo */
+--canvas-trail-opacity: 0.18;
+
+}
+
+
 /* ============================================= */
-/* RESET E ESTILOS GERAIS                      */
+/* RESET E ESTILOS GERAIS                        */
 /* ============================================= */
 * {
     margin: 0;
@@ -57,6 +106,75 @@ body {
     font-family: var(--font-primary);
     overflow-x: hidden;
     cursor: none;
+}
+
+/* Garante que elementos clicáveis também usem o cursor customizado */
+a,
+button,
+[data-section],
+.timeline-item,
+.project-card,
+.terminal-buttons span,
+.filter-btn {
+    cursor: none;
+}
+
+/* ============================================= */
+/* SELETOR DE TEMA                               */
+/* ============================================= */
+.theme-switcher {
+    position: fixed;
+    top: 60px;
+    /* Ajuste para posicionar acima da navegação */
+    right: 20px;
+    background: rgba(20, 20, 30, 0.5);
+    backdrop-filter: blur(10px);
+    border-radius: 30px;
+    /* Canto arredondado igual à navegação */
+    z-index: 1000;
+    padding: 10px 5px;
+    /* Padding similar à navegação */
+}
+
+.theme-switcher button {
+    background: transparent;
+    border: none;
+    padding: 15px;
+    /* Padding similar aos itens de navegação */
+    cursor: pointer;
+    color: var(--color-text-dark);
+    transition: color 0.3s ease, transform 0.3s ease;
+    font-size: 24px;
+    /* Tamanho do ícone */
+    display: flex;
+    /* Para centralizar o ícone */
+    justify-content: center;
+    align-items: center;
+}
+
+.theme-switcher button:hover {
+    color: var(--color-primary);
+    /* Acende com a cor primária no hover */
+    transform: rotate(20deg);
+    /* Um pequeno giro no hover para indicar interatividade */
+}
+
+
+/* ============================================= */
+/* NAVEGAÇÃO NÃO-LINEAR                          */
+/* ============================================= */
+/* Ajuste o top da navegação para não colidir com o seletor de tema */
+.main-nav {
+    position: fixed;
+    top: 90px;
+    /* Ajuste este valor (20px + padding do switcher + altura do botão) */
+    right: 20px;
+    transform: translateY(-50%);
+    /* Remova se o top: 90px já posicionar corretamente */
+    background: rgba(20, 20, 30, 0.5);
+    backdrop-filter: blur(10px);
+    border-radius: 30px;
+    z-index: 1000;
 }
 
 /* ============================================= */
@@ -101,10 +219,10 @@ body {
     border-color: var(--color-secondary);
 }
 
+
 /* ============================================= */
 /* CURSOR GEOMÉTRICO PARA O TERMINAL (CLI)       */
 /* ============================================= */
-
 @keyframes blink {
 
     0%,
@@ -129,6 +247,7 @@ body {
 .cursor-follower.cli-hover {
     opacity: 0;
 }
+
 
 /* ============================================= */
 /* NAVEGAÇÃO NÃO-LINEAR                          */
@@ -187,8 +306,9 @@ body {
     visibility: visible;
 }
 
+
 /* ============================================= */
-/* ESTRUTURA DAS SEÇÕES                          */
+/* ESTRUTURA DAS SEÇÕES GERAIS                   */
 /* ============================================= */
 .fullscreen-section {
     height: 100vh;
@@ -204,9 +324,7 @@ body {
     position: relative;
 }
 
-/* ============================================= */
-/* ANIMAÇÃO DE REVELAÇÃO (APENAS PARA TÍTULOS)   */
-/* ============================================= */
+/* Wrapper para títulos com efeito de revelação */
 .title-wrapper {
     overflow: hidden;
     padding-bottom: 60px;
@@ -227,13 +345,13 @@ body {
     padding: 0 15% 0 10%;
 }
 
+/* Estilo para títulos principais */
 .hero-title,
 .section-title {
     font-family: var(--font-display);
     font-weight: normal;
     color: var(--color-primary);
     /* Mantém a cor amarela padrão */
-
     /* Efeito de brilho VERDE nas bordas inferiores e laterais */
     text-shadow:
         1px 1px 2px rgba(0, 255, 0, 0.7),
@@ -249,6 +367,7 @@ body {
         -1px 0 3px rgba(0, 255, 0, 0.4);
     /* Lado esquerdo (sutil) */
 }
+
 
 /* ============================================= */
 /* SEÇÃO 1: HERO                                 */
@@ -306,8 +425,9 @@ body {
     display: block;
 }
 
+
 /* ============================================= */
-/* SEÇÃO 2: ABOUT (HOVER REVISADO)              */
+/* SEÇÃO 2: ABOUT                                */
 /* ============================================= */
 #about .about-container {
     display: grid;
@@ -328,6 +448,8 @@ body {
     border: 3px solid transparent;
     border-right-color: #39FF14;
     border-bottom-color: #39FF14;
+    /* Seu filtro drop-shadow inicial, mantido */
+    filter: drop-shadow(3px 3px 8px rgba(57, 255, 20, 0.6));
     opacity: 0;
     transform: translateX(50px);
     transition: transform 0.8s ease-out, opacity 0.6s ease, filter 0.4s ease, border-color 0.4s ease;
@@ -336,6 +458,31 @@ body {
 #about .about-image-wrapper.is-visible {
     opacity: 1;
     transform: translateX(0);
+}
+
+/* Nova classe para quando a imagem chegar ao destino */
+#about .about-image-wrapper.image-arrived {
+    border-right-color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+    filter: drop-shadow(0 0 15px var(--color-primary));
+    /* Brilho inicial */
+    animation: pulse-border 2s infinite alternate;
+    /* Animação de pulso */
+}
+
+/* Definição da animação de pulso para o brilho da borda */
+@keyframes pulse-border {
+    0% {
+        filter: drop-shadow(0 0 10px var(--color-primary));
+    }
+
+    50% {
+        filter: drop-shadow(0 0 25px var(--color-primary));
+    }
+
+    100% {
+        filter: drop-shadow(0 0 10px var(--color-primary));
+    }
 }
 
 #about .about-image-wrapper img {
@@ -349,18 +496,21 @@ body {
 /* HOVER REVISADO COM MAIS ÊNFASE NO BRILHO E COR */
 #about .about-image-wrapper:hover {
     border-right-color: var(--color-primary);
-    /* Garante a cor amarela */
     border-bottom-color: var(--color-primary);
-    /* Garante a cor amarela */
-    /* Brilho EXTERNO amarelo seguindo a forma (sem deslocamento para ser em volta) */
     filter: drop-shadow(0 0 10px var(--color-primary));
+    /* Brilho EXTERNO amarelo */
     transform: translateY(-10px);
     /* Leve movimento para cima */
 }
 
+#about .about-image-wrapper:hover img {
+    transform: scale(1.05);
+    /* Zoom na imagem */
+}
+
 
 /* ================================================================ */
-/* SEÇÃO 3: TIMELINE (NOVO DESIGN "DATA SHARD")                   */
+/* SEÇÃO 3: TIMELINE (NOVO DESIGN "DATA SHARD")                     */
 /* ================================================================ */
 .timeline-datascape {
     position: relative;
@@ -392,7 +542,6 @@ body {
     transform: translateX(-50%) rotate(45deg);
     /* Formato de losango */
     transition: all 0.5s ease;
-
 }
 
 .spine-marker.is-active {
@@ -417,16 +566,14 @@ body {
     opacity: 0;
     transform: translateY(50px);
     transition: all 0.5s ease-out;
-    /* "LED" verde na direita e embaixo */
     border: 3px solid transparent;
+    /* "LED" verde na direita e embaixo */
     border-right-color: #39FF14;
     border-bottom-color: #39FF14;
-
-    /* Sombra interna (inset) que emana das bordas verdes */
     box-shadow: inset -5px -5px 15px -5px rgba(57, 255, 20, 0.5);
-
-    /* AUMENTANDO O VALOR PARA UMA DIAGONAL MAIOR */
+    /* Sombra interna (inset) */
     clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+    /* AUMENTANDO O VALOR PARA UMA DIAGONAL MAIOR */
 }
 
 .shard:nth-child(odd) {
@@ -494,6 +641,7 @@ body {
     color: var(--color-text-dark);
 }
 
+
 /* ============================================= */
 /* SEÇÃO 4: PROJECTS                             */
 /* ============================================= */
@@ -536,7 +684,6 @@ body {
     grid-template-columns: repeat(auto-fill, minmax(300px, 400px));
     gap: 25px;
     justify-content: start;
-    /* transition: grid-template-columns 0.5s ease-out; */
 }
 
 .project-card {
@@ -566,10 +713,22 @@ body {
     visibility: hidden;
 }
 
-/* Remova completamente os seletores ::before e ::after do .project-card para o brilho */
-/* Mantenha o ::after para o overlay de escurecimento se você ainda o estiver usando. */
+/* APLICAR O BRILHO NEON DIRETAMENTE NO HOVER DO CARD */
+.project-card:hover {
+    transform: translateY(-5px);
+    /* Movimento do cartão */
+    box-shadow:
+        0 0 5px var(--color-primary),
+        /* Sombra interna, mais nítida */
+        0 0 15px var(--color-primary),
+        /* Sombra média */
+        0 0 30px var(--color-primary),
+        /* Sombra externa, mais difusa */
+        0 0 50px var(--color-primary);
+    /* Sombra bem difusa para o glow */
+}
 
-/* Se você ainda quiser o overlay de escurecimento, mantenha este bloco: */
+/* O overlay de escurecimento continua como ::after */
 .project-card::after {
     content: '';
     position: absolute;
@@ -584,26 +743,9 @@ body {
     clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
 }
 
-.project-card:hover {
-    transform: translateY(-5px);
-    /* Movimento do cartão */
-    /* Agora, o brilho neon é aplicado DIRETAMENTE no project-card */
-    box-shadow:
-        0 0 5px var(--color-primary),
-        /* Sombra interna, mais nítida */
-        0 0 15px var(--color-primary),
-        /* Sombra média */
-        0 0 30px var(--color-primary),
-        /* Sombra externa, mais difusa */
-        0 0 50px var(--color-primary);
-    /* Sombra bem difusa para o glow */
-}
-
-/* Se você ainda quiser o overlay de escurecimento no hover, mantenha este bloco: */
 .project-card:hover::after {
     background-color: rgba(0, 0, 0, 0.5);
 }
-
 
 .project-card img {
     width: 100%;
@@ -708,198 +850,9 @@ body {
     line-height: 1.2;
 }
 
-/* ============================================= */
-/* CONFIGURAÇÕES MODAL                           */
-/* ============================================= */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 2000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(8px);
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    overflow-x: hidden;
-    transition: opacity 0.4s ease;
-}
-
-.modal.show {
-    display: flex;
-    opacity: 1;
-}
-
-.modal-content {
-    background: var(--color-background);
-    padding: 30px;
-    width: 90%;
-    max-width: 800px;
-    position: relative;
-    transform: scale(0.9);
-    transition: transform 0.4s ease, opacity 0.4s ease;
-    /* ALTERADO: Efeito de brilho amarelo */
-    box-shadow: 0 0 20px 5px rgba(253, 227, 6, 0.4),
-        0 0 50px 15px rgba(253, 227, 6, 0.2);
-    display: flex;
-    flex-direction: column;
-    max-height: 90vh;
-    overflow-y: auto;
-    overflow-x: hidden;
-    border: 2px solid var(--color-primary);
-    /* ALTERADO: Borda mais fina */
-    z-index: 2001;
-}
-
-.modal.show .modal-content {
-    transform: scale(1);
-    opacity: 1;
-}
-
-/* Scrollbar estilizada para o modal (Webkit browsers) */
-.modal-content::-webkit-scrollbar {
-    width: 8px;
-}
-
-.modal-content::-webkit-scrollbar-track {
-    background: rgba(10, 10, 31, 0.5);
-    /* ALTERADO */
-}
-
-.modal-content::-webkit-scrollbar-thumb {
-    background: var(--color-secondary);
-    /* ALTERADO */
-    border-radius: 10px;
-}
-
-.modal-content::-webkit-scrollbar-thumb:hover {
-    background: #FFF500;
-    /* ALTERADO: Amarelo mais claro no hover */
-}
-
-.close-modal {
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    font-size: 32px;
-    cursor: pointer;
-    color: var(--color-text-dark);
-    transition: color 0.3s ease, transform 0.3s ease;
-    z-index: 2010;
-}
-
-.close-modal:hover {
-    color: var(--color-primary);
-    transform: rotate(90deg);
-}
-
-#modal-img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 25px;
-    filter: brightness(0.95);
-}
-
-#modal-project-title {
-    margin-bottom: 20px;
-    color: var(--color-secondary);
-    font-family: var(--font-secondary);
-    font-size: clamp(0.9rem, 2vw, 1.5rem);
-    text-align: center;
-    line-height: 1.2;
-}
-
-.modal-section {
-    margin-bottom: 25px;
-}
-
-.modal-section h4 {
-    font-size: 1.5rem;
-    color: var(--color-primary);
-    margin-bottom: 10px;
-    border-bottom: none;
-    padding-bottom: 0;
-}
-
-#modal-purpose-description {
-    font-size: 1.1rem;
-    line-height: 1.6;
-    color: var(--color-text);
-    text-align: justify;
-}
-
-.tech-tags-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 15px;
-}
-
-.tech-item {
-    background-color: rgba(var(--color-primary-rgb), 0.1);
-    /* Necessita definir --color-primary-rgb se usar rgba() */
-    background-color: rgba(253, 227, 6, 0.1);
-    /* ALTERADO: Fundo do item de tecnologia */
-    border: 1px solid var(--color-primary);
-    border-radius: 5px;
-    padding: 10px 15px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    white-space: normal;
-    min-height: 100px;
-    flex-grow: 1;
-    width: 100%;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-.tech-name {
-    color: var(--color-primary);
-    font-size: 1rem;
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-.tech-explanation {
-    color: var(--color-text-dark);
-    font-size: 0.85rem;
-    line-height: 1.5;
-    text-align: left;
-    flex-grow: 1;
-    max-width: 100%;
-}
-
-.modal-footer {
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: none;
-    text-align: center;
-}
-
-.modal-footer .project-link {
-    background-color: var(--color-primary);
-    color: var(--color-background);
-    padding: 10px 25px;
-    border-radius: 5px;
-    font-size: 1rem;
-    font-weight: bold;
-    text-decoration: none;
-    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
-}
-
-.modal-footer .project-link:hover {
-    background-color: var(--color-secondary);
-    /* ALTERADO */
-    color: var(--color-background);
-    transform: translateY(-3px);
-}
 
 /* ============================================= */
-/* SEÇÃO 5: FERRAMENTAS (DIAGONAL MAIOR)         */
+/* SEÇÃO 5: FERRAMENTAS                          */
 /* ============================================= */
 .tools-container {
     display: grid;
@@ -930,8 +883,8 @@ body {
     transition: all 0.3s ease-out;
     background: rgba(8, 217, 214, 0.15);
     border: 1px solid rgba(8, 217, 214, 0.4);
-    /* AUMENTANDO O VALOR PARA UMA DIAGONAL MAIOR */
     clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+    /* AUMENTANDO O VALOR PARA UMA DIAGONAL MAIOR */
 }
 
 .tool-card img {
@@ -963,23 +916,19 @@ body {
 
 /* PAINEL DE DESCRIÇÃO COM DIAGONAL MAIOR */
 .tool-description-panel {
-    /* Efeito de vidro amarelado fraco */
     background: rgba(253, 227, 6, 0.05);
+    /* Efeito de vidro amarelado fraco */
     backdrop-filter: blur(10px);
     padding: 30px;
     border-radius: 4px;
-
-    /* "LED" verde na direita e embaixo */
     border: 3px solid transparent;
+    /* "LED" verde na direita e embaixo */
     border-right-color: #39FF14;
     border-bottom-color: #39FF14;
-
-    /* Sombra interna (inset) que emana das bordas verdes */
     box-shadow: inset -5px -5px 15px -5px rgba(57, 255, 20, 0.5);
-
-    /* AUMENTANDO O VALOR PARA UMA DIAGONAL MAIOR */
+    /* Sombra interna (inset) */
     clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
-
+    /* AUMENTANDO O VALOR PARA UMA DIAGONAL MAIOR */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -1003,6 +952,7 @@ body {
     line-height: 1.8;
     color: var(--color-text-dark);
 }
+
 
 /* ============================================= */
 /* SEÇÃO 6: CONTACT (TERMINAL)                   */
@@ -1133,20 +1083,194 @@ body {
     border-bottom-color: var(--color-primary);
 }
 
-/* ============================================= */
-/* CURSOR E RESPONSIVIDADE (SEM ALTERAÇÕES)      */
-/* ============================================= */
 
-a,
-button,
-[data-section],
-.timeline-item,
-.project-card,
-.terminal-buttons span,
-.filter-btn {
-    cursor: none;
+/* ============================================= */
+/* CONFIGURAÇÕES MODAL                           */
+/* ============================================= */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    overflow-x: hidden;
+    transition: opacity 0.4s ease;
 }
 
+.modal.show {
+    display: flex;
+    opacity: 1;
+}
+
+.modal-content {
+    background: var(--color-background);
+    padding: 30px;
+    width: 90%;
+    max-width: 800px;
+    position: relative;
+    transform: scale(0.9);
+    transition: transform 0.4s ease, opacity 0.4s ease;
+    box-shadow: 0 0 20px 5px rgba(253, 227, 6, 0.4),
+        /* Efeito de brilho amarelo */
+        0 0 50px 15px rgba(253, 227, 6, 0.2);
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border: 2px solid var(--color-primary);
+    /* Borda mais fina */
+    z-index: 2001;
+}
+
+.modal.show .modal-content {
+    transform: scale(1);
+    opacity: 1;
+}
+
+/* Scrollbar estilizada para o modal (Webkit browsers) */
+.modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: rgba(10, 10, 31, 0.5);
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: var(--color-secondary);
+    border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: #FFF500;
+}
+
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 32px;
+    cursor: pointer;
+    color: var(--color-text-dark);
+    transition: color 0.3s ease, transform 0.3s ease;
+    z-index: 2010;
+}
+
+.close-modal:hover {
+    color: var(--color-primary);
+    transform: rotate(90deg);
+}
+
+#modal-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    filter: brightness(0.95);
+}
+
+#modal-project-title {
+    margin-bottom: 20px;
+    color: var(--color-secondary);
+    font-family: var(--font-secondary);
+    font-size: clamp(0.9rem, 2vw, 1.5rem);
+    text-align: center;
+    line-height: 1.2;
+}
+
+.modal-section {
+    margin-bottom: 25px;
+}
+
+.modal-section h4 {
+    font-size: 1.5rem;
+    color: var(--color-primary);
+    margin-bottom: 10px;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+#modal-purpose-description {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--color-text);
+    text-align: justify;
+}
+
+.tech-tags-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+}
+
+.tech-item {
+    background-color: rgba(253, 227, 6, 0.1);
+    border: 1px solid var(--color-primary);
+    border-radius: 5px;
+    padding: 10px 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    white-space: normal;
+    min-height: 100px;
+    flex-grow: 1;
+    width: 100%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.tech-name {
+    color: var(--color-primary);
+    font-size: 1rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.tech-explanation {
+    color: var(--color-text-dark);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    text-align: left;
+    flex-grow: 1;
+    max-width: 100%;
+}
+
+.modal-footer {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: none;
+    text-align: center;
+}
+
+.modal-footer .project-link {
+    background-color: var(--color-primary);
+    color: var(--color-background);
+    padding: 10px 25px;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+.modal-footer .project-link:hover {
+    background-color: var(--color-secondary);
+    color: var(--color-background);
+    transform: translateY(-3px);
+}
+
+
+/* ============================================= */
+/* RESPONSIVIDADE                                */
+/* ============================================= */
 @media (max-width: 1024px) {
     .content-section {
         padding: 80px 10%;
@@ -1167,6 +1291,7 @@ button,
     }
 
     .timeline-container {
+        /* Este seletor não existe no seu HTML atual, pode ser removido se não for usado */
         width: 95%;
     }
 
