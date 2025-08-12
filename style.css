@@ -22,32 +22,32 @@
 /* VARIÁVEIS CSS (PALETA DE CORES E FONTES)      */
 /* ============================================= */
 :root {
-    /* Paleta de Cores Cyberpunk: Edgerunners */
-    --color-primary: #FDE306;
-    /* Amarelo Edgerunners */
-    --color-secondary: #08D9D6;
-    /* Ciano Elétrico */
-    --color-background: #0A0A1F;
-    /* Azul de Night City */
-    --color-text: #EAEAEA;
-    --color-text-dark: #a0a0a0;
+    /* * As variáveis de cor estão em formato R,G,B para serem usadas
+     * tanto em 'rgb(var(--color-name))' quanto em 'rgba(var(--color-name), 0.5)'.
+    */
 
-    /* Novas variáveis para o Canvas de Partículas */
+    /* Paleta de Cores Cyberpunk: Edgerunners (Padrão) */
+    --color-primary: 253, 227, 6;
+    /* Amarelo Edgerunners */
+    --color-secondary: 8, 217, 214;
+    /* Ciano Elétrico */
+    --color-background: 10, 10, 31;
+    /* Azul de Night City */
+    --color-text: 234, 234, 234;
+    /* Branco Neve */
+    --color-text-dark: 160, 160, 160;
+    /* Cinza claro */
+
+    /* Variáveis para o Canvas de Partículas */
     --canvas-gradient-color1: 0, 255, 150;
-    /* Verde, para rgba() */
     --canvas-gradient-opacity1: 0.06;
     --canvas-gradient-color2: 0, 180, 220;
-    /* Ciano, para rgba() */
     --canvas-gradient-opacity2: 0.04;
     --canvas-gradient-color3: 0, 120, 255;
-    /* Azul, para rgba() */
     --canvas-gradient-opacity3: 0.08;
     --canvas-line-base-hue: 160;
-    /* Matiz base para as linhas (início da faixa de cor) */
     --canvas-line-hue-range: 80;
-    /* Amplitude do matiz das linhas */
     --canvas-trail-color: 10, 10, 31;
-    /* Cor para o rastro, geralmente igual ao background, mas para rgba() */
     --canvas-trail-opacity: 0.15;
 
     /* Fontes */
@@ -59,31 +59,31 @@
     --nav-width: 60px;
 }
 
-/* NOVO TEMA: Exemplo de tema "Light" */
+/* TEMA ALTERNATIVO */
 body.theme-light {
-/* Paleta de Cores Cyberpunk Alternativa - Tema Escuro */
---color-primary: #FF00A8; /* Magenta neon */
---color-secondary: #00FF9F; /* Verde ácido */
---color-background: #0B0014; /* Preto profundo com leve tom púrpura */
---color-text: #F4EFFF; /* Branco com tom lilás suave */
---color-text-dark: #A187B3; /* Roxo acinzentado para textos secundários */
+    /* Paleta de Cores Cyberpunk Alternativa */
+    --color-primary: 255, 0, 168;
+    /* Magenta Neon */
+    --color-secondary: 0, 255, 159;
+    /* Verde Ácido */
+    --color-background: 11, 0, 20;
+    /* Preto com tom púrpura */
+    --color-text: 244, 239, 255;
+    /* Branco com tom lilás */
+    --color-text-dark: 161, 135, 179;
+    /* Roxo acinzentado */
 
-/* Novas variáveis para o Canvas de Partículas (Tema Escuro) */
---canvas-gradient-color1: 255, 0, 168; /* Magenta */
---canvas-gradient-opacity1: 0.06;
-
---canvas-gradient-color2: 0, 255, 159; /* Verde ácido */
---canvas-gradient-opacity2: 0.05;
-
---canvas-gradient-color3: 0, 120, 255; /* Azul elétrico */
---canvas-gradient-opacity3: 0.07;
-
---canvas-line-base-hue: 300; /* Base puxando para o roxo */
---canvas-line-hue-range: 120; /* Pegando magenta, azul e verde */
-
---canvas-trail-color: 11, 0, 20; /* Fundo muito escuro com roxo */
---canvas-trail-opacity: 0.18;
-
+    /* Variáveis do Canvas para o Tema Alternativo */
+    --canvas-gradient-color1: 255, 0, 168;
+    --canvas-gradient-opacity1: 0.06;
+    --canvas-gradient-color2: 0, 255, 159;
+    --canvas-gradient-opacity2: 0.05;
+    --canvas-gradient-color3: 0, 120, 255;
+    --canvas-gradient-opacity3: 0.07;
+    --canvas-line-base-hue: 300;
+    --canvas-line-hue-range: 120;
+    --canvas-trail-color: 11, 0, 20;
+    --canvas-trail-opacity: 0.18;
 }
 
 
@@ -101,14 +101,13 @@ html {
 }
 
 body {
-    background-color: var(--color-background);
-    color: var(--color-text);
+    background-color: rgb(var(--color-background));
+    color: rgb(var(--color-text));
     font-family: var(--font-primary);
     overflow-x: hidden;
     cursor: none;
 }
 
-/* Garante que elementos clicáveis também usem o cursor customizado */
 a,
 button,
 [data-section],
@@ -119,63 +118,39 @@ button,
     cursor: none;
 }
 
+
 /* ============================================= */
 /* SELETOR DE TEMA                               */
 /* ============================================= */
 .theme-switcher {
     position: fixed;
-    top: 60px;
-    /* Ajuste para posicionar acima da navegação */
+    top: 20px;
     right: 20px;
-    background: rgba(20, 20, 30, 0.5);
+    background: rgba(var(--color-background), 0.7);
     backdrop-filter: blur(10px);
     border-radius: 30px;
-    /* Canto arredondado igual à navegação */
-    z-index: 1000;
-    padding: 10px 5px;
-    /* Padding similar à navegação */
+    z-index: 1001;
+    padding: 5px;
 }
 
 .theme-switcher button {
     background: transparent;
     border: none;
     padding: 15px;
-    /* Padding similar aos itens de navegação */
     cursor: pointer;
-    color: var(--color-text-dark);
+    color: rgb(var(--color-text-dark));
     transition: color 0.3s ease, transform 0.3s ease;
     font-size: 24px;
-    /* Tamanho do ícone */
     display: flex;
-    /* Para centralizar o ícone */
     justify-content: center;
     align-items: center;
 }
 
 .theme-switcher button:hover {
-    color: var(--color-primary);
-    /* Acende com a cor primária no hover */
+    color: rgb(var(--color-primary));
     transform: rotate(20deg);
-    /* Um pequeno giro no hover para indicar interatividade */
 }
 
-
-/* ============================================= */
-/* NAVEGAÇÃO NÃO-LINEAR                          */
-/* ============================================= */
-/* Ajuste o top da navegação para não colidir com o seletor de tema */
-.main-nav {
-    position: fixed;
-    top: 90px;
-    /* Ajuste este valor (20px + padding do switcher + altura do botão) */
-    right: 20px;
-    transform: translateY(-50%);
-    /* Remova se o top: 90px já posicionar corretamente */
-    background: rgba(20, 20, 30, 0.5);
-    backdrop-filter: blur(10px);
-    border-radius: 30px;
-    z-index: 1000;
-}
 
 /* ============================================= */
 /* CURSOR CUSTOMIZADO (PONTO E SEGUIDOR)         */
@@ -193,16 +168,16 @@ button,
 .cursor {
     width: 8px;
     height: 8px;
-    background-color: var(--color-primary);
+    background-color: rgb(var(--color-primary));
     border-radius: 50%;
     transform: translate(-50%, -50%);
-    transition: transform 0.2s ease-in-out, background-color 0.2s ease;
+    transition: transform 0.2s ease-in-out, background-color 0.2s ease, width 0.3s, height 0.3s;
 }
 
 .cursor-follower {
     width: 40px;
     height: 40px;
-    border: 1px solid var(--color-primary);
+    border: 1px solid rgb(var(--color-primary));
     border-radius: 50%;
     transform: translate(-50%, -50%) scale(1);
     transition: all 0.3s ease-out;
@@ -210,13 +185,12 @@ button,
 
 .cursor.active {
     transform: translate(-50%, -50%) scale(3);
-    background-color: rgba(8, 217, 214, 0.5);
-    /* ALTERADO */
+    background-color: rgba(var(--color-secondary), 0.5);
 }
 
 .cursor-follower.active {
     transform: translate(-50%, -50%) scale(1.5);
-    border-color: var(--color-secondary);
+    border-color: rgb(var(--color-secondary));
 }
 
 
@@ -238,7 +212,7 @@ button,
 .cursor.cli-hover {
     width: 3px;
     height: 22px;
-    background-color: var(--color-primary);
+    background-color: rgb(var(--color-primary));
     border-radius: 0;
     animation: blink 1.2s infinite;
     transform: translate(-50%, -50%) scale(1);
@@ -257,7 +231,7 @@ button,
     top: 50%;
     right: 20px;
     transform: translateY(-50%);
-    background: rgba(20, 20, 30, 0.5);
+    background: rgba(var(--color-background), 0.7);
     backdrop-filter: blur(10px);
     border-radius: 30px;
     z-index: 1000;
@@ -272,13 +246,13 @@ button,
     position: relative;
     padding: 15px;
     cursor: pointer;
-    color: var(--color-text-dark);
+    color: rgb(var(--color-text-dark));
     transition: color 0.3s ease;
 }
 
 .main-nav li.active,
 .main-nav li:hover {
-    color: var(--color-primary);
+    color: rgb(var(--color-primary));
 }
 
 .main-nav i {
@@ -290,8 +264,8 @@ button,
     top: 50%;
     right: 120%;
     transform: translateY(-50%);
-    background-color: var(--color-primary);
-    color: var(--color-background);
+    background-color: rgb(var(--color-primary));
+    color: rgb(var(--color-background));
     padding: 5px 15px;
     border-radius: 5px;
     white-space: nowrap;
@@ -311,7 +285,7 @@ button,
 /* ESTRUTURA DAS SEÇÕES GERAIS                   */
 /* ============================================= */
 .fullscreen-section {
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -324,7 +298,6 @@ button,
     position: relative;
 }
 
-/* Wrapper para títulos com efeito de revelação */
 .title-wrapper {
     overflow: hidden;
     padding-bottom: 60px;
@@ -334,38 +307,27 @@ button,
     transform: translateX(-50%);
 }
 
-.section-title {
-    font-family: var(--font-display);
-    font-size: clamp(2.2rem, 8vw, 5rem);
-    color: var(--color-primary);
-    text-transform: uppercase;
-    word-break: break-word;
-    white-space: nowrap;
-    will-change: transform;
-    padding: 0 15% 0 10%;
-}
-
-/* Estilo para títulos principais */
+/* Estilo para títulos com brilho */
 .hero-title,
 .section-title {
     font-family: var(--font-display);
     font-weight: normal;
-    color: var(--color-primary);
-    /* Mantém a cor amarela padrão */
-    /* Efeito de brilho VERDE nas bordas inferiores e laterais */
+    color: rgb(var(--color-primary));
+    text-transform: uppercase;
+    word-break: break-word;
+    white-space: nowrap;
+    will-change: transform;
+    /* Efeito de brilho CIANO (cor secundária) */
     text-shadow:
-        1px 1px 2px rgba(0, 255, 0, 0.7),
-        /* Inferior direita (sutil) */
-        -1px 1px 2px rgba(0, 255, 0, 0.7),
-        /* Inferior esquerda (sutil) */
-        2px 2px 5px rgba(0, 255, 0, 0.5),
-        /* Inferior direita (mais visível e suave) */
-        -2px 2px 5px rgba(0, 255, 0, 0.5),
-        /* Inferior esquerda (mais visível e suave) */
-        1px 0 3px rgba(0, 255, 0, 0.4),
-        /* Lado direito (sutil) */
-        -1px 0 3px rgba(0, 255, 0, 0.4);
-    /* Lado esquerdo (sutil) */
+        1px 1px 2px rgba(var(--color-secondary), 0.7),
+        -1px 1px 2px rgba(var(--color-secondary), 0.7),
+        2px 2px 5px rgba(var(--color-secondary), 0.5),
+        -2px 2px 5px rgba(var(--color-secondary), 0.5);
+}
+
+.section-title {
+    font-size: clamp(2.2rem, 8vw, 5rem);
+    padding: 0 15% 0 10%;
 }
 
 
@@ -387,17 +349,12 @@ button,
     justify-content: center;
     width: 90%;
     max-width: 1200px;
-}
-
-.hero-text {
     text-align: center;
 }
 
 #hero .hero-title {
-    font-family: var(--font-display);
     font-size: clamp(2.5rem, 8vw, 6rem);
-    color: #fff;
-    text-transform: uppercase;
+    color: rgb(var(--color-text));
     line-height: 1.1;
     margin: 0 0 15px 0;
     padding: 0;
@@ -409,7 +366,7 @@ button,
 
 #hero .hero-subtitle {
     font-size: 1.3rem;
-    color: var(--color-text-dark);
+    color: rgb(var(--color-text-dark));
     letter-spacing: 3px;
 }
 
@@ -418,7 +375,7 @@ button,
     bottom: 30px;
     left: 50%;
     transform: translateX(-50%);
-    color: var(--color-text-dark);
+    color: rgb(var(--color-text-dark));
 }
 
 .scroll-down-indicator i {
@@ -446,10 +403,9 @@ button,
     position: relative;
     clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
     border: 3px solid transparent;
-    border-right-color: #39FF14;
-    border-bottom-color: #39FF14;
-    /* Seu filtro drop-shadow inicial, mantido */
-    filter: drop-shadow(3px 3px 8px rgba(57, 255, 20, 0.6));
+    border-right-color: rgb(var(--color-secondary));
+    border-bottom-color: rgb(var(--color-secondary));
+    filter: drop-shadow(3px 3px 8px rgba(var(--color-secondary), 0.6));
     opacity: 0;
     transform: translateX(50px);
     transition: transform 0.8s ease-out, opacity 0.6s ease, filter 0.4s ease, border-color 0.4s ease;
@@ -460,28 +416,20 @@ button,
     transform: translateX(0);
 }
 
-/* Nova classe para quando a imagem chegar ao destino */
 #about .about-image-wrapper.image-arrived {
-    border-right-color: var(--color-primary);
-    border-bottom-color: var(--color-primary);
-    filter: drop-shadow(0 0 15px var(--color-primary));
-    /* Brilho inicial */
+    border-right-color: rgb(var(--color-primary));
+    border-bottom-color: rgb(var(--color-primary));
+    filter: drop-shadow(0 0 15px rgb(var(--color-primary)));
     animation: pulse-border 2s infinite alternate;
-    /* Animação de pulso */
 }
 
-/* Definição da animação de pulso para o brilho da borda */
 @keyframes pulse-border {
-    0% {
-        filter: drop-shadow(0 0 10px var(--color-primary));
+    from {
+        filter: drop-shadow(0 0 10px rgb(var(--color-primary)));
     }
 
-    50% {
-        filter: drop-shadow(0 0 25px var(--color-primary));
-    }
-
-    100% {
-        filter: drop-shadow(0 0 10px var(--color-primary));
+    to {
+        filter: drop-shadow(0 0 25px rgb(var(--color-primary)));
     }
 }
 
@@ -493,24 +441,18 @@ button,
     transition: transform 0.4s ease-out;
 }
 
-/* HOVER REVISADO COM MAIS ÊNFASE NO BRILHO E COR */
 #about .about-image-wrapper:hover {
-    border-right-color: var(--color-primary);
-    border-bottom-color: var(--color-primary);
-    filter: drop-shadow(0 0 10px var(--color-primary));
-    /* Brilho EXTERNO amarelo */
+    filter: drop-shadow(0 0 20px rgb(var(--color-primary)));
     transform: translateY(-10px);
-    /* Leve movimento para cima */
 }
 
 #about .about-image-wrapper:hover img {
     transform: scale(1.05);
-    /* Zoom na imagem */
 }
 
 
 /* ================================================================ */
-/* SEÇÃO 3: TIMELINE (NOVO DESIGN "DATA SHARD")                     */
+/* SEÇÃO 3: TIMELINE (DATA SHARD)                                   */
 /* ================================================================ */
 .timeline-datascape {
     position: relative;
@@ -526,9 +468,8 @@ button,
     transform: translateX(-50%);
     width: 6px;
     height: 100%;
-    background: var(--color-secondary);
-    box-shadow: 0 0 15px var(--color-secondary);
-    /* Ciano sutil */
+    background: rgb(var(--color-secondary));
+    box-shadow: 0 0 15px rgb(var(--color-secondary));
     z-index: 1;
 }
 
@@ -537,17 +478,16 @@ button,
     left: 50%;
     width: 20px;
     height: 20px;
-    background: var(--color-background);
-    border: 2px solid rgba(8, 217, 214, 0.5);
+    background: rgb(var(--color-background));
+    border: 2px solid rgba(var(--color-secondary), 0.5);
     transform: translateX(-50%) rotate(45deg);
-    /* Formato de losango */
     transition: all 0.5s ease;
 }
 
 .spine-marker.is-active {
-    background: var(--color-primary);
-    border-color: var(--color-primary);
-    box-shadow: 0 0 15px var(--color-primary);
+    background: rgb(var(--color-primary));
+    border-color: rgb(var(--color-primary));
+    box-shadow: 0 0 15px rgb(var(--color-primary));
     transform: translateX(-50%) rotate(45deg) scale(1.2);
 }
 
@@ -559,7 +499,7 @@ button,
 .shard {
     position: relative;
     width: calc(50% - 40px);
-    background: rgba(15, 15, 25, 0.7);
+    background: rgba(var(--color-background), 0.7);
     backdrop-filter: blur(5px);
     padding: 20px 25px;
     margin-bottom: 50px;
@@ -567,13 +507,10 @@ button,
     transform: translateY(50px);
     transition: all 0.5s ease-out;
     border: 3px solid transparent;
-    /* "LED" verde na direita e embaixo */
-    border-right-color: #39FF14;
-    border-bottom-color: #39FF14;
-    box-shadow: inset -5px -5px 15px -5px rgba(57, 255, 20, 0.5);
-    /* Sombra interna (inset) */
+    border-right-color: rgb(var(--color-secondary));
+    border-bottom-color: rgb(var(--color-secondary));
+    box-shadow: inset -5px -5px 15px -5px rgba(var(--color-secondary), 0.5);
     clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
-    /* AUMENTANDO O VALOR PARA UMA DIAGONAL MAIOR */
 }
 
 .shard:nth-child(odd) {
@@ -591,15 +528,14 @@ button,
     transform: translateY(0);
 }
 
-/* A LINHA DE CONEXÃO ANIMADA */
 .shard::before {
     content: '';
     position: absolute;
     top: 25px;
     height: 2px;
     width: 38px;
-    background: var(--color-primary);
-    box-shadow: 0 0 10px var(--color-primary);
+    background: rgb(var(--color-primary));
+    box-shadow: 0 0 10px rgb(var(--color-primary));
     transform: scaleX(0);
     transition: transform 0.5s ease-out 0.3s;
 }
@@ -620,30 +556,29 @@ button,
 
 .shard h4 {
     font-family: var(--font-secondary);
-    color: var(--color-primary);
+    color: rgb(var(--color-primary));
     font-size: 1.5rem;
     margin-bottom: 10px;
 }
 
-/* Ano do evento */
 .shard h4::before {
     content: attr(data-year);
     display: block;
     font-family: var(--font-primary);
     font-size: 0.9rem;
-    color: var(--color-secondary);
+    color: rgb(var(--color-secondary));
     margin-bottom: 5px;
 }
 
 .shard p {
     font-size: 1rem;
     line-height: 1.6;
-    color: var(--color-text-dark);
+    color: rgb(var(--color-text-dark));
 }
 
 
 /* ============================================= */
-/* SEÇÃO 4: PROJECTS                             */
+/* SEÇÃO 4: PROJECTS (EFEITO HOLOGRAMA NEON)     */
 /* ============================================= */
 .project-filters {
     margin-bottom: 40px;
@@ -654,11 +589,10 @@ button,
 }
 
 .filter-btn {
-    background: rgba(8, 217, 214, 0.15);
-    color: var(--color-secondary);
-    border: 1px solid rgba(8, 217, 214, 0.4);
+    background: rgba(var(--color-secondary), 0.15);
+    color: rgb(var(--color-secondary));
+    border: 1px solid rgba(var(--color-secondary), 0.4);
     padding: 10px 22px;
-    cursor: pointer;
     transition: all 0.3s ease;
     font-weight: bold;
     text-transform: uppercase;
@@ -667,68 +601,98 @@ button,
 }
 
 .filter-btn:hover {
-    background: rgba(253, 227, 6, 0.2);
-    color: var(--color-primary);
-    border-color: var(--color-primary);
+    background: rgba(var(--color-primary), 0.2);
+    color: rgb(var(--color-primary));
+    border-color: rgb(var(--color-primary));
 }
 
 .filter-btn.active {
-    background: var(--color-primary);
-    color: var(--color-background);
-    border-color: var(--color-primary);
-    box-shadow: 0 0 15px rgba(253, 227, 6, 0.5);
+    background: rgb(var(--color-primary));
+    color: rgb(var(--color-background));
+    border-color: rgb(var(--color-primary));
+    box-shadow: 0 0 15px rgba(var(--color-primary), 0.5);
 }
 
 .project-gallery {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 400px));
-    gap: 25px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 320px));
+    gap: 35px;
+    /* Aumentado para dar espaço ao brilho neon */
     justify-content: start;
+}
+
+/* Animações de brilho e movimento */
+@keyframes neon-pulse {
+    from {
+        box-shadow: 0 0 3px rgba(var(--color-secondary), 0.6), 0 0 8px rgba(var(--color-secondary), 0.4), inset 0 0 2px rgba(var(--color-secondary), 0.5);
+    }
+
+    to {
+        box-shadow: 0 0 6px rgba(var(--color-secondary), 0.8), 0 0 15px rgba(var(--color-secondary), 0.6), inset 0 0 4px rgba(var(--color-secondary), 0.5);
+    }
+}
+
+@keyframes pan-hologram {
+    from {
+        background-position: 0% 50%;
+    }
+
+    to {
+        background-position: 100% 50%;
+    }
 }
 
 .project-card {
     position: relative;
     cursor: pointer;
-    /* Inclua box-shadow na transição para que o brilho apareça suavemente */
-    transition: transform 0.3s ease, opacity 0.5s ease, visibility 0.5s ease, box-shadow 0.3s ease;
-    aspect-ratio: 16 / 9;
-    background-color: rgba(30, 30, 50, 0.5);
+    transition: transform 0.4s ease, opacity 0.5s ease;
+    aspect-ratio: 16 / 8;
+    /* Deixando o card mais baixo */
+    background-color: rgb(var(--color-background));
     display: flex;
     align-items: flex-end;
     justify-content: center;
-
-    /* Forma angular do cartão */
     clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
     z-index: 1;
-    /* Garante que o card está na frente */
-
-    /* O brilho inicial é invisível */
-    box-shadow: 0 0 0px 0px rgba(253, 227, 6, 0.0);
+    overflow: hidden;
+    border: 1px solid rgba(var(--color-secondary), 0.3);
+    /* Borda sutil para definir a forma */
+    /* Efeito neon pulsante */
+    animation: neon-pulse 2.5s infinite alternate ease-in-out;
 }
 
-/* NOVA CLASSE PARA ESCONDER PROJETOS COM TRANSIÇÃO */
 .project-card.hidden-project {
     opacity: 0;
     pointer-events: none;
     visibility: hidden;
 }
 
-/* APLICAR O BRILHO NEON DIRETAMENTE NO HOVER DO CARD */
-.project-card:hover {
-    transform: translateY(-5px);
-    /* Movimento do cartão */
-    box-shadow:
-        0 0 5px var(--color-primary),
-        /* Sombra interna, mais nítida */
-        0 0 15px var(--color-primary),
-        /* Sombra média */
-        0 0 30px var(--color-primary),
-        /* Sombra externa, mais difusa */
-        0 0 50px var(--color-primary);
-    /* Sombra bem difusa para o glow */
+/* Efeito holográfico multicolorido */
+.project-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Gradiente mais complexo com as cores do tema */
+    background: linear-gradient(110deg,
+            transparent 20%,
+            rgba(var(--color-secondary), 0.25) 45%,
+            rgba(var(--color-primary), 0.15) 55%,
+            transparent 80%);
+    background-size: 250% 100%;
+    /* Gradiente maior para o efeito de "scan" */
+    z-index: 0;
+    opacity: 0.8;
+    animation: pan-hologram 5s infinite alternate ease-in-out;
 }
 
-/* O overlay de escurecimento continua como ::after */
+.project-card:hover {
+    transform: translateY(-8px) scale(1.02);
+}
+
+/* Overlay de escurecimento (mantido) */
 .project-card::after {
     content: '';
     position: absolute;
@@ -739,26 +703,16 @@ button,
     background-color: rgba(0, 0, 0, 0);
     transition: background-color 0.4s ease;
     z-index: 1;
-    /* Acima da imagem, mas abaixo do project-info */
-    clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
-}
-
-.project-card:hover::after {
-    background-color: rgba(0, 0, 0, 0.5);
-}
-
-.project-card img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.4s ease-out, opacity 0.6s ease;
-    opacity: 0;
-    z-index: 0;
     clip-path: inherit;
 }
 
-.project-card img.loaded {
-    opacity: 1;
+.project-card:hover::after {
+    background-color: rgba(var(--color-background), 0.6);
+}
+
+/* Esconde a imagem */
+.project-card img {
+    display: none;
 }
 
 .project-info {
@@ -766,10 +720,12 @@ button,
     bottom: 0;
     left: 0;
     width: 100%;
-    background: var(--color-secondary);
-    padding: 10px 20px;
-    color: var(--color-background);
-    transform: translateY(calc(100% - 40px));
+    background: rgb(var(--color-secondary));
+    padding: 8px 20px;
+    /* Padding ajustado para a nova altura */
+    color: rgb(var(--color-background));
+    transform: translateY(calc(100% - 30px));
+    /* Altura da faixa visível ajustada */
     transition: transform 0.4s ease-out, background 0.4s ease, color 0.4s ease;
     display: flex;
     flex-direction: column;
@@ -783,22 +739,29 @@ button,
 
 .project-card:hover .project-info {
     transform: translateY(0);
-    background: linear-gradient(to top, #0A0A1F 50%, rgba(10, 10, 31, 0) 100%);
+    background: linear-gradient(to top, rgb(var(--color-background)) 60%, rgba(var(--color-background), 0) 100%);
     color: initial;
     padding-left: 20px;
 }
 
 .project-info h3 {
     margin: 0 0 10px 0;
-    font-size: 1.2rem;
-    color: var(--color-background);
+    font-size: 1.1rem;
+    /* Tamanho ajustado */
+    color: rgb(var(--color-background));
     line-height: 1.2;
     width: 100%;
-    transition: color 0.4s ease;
+    /* Efeito neon "desligado" */
+    text-shadow: 0 0 2px rgba(var(--color-background), 0.7);
+    transition: color 0.4s ease, text-shadow 0.4s ease;
 }
 
+/* Efeito neon "ligado" no hover */
 .project-card:hover .project-info h3 {
-    color: var(--color-primary);
+    color: rgb(var(--color-primary));
+    text-shadow: 0 0 5px rgba(var(--color-primary), 0.9),
+        0 0 10px rgba(var(--color-primary), 0.7),
+        0 0 15px rgba(var(--color-primary), 0.5);
 }
 
 .project-info p {
@@ -813,7 +776,7 @@ button,
     width: 100%;
     opacity: 0;
     transform: translateY(10px);
-    transition: opacity 0.4s ease, transform 0.4s ease;
+    transition: opacity 0.4s ease 0.1s, transform 0.4s ease 0.1s;
 }
 
 .project-card:hover .project-actions {
@@ -825,26 +788,29 @@ button,
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 15px;
+    padding: 6px 12px;
+    /* Tamanho ajustado */
     border-radius: 5px;
-    background-color: rgba(255, 255, 255, 0.1);
-    color: var(--color-text);
+    font-size: 0.9rem;
+    /* Tamanho ajustado */
+    background-color: rgba(var(--color-text), 0.1);
+    color: rgb(var(--color-text));
     text-decoration: none;
     font-weight: bold;
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .project-link:hover {
-    background-color: var(--color-primary);
-    color: var(--color-background);
+    background-color: rgb(var(--color-primary));
+    color: rgb(var(--color-background));
 }
 
 .project-link i {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
 }
 
 .project-more-info {
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(var(--color-text), 0.6);
     font-size: 0.85rem;
     margin-left: 5px;
     line-height: 1.2;
@@ -856,12 +822,15 @@ button,
 /* ============================================= */
 .tools-container {
     display: grid;
+    /* Por padrão, o layout é de uma coluna para dispositivos móveis */
     grid-template-columns: 1fr;
     gap: 50px;
 }
 
+/* Ativa o layout de duas colunas em telas maiores (desktops) */
 @media (min-width: 992px) {
     .tools-container {
+        /* A grade de ícones (1.5fr) ocupará mais espaço que o painel de descrição (1fr) */
         grid-template-columns: 1.5fr 1fr;
     }
 }
@@ -873,18 +842,15 @@ button,
     align-content: start;
 }
 
-/* CARDS DAS FERRAMENTAS COM DIAGONAL MAIOR */
 .tool-card {
     aspect-ratio: 1 / 1;
     display: flex;
     justify-content: center;
     align-items: center;
-    cursor: pointer;
     transition: all 0.3s ease-out;
-    background: rgba(8, 217, 214, 0.15);
-    border: 1px solid rgba(8, 217, 214, 0.4);
+    background: rgba(var(--color-secondary), 0.15);
+    border: 1px solid rgba(var(--color-secondary), 0.4);
     clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
-    /* AUMENTANDO O VALOR PARA UMA DIAGONAL MAIOR */
 }
 
 .tool-card img {
@@ -897,8 +863,8 @@ button,
 }
 
 .tool-card:hover {
-    background: rgba(253, 227, 6, 0.2);
-    border-color: var(--color-primary);
+    background: rgba(var(--color-primary), 0.2);
+    border-color: rgb(var(--color-primary));
 }
 
 .tool-card:hover img,
@@ -909,30 +875,26 @@ button,
 }
 
 .tool-card.active {
-    background: rgba(253, 227, 6, 0.1);
-    border-color: var(--color-primary);
-    box-shadow: 0 0 20px rgba(253, 227, 6, 0.4);
+    background: rgba(var(--color-primary), 0.1);
+    border-color: rgb(var(--color-primary));
+    box-shadow: 0 0 20px rgba(var(--color-primary), 0.4);
 }
 
-/* PAINEL DE DESCRIÇÃO COM DIAGONAL MAIOR */
 .tool-description-panel {
-    background: rgba(253, 227, 6, 0.05);
-    /* Efeito de vidro amarelado fraco */
+    background: rgba(var(--color-primary), 0.05);
     backdrop-filter: blur(10px);
     padding: 30px;
-    border-radius: 4px;
     border: 3px solid transparent;
-    /* "LED" verde na direita e embaixo */
-    border-right-color: #39FF14;
-    border-bottom-color: #39FF14;
-    box-shadow: inset -5px -5px 15px -5px rgba(57, 255, 20, 0.5);
-    /* Sombra interna (inset) */
+    border-right-color: rgb(var(--color-secondary));
+    border-bottom-color: rgb(var(--color-secondary));
+    box-shadow: inset -5px -5px 15px -5px rgba(var(--color-secondary), 0.5);
     clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
-    /* AUMENTANDO O VALOR PARA UMA DIAGONAL MAIOR */
     display: flex;
     flex-direction: column;
     justify-content: center;
     transition: all 0.3s ease-out;
+    min-height: 250px;
+    /* Garante uma altura mínima */
 }
 
 .tool-description-panel.fading {
@@ -942,7 +904,7 @@ button,
 #tool-name-display {
     font-family: var(--font-secondary);
     font-size: 2rem;
-    color: var(--color-primary);
+    color: rgb(var(--color-primary));
     margin-bottom: 15px;
     letter-spacing: 2px;
     text-transform: uppercase;
@@ -950,7 +912,7 @@ button,
 
 #tool-desc-display {
     line-height: 1.8;
-    color: var(--color-text-dark);
+    color: rgb(var(--color-text-dark));
 }
 
 
@@ -959,6 +921,7 @@ button,
 /* ============================================= */
 #contact {
     background: #000;
+    /* Mantido preto puro para contraste do terminal */
     align-items: flex-start;
     padding-top: 10vh;
 }
@@ -968,17 +931,16 @@ button,
     max-width: 800px;
     height: 80vh;
     max-height: 600px;
-    background: rgba(20, 20, 20, 0.9);
-    border: 1px solid #444;
+    background: rgba(var(--color-background), 0.9);
+    border: 1px solid rgba(var(--color-text), 0.2);
     border-radius: 10px;
-    box-shadow: 0 0 35px var(--color-secondary);
-    /* ALTERADO */
+    box-shadow: 0 0 35px rgb(var(--color-secondary));
     display: flex;
     flex-direction: column;
 }
 
 .terminal-header {
-    background: #333;
+    background: rgba(var(--color-text), 0.15);
     padding: 10px;
     display: flex;
     align-items: center;
@@ -1000,18 +962,21 @@ button,
 
 .btn-close {
     background: #ff5f56;
+    /* Mantido por ser cor padrão de UI */
 }
 
 .btn-min {
     background: #ffbd2e;
+    /* Mantido por ser cor padrão de UI */
 }
 
 .btn-max {
     background: #27c93f;
+    /* Mantido por ser cor padrão de UI */
 }
 
 .terminal-title {
-    color: #ccc;
+    color: rgb(var(--color-text-dark));
     margin: 0 auto;
     font-family: monospace;
 }
@@ -1031,24 +996,23 @@ button,
 }
 
 .prompt-user {
-    color: var(--color-primary);
-    /* Já usa a variável correta */
+    color: rgb(var(--color-primary));
     margin-right: 8px;
 }
 
 .terminal-command {
-    color: #fff;
+    color: rgb(var(--color-text));
 }
 
 .terminal-text-bright {
-    color: #fff;
+    color: rgb(var(--color-text));
     font-weight: bold;
 }
 
 .contact-list {
     margin-top: 15px;
     padding-left: 10px;
-    border-left: 1px solid #444;
+    border-left: 1px solid rgba(var(--color-text), 0.2);
 }
 
 .contact-list .terminal-line {
@@ -1059,28 +1023,27 @@ button,
 
 .contact-list i {
     font-size: 1.2rem;
-    color: var(--color-secondary);
-    /* Já usa a variável correta */
+    color: rgb(var(--color-secondary));
     margin-right: 15px;
 }
 
 .contact-list .contact-label {
     font-weight: bold;
-    color: #fff;
+    color: rgb(var(--color-text));
     width: 90px;
     flex-shrink: 0;
 }
 
 .contact-list a {
-    color: var(--color-text-dark);
+    color: rgb(var(--color-text-dark));
     text-decoration: none;
-    border-bottom: 1px dashed #555;
+    border-bottom: 1px dashed rgba(var(--color-text-dark), 0.5);
     transition: all 0.3s ease;
 }
 
 .contact-list a:hover {
-    color: var(--color-primary);
-    border-bottom-color: var(--color-primary);
+    color: rgb(var(--color-primary));
+    border-bottom-color: rgb(var(--color-primary));
 }
 
 
@@ -1095,7 +1058,7 @@ button,
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.85);
+    background-color: rgba(var(--color-background), 0.85);
     backdrop-filter: blur(8px);
     justify-content: center;
     align-items: center;
@@ -1110,23 +1073,21 @@ button,
 }
 
 .modal-content {
-    background: var(--color-background);
+    background: rgb(var(--color-background));
     padding: 30px;
     width: 90%;
     max-width: 800px;
     position: relative;
     transform: scale(0.9);
     transition: transform 0.4s ease, opacity 0.4s ease;
-    box-shadow: 0 0 20px 5px rgba(253, 227, 6, 0.4),
-        /* Efeito de brilho amarelo */
-        0 0 50px 15px rgba(253, 227, 6, 0.2);
+    box-shadow: 0 0 20px 5px rgba(var(--color-primary), 0.4),
+        0 0 50px 15px rgba(var(--color-primary), 0.2);
     display: flex;
     flex-direction: column;
     max-height: 90vh;
     overflow-y: auto;
     overflow-x: hidden;
-    border: 2px solid var(--color-primary);
-    /* Borda mais fina */
+    border: 2px solid rgb(var(--color-primary));
     z-index: 2001;
 }
 
@@ -1135,22 +1096,21 @@ button,
     opacity: 1;
 }
 
-/* Scrollbar estilizada para o modal (Webkit browsers) */
 .modal-content::-webkit-scrollbar {
     width: 8px;
 }
 
 .modal-content::-webkit-scrollbar-track {
-    background: rgba(10, 10, 31, 0.5);
+    background: rgba(var(--color-background), 0.5);
 }
 
 .modal-content::-webkit-scrollbar-thumb {
-    background: var(--color-secondary);
+    background: rgb(var(--color-secondary));
     border-radius: 10px;
 }
 
 .modal-content::-webkit-scrollbar-thumb:hover {
-    background: #FFF500;
+    background: rgb(var(--color-primary));
 }
 
 .close-modal {
@@ -1158,14 +1118,13 @@ button,
     top: 15px;
     right: 20px;
     font-size: 32px;
-    cursor: pointer;
-    color: var(--color-text-dark);
+    color: rgb(var(--color-text-dark));
     transition: color 0.3s ease, transform 0.3s ease;
     z-index: 2010;
 }
 
 .close-modal:hover {
-    color: var(--color-primary);
+    color: rgb(var(--color-primary));
     transform: rotate(90deg);
 }
 
@@ -1180,7 +1139,7 @@ button,
 
 #modal-project-title {
     margin-bottom: 20px;
-    color: var(--color-secondary);
+    color: rgb(var(--color-secondary));
     font-family: var(--font-secondary);
     font-size: clamp(0.9rem, 2vw, 1.5rem);
     text-align: center;
@@ -1193,7 +1152,7 @@ button,
 
 .modal-section h4 {
     font-size: 1.5rem;
-    color: var(--color-primary);
+    color: rgb(var(--color-primary));
     margin-bottom: 10px;
     border-bottom: none;
     padding-bottom: 0;
@@ -1202,7 +1161,7 @@ button,
 #modal-purpose-description {
     font-size: 1.1rem;
     line-height: 1.6;
-    color: var(--color-text);
+    color: rgb(var(--color-text));
     text-align: justify;
 }
 
@@ -1213,8 +1172,8 @@ button,
 }
 
 .tech-item {
-    background-color: rgba(253, 227, 6, 0.1);
-    border: 1px solid var(--color-primary);
+    background-color: rgba(var(--color-primary), 0.1);
+    border: 1px solid rgb(var(--color-primary));
     border-radius: 5px;
     padding: 10px 15px;
     display: flex;
@@ -1228,14 +1187,14 @@ button,
 }
 
 .tech-name {
-    color: var(--color-primary);
+    color: rgb(var(--color-primary));
     font-size: 1rem;
     font-weight: bold;
     margin-bottom: 5px;
 }
 
 .tech-explanation {
-    color: var(--color-text-dark);
+    color: rgb(var(--color-text-dark));
     font-size: 0.85rem;
     line-height: 1.5;
     text-align: left;
@@ -1251,10 +1210,9 @@ button,
 }
 
 .modal-footer .project-link {
-    background-color: var(--color-primary);
-    color: var(--color-background);
+    background-color: rgb(var(--color-primary));
+    color: rgb(var(--color-background));
     padding: 10px 25px;
-    border-radius: 5px;
     font-size: 1rem;
     font-weight: bold;
     text-decoration: none;
@@ -1262,8 +1220,8 @@ button,
 }
 
 .modal-footer .project-link:hover {
-    background-color: var(--color-secondary);
-    color: var(--color-background);
+    background-color: rgb(var(--color-secondary));
+    color: rgb(var(--color-background));
     transform: translateY(-3px);
 }
 
@@ -1279,6 +1237,10 @@ button,
     .main-nav {
         display: none;
     }
+
+    .tools-container {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 768px) {
@@ -1288,11 +1250,6 @@ button,
 
     .project-gallery {
         grid-template-columns: 1fr;
-    }
-
-    .timeline-container {
-        /* Este seletor não existe no seu HTML atual, pode ser removido se não for usado */
-        width: 95%;
     }
 
     .modal-content {
@@ -1320,13 +1277,13 @@ button,
     }
 
     .tech-tags-container {
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        grid-template-columns: 1fr;
         gap: 10px;
     }
 
     .tech-item {
         padding: 8px 10px;
-        min-height: 90px;
+        min-height: auto;
     }
 
     .tech-name {

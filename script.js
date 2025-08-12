@@ -590,29 +590,32 @@ document.addEventListener('DOMContentLoaded', () => {
     })();
 
     // =============================================
-    // MÓDULO DE FERRAMENTAS INTERATIVO
+    // MÓDULO DE FERRAMENTAS INTERATIVO (CORRIGIDO)
     // =============================================
     const toolsModule = (() => {
         let toolCards, nameDisplay, descDisplay, descPanel;
+        let activeTool = null; // -> NOVO: Variável para "lembrar" o card clicado
 
-        function updateDescription(e) {
-            const card = e.currentTarget;
+        // Função centralizada para atualizar o painel de descrição
+        function updatePanel(card) {
+            // Se nenhum card for passado (ex: ao sair do mouse sem ter clicado em nada),
+            // limpa o painel ou mostra uma mensagem padrão.
+            if (!card) {
+                nameDisplay.textContent = 'Passe o mouse ou clique';
+                descDisplay.textContent = 'Selecione uma ferramenta para ver os detalhes.';
+                return;
+            }
+
             const name = card.dataset.toolName;
             const description = card.dataset.toolDescription;
 
-            // Adiciona um efeito de fade para a troca de texto
+            // Efeito de fade para a troca de texto
             descPanel.classList.add('fading');
-
             setTimeout(() => {
                 nameDisplay.textContent = name;
                 descDisplay.textContent = description;
                 descPanel.classList.remove('fading');
-            }, 200);
-        }
-
-        function setActive(e) {
-            toolCards.forEach(card => card.classList.remove('active'));
-            e.currentTarget.classList.add('active');
+            }, 150); // Tempo de fade reduzido para melhor responsividade
         }
 
         function init() {
@@ -624,9 +627,40 @@ document.addEventListener('DOMContentLoaded', () => {
             if (toolCards.length === 0 || !nameDisplay || !descDisplay) return;
 
             toolCards.forEach(card => {
-                card.addEventListener('mouseenter', updateDescription);
-                card.addEventListener('click', setActive);
+                // Evento de CLICK: Define o card como "ativo" e permanente
+                card.addEventListener('click', () => {
+                    // Remove a classe 'active' do card anteriormente ativo
+                    if (activeTool) {
+                        activeTool.classList.remove('active');
+                    }
+
+                    // Define o novo card como ativo
+                    activeTool = card;
+                    activeTool.classList.add('active');
+
+                    // Atualiza o painel com as informações do card clicado
+                    updatePanel(activeTool);
+                });
+
+                // Evento de MOUSEENTER: Mostra a descrição temporariamente
+                card.addEventListener('mouseenter', () => {
+                    updatePanel(card);
+                });
+
+                // Evento de MOUSELEAVE: Volta para a descrição do card "ativo"
+                card.addEventListener('mouseleave', () => {
+                    // 'activeTool' guarda a referência do último card clicado
+                    updatePanel(activeTool);
+                });
             });
+
+            // -> NOVO: Define um estado inicial para o painel ao carregar a página
+            // Pega o primeiro card da lista para ser o "ativo" inicial.
+            if (toolCards.length > 0) {
+                activeTool = toolCards[0];
+                activeTool.classList.add('active');
+                updatePanel(activeTool);
+            }
         }
 
         return { init };
