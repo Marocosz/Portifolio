@@ -532,30 +532,50 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // =============================================
-    // MÓDULO DA TIMELINE ("DATA SHARD" - VERSÃO FINAL)
+    // MÓDULO DA TIMELINE ("DATA SHARD" - ATUALIZADO COM ANO)
     // =============================================
     const timelineModule = (() => {
         function init() {
+            const datascape = document.querySelector('.timeline-datascape');
             const spine = document.querySelector('.timeline-spine');
             const shards = document.querySelectorAll('.shard');
 
-            if (!spine || shards.length === 0) return;
+            if (!datascape || !spine || shards.length === 0) return;
 
-            // Limpa marcadores antigos para evitar duplicação em caso de re-inicialização
+            // Limpa elementos antigos para evitar duplicação
             spine.innerHTML = '';
-            const markers = []; // Array para guardar os marcadores criados
+            document.querySelectorAll('.timeline-year').forEach(el => el.remove());
 
-            // Cria e posiciona dinamicamente os marcadores na linha central
-            shards.forEach(shard => {
+            const markers = [];
+            const yearDisplays = []; // -> NOVO: Array para guardar os elementos do ano
+
+            // Cria e posiciona dinamicamente os marcadores e os anos
+            shards.forEach((shard, index) => {
+                // Cria o marcador no centro (lógica existente)
                 const marker = document.createElement('div');
                 marker.className = 'spine-marker';
-
-                // Pega a posição do shard e posiciona o marcador na mesma altura
                 const shardTop = shard.offsetTop;
-                marker.style.top = `${shardTop + 25}px`; // 25px é um ajuste para alinhar com a linha de conexão
-
+                marker.style.top = `${shardTop + 25}px`; // 25px de ajuste para alinhar
                 spine.appendChild(marker);
-                markers.push(marker); // Guarda a referência do marcador
+                markers.push(marker);
+
+                // -> NOVO: Cria o elemento de texto para o ano
+                const yearDisplay = document.createElement('div');
+                yearDisplay.className = 'timeline-year';
+                yearDisplay.textContent = shard.dataset.year;
+
+                // Posiciona o ano verticalmente alinhado ao marcador
+                yearDisplay.style.top = marker.style.top;
+
+                // Adiciona a classe para posicionar no lado correto (esquerdo ou direito)
+                if ((index + 1) % 2 !== 0) { // Se o shard é ímpar (fica à esquerda)
+                    yearDisplay.classList.add('year-on-right');
+                } else { // Se o shard é par (fica à direita)
+                    yearDisplay.classList.add('year-on-left');
+                }
+
+                datascape.appendChild(yearDisplay);
+                yearDisplays.push(yearDisplay);
             });
 
             // Anima a entrada e saída dos elementos
@@ -564,22 +584,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     const shard = entry.target;
                     const shardIndex = Array.from(shards).indexOf(shard);
                     const marker = markers[shardIndex];
+                    const yearDisplay = yearDisplays[shardIndex]; // -> NOVO: Pega o ano correspondente
 
-                    if (entry.isIntersecting) {
-                        // Elemento entrou na tela
-                        shard.classList.add('is-visible');
-                        if (marker) {
-                            marker.classList.add('is-active');
-                        }
-                    } else {
-                        // Elemento saiu da tela
-                        shard.classList.remove('is-visible');
-                        if (marker) {
-                            marker.classList.remove('is-active');
-                        }
+                    const isVisible = entry.isIntersecting;
+
+                    shard.classList.toggle('is-visible', isVisible);
+                    if (marker) {
+                        marker.classList.toggle('is-active', isVisible);
+                    }
+                    if (yearDisplay) { // -> NOVO: Controla a visibilidade do ano
+                        yearDisplay.classList.toggle('is-visible', isVisible);
                     }
                 });
-            }, { threshold: 0.3 }); // Você pode ajustar o threshold conforme necessário
+            }, { threshold: 0.4 }); // Gatilho com 40% de visibilidade
 
             shards.forEach(shard => {
                 observer.observe(shard);
@@ -594,15 +611,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // =============================================
     const toolsModule = (() => {
         let toolCards, nameDisplay, descDisplay, descPanel;
-        let activeTool = null; // -> NOVO: Variável para "lembrar" o card clicado
+        let activeTool = null; // Variável para "lembrar" o card clicado
 
         // Função centralizada para atualizar o painel de descrição
         function updatePanel(card) {
-            // Se nenhum card for passado (ex: ao sair do mouse sem ter clicado em nada),
-            // limpa o painel ou mostra uma mensagem padrão.
+            // Se nenhum card for passado (ou seja, activeTool é null), mostra a mensagem padrão
             if (!card) {
-                nameDisplay.textContent = 'Passe o mouse ou clique';
-                descDisplay.textContent = 'Selecione uma ferramenta para ver os detalhes.';
+                nameDisplay.textContent = 'Selecione uma Ferramenta';
+                descDisplay.textContent = 'Passe o mouse ou clique em um ícone para ver os detalhes da tecnologia.';
                 return;
             }
 
@@ -615,7 +631,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 nameDisplay.textContent = name;
                 descDisplay.textContent = description;
                 descPanel.classList.remove('fading');
-            }, 150); // Tempo de fade reduzido para melhor responsividade
+            }, 150);
         }
 
         function init() {
@@ -627,18 +643,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (toolCards.length === 0 || !nameDisplay || !descDisplay) return;
 
             toolCards.forEach(card => {
-                // Evento de CLICK: Define o card como "ativo" e permanente
+                // Evento de CLICK: Define o card como "ativo"
                 card.addEventListener('click', () => {
-                    // Remove a classe 'active' do card anteriormente ativo
                     if (activeTool) {
                         activeTool.classList.remove('active');
                     }
-
-                    // Define o novo card como ativo
                     activeTool = card;
                     activeTool.classList.add('active');
-
-                    // Atualiza o painel com as informações do card clicado
                     updatePanel(activeTool);
                 });
 
@@ -649,23 +660,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Evento de MOUSELEAVE: Volta para a descrição do card "ativo"
                 card.addEventListener('mouseleave', () => {
-                    // 'activeTool' guarda a referência do último card clicado
                     updatePanel(activeTool);
                 });
             });
 
-            // -> NOVO: Define um estado inicial para o painel ao carregar a página
-            // Pega o primeiro card da lista para ser o "ativo" inicial.
-            if (toolCards.length > 0) {
-                activeTool = toolCards[0];
-                activeTool.classList.add('active');
-                updatePanel(activeTool);
-            }
+            // -> CORREÇÃO AQUI:
+            // O bloco que selecionava o primeiro item foi removido.
+            // Agora, chamamos a função updatePanel com o valor inicial de activeTool (que é null),
+            // garantindo que a mensagem padrão seja exibida ao carregar a página.
+            updatePanel(activeTool);
         }
 
         return { init };
     })();
-
+    
     // =============================================
     // MÓDULO DE PROJETOS (FILTROS E MODAL ATUALIZADO)
     // =============================================
