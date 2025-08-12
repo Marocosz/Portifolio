@@ -1,12 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // =============================================
-    // MÓDULO DO CURSOR CUSTOMIZADO
+    // MÓDULO DO CURSOR CUSTOMIZADO (ATUALIZADO)
     // =============================================
     const cursorModule = (() => {
         const cursor = document.querySelector('.cursor');
         const follower = document.querySelector('.cursor-follower');
-        const interactiveElements = 'a, button, [data-section], .timeline-item, .project-card, .terminal-buttons span, .filter-btn, #contact a';
+        // Seletor para todos os elementos interativos
+        const interactiveElements = 'a, button, [data-section], .shard, .project-card, .tool-card, .terminal-buttons span, .filter-btn';
 
         function moveCursor(e) {
             if (cursor) {
@@ -20,11 +21,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         function setupEventListeners() {
-            // Apenas adiciona o listener se os elementos do cursor existirem
             if (!cursor && !follower) return;
 
             window.addEventListener('mousemove', moveCursor);
 
+            // Efeito de hover para elementos interativos gerais
             document.querySelectorAll(interactiveElements).forEach(el => {
                 el.addEventListener('mouseenter', () => {
                     if (cursor) cursor.classList.add('active');
@@ -36,10 +37,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             });
 
-            const terminalBody = document.querySelector('.terminal');
-            if (terminalBody) {
-                terminalBody.addEventListener('mouseenter', () => { if (follower) follower.style.borderWidth = '2px'; });
-                terminalBody.addEventListener('mouseleave', () => { if (follower) follower.style.borderWidth = '1px'; });
+            // -> LÓGICA ATUALIZADA PARA O TERMINAL
+            const terminalArea = document.querySelector('.terminal');
+            if (terminalArea) {
+                terminalArea.addEventListener('mouseenter', () => {
+                    // Adiciona a classe que ativa o estilo geométrico
+                    if (cursor) cursor.classList.add('cli-hover');
+                    if (follower) follower.classList.add('cli-hover');
+                });
+                terminalArea.addEventListener('mouseleave', () => {
+                    // Remove a classe para voltar ao cursor padrão
+                    if (cursor) cursor.classList.remove('cli-hover');
+                    if (follower) follower.classList.remove('cli-hover');
+                });
             }
         }
 
@@ -673,7 +683,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         return { init };
     })();
-    
+
     // =============================================
     // MÓDULO DE PROJETOS (FILTROS E MODAL ATUALIZADO)
     // =============================================

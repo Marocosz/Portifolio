@@ -96,6 +96,10 @@ body.theme-light {
     box-sizing: border-box;
 }
 
+* {
+    cursor: none !important;
+}
+
 html {
     scroll-behavior: smooth;
 }
@@ -120,13 +124,64 @@ button,
 
 
 /* ============================================= */
+/* CURSOR GEOMÉTRICO PARA O TERMINAL (CLI)       */
+/* ============================================= */
+
+/* Animação de rotação para o novo cursor */
+@keyframes rotate-cursor {
+    from {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+/* Antiga animação de piscar (pode ser removida se não for usada em outro lugar) */
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+}
+
+/* Novo estilo para o cursor principal quando estiver sobre o terminal */
+.cursor.cli-hover {
+    width: 20px;
+    /* Tamanho do quadrado */
+    height: 20px;
+    background-color: transparent;
+    /* Fundo transparente para ser vazado */
+    border: 2px solid rgb(var(--color-primary));
+    /* Borda com a cor primária */
+    border-radius: 0;
+    /* Garante que seja um quadrado */
+
+    /* Aplica a nova animação de rotação */
+    animation: rotate-cursor 5s linear infinite;
+}
+
+/* O cursor seguidor continua oculto para dar foco ao principal */
+.cursor-follower.cli-hover {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0);
+}
+
+
+/* ============================================= */
 /* SELETOR DE TEMA                               */
 /* ============================================= */
 .theme-switcher {
     position: fixed;
     top: 60px;
     right: 20px;
-    background: rgba(var(--color-background), 0.7);
+    background: rgba(var(--color-background), 0.4);
     backdrop-filter: blur(10px);
     border-radius: 30px;
     z-index: 1001;
@@ -231,7 +286,7 @@ button,
     top: 50%;
     right: 20px;
     transform: translateY(-50%);
-    background: rgba(var(--color-background), 0.7);
+    background: rgba(var(--color-background), 0.4);
     backdrop-filter: blur(10px);
     border-radius: 30px;
     z-index: 1000;
@@ -1144,7 +1199,7 @@ button,
     max-height: 90vh;
     overflow-y: auto;
     overflow-x: hidden;
-    border: 5px solid rgba(var(--color-primary));
+    border: 3px solid rgba(var(--color-primary));
     z-index: 2001;
 }
 
