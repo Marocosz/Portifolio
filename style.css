@@ -62,18 +62,26 @@
 /* TEMA ALTERNATIVO */
 body.theme-light {
     /* Paleta de Cores Cyberpunk Alternativa */
-    --color-primary: 252, 237, 48;     /* Amarelo vibrante */
-    --color-secondary: 225, 95, 167;   /* Rosa intenso */
-    --color-background: 11, 0, 20;     /* Preto com tom púrpura */
-    --color-text: 244, 239, 255;       /* Branco com tom lilás */
-    --color-text-dark: 161, 135, 179;  /* Roxo acinzentado */
+    --color-primary: 252, 237, 48;
+    /* Amarelo vibrante */
+    --color-secondary: 225, 95, 167;
+    /* Rosa intenso */
+    --color-background: 11, 0, 20;
+    /* Preto com tom púrpura */
+    --color-text: 244, 239, 255;
+    /* Branco com tom lilás */
+    --color-text-dark: 161, 135, 179;
+    /* Roxo acinzentado */
 
     /* Variáveis do Canvas para o Tema Alternativo */
-    --canvas-gradient-color1: 252, 237, 48;   /* Amarelo */
+    --canvas-gradient-color1: 252, 237, 48;
+    /* Amarelo */
     --canvas-gradient-opacity1: 0.06;
-    --canvas-gradient-color2: 225, 95, 167;   /* Rosa */
+    --canvas-gradient-color2: 225, 95, 167;
+    /* Rosa */
     --canvas-gradient-opacity2: 0.05;
-    --canvas-gradient-color3: 0, 120, 255;    /* Azul elétrico para contraste */
+    --canvas-gradient-color3: 0, 120, 255;
+    /* Azul elétrico para contraste */
     --canvas-gradient-opacity3: 0.07;
     --canvas-line-base-hue: 300;
     --canvas-line-hue-range: 120;
@@ -1428,5 +1436,43 @@ button,
         top: 10px;
         right: 15px;
         font-size: 28px;
+    }
+}
+
+/* ============================================= */
+/* RESPONSIVIDADE DA TIMELINE PARA CELULAR       */
+/* ============================================= */
+@media (max-width: 768px) {
+
+    /* -> 1. A linha, os marcadores e as linhas de conexão são escondidos. */
+    .timeline-spine,
+    .spine-marker,
+    .shard::before {
+        display: none;
+    }
+
+    /* -> 2. Os cards de texto agora ocupam a largura total. */
+    .shard:nth-child(odd),
+    .shard:nth-child(even) {
+        width: 100%;
+        margin-left: 0;
+        /* Remove a margem antiga */
+        padding: 20px;
+        /* Adiciona um padding interno para o texto não colar nas bordas */
+    }
+
+    /* Esconde o texto grande do ano (mantido) */
+    .timeline-year {
+        display: none;
+    }
+
+    /* Garante que o ano continue visível no título (mantido) */
+    .shard h4::before {
+        content: attr(data-year);
+        display: block;
+        font-family: var(--font-primary);
+        font-size: 0.9rem;
+        color: rgb(var(--color-secondary));
+        margin-bottom: 5px;
     }
 }

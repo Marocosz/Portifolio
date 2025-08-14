@@ -401,28 +401,22 @@ document.addEventListener('DOMContentLoaded', () => {
     // =============================================
     // MÓDULO DE ANIMAÇÃO EXCLUSIVO PARA A IMAGEM
     // =============================================
+    // =============================================
+    // MÓDULO DE ANIMAÇÃO EXCLUSIVO PARA A IMAGEM (CORRIGIDO)
+    // =============================================
     const imageAnimationModule = (() => {
         let imageWrapper;
-        const smoothingFactor = 0.02; // Fator de suavização da animação
+        const smoothingFactor = 0.02;
         let animationFrameId;
 
-        // Esta é a função que roda em loop para criar a animação suave
         function smoothAnimate() {
             if (!imageWrapper) return;
-
-            // Calcula a distância que a imagem precisa percorrer
             let deltaX = imageWrapper.targetX - imageWrapper.currentX;
             let deltaOpacity = imageWrapper.targetOpacity - imageWrapper.currentOpacity;
-
-            // Move a imagem uma fração dessa distância a cada frame
             imageWrapper.currentX += deltaX * smoothingFactor;
             imageWrapper.currentOpacity += deltaOpacity * smoothingFactor;
-
-            // Aplica os estilos
             imageWrapper.style.transform = `translateX(${imageWrapper.currentX}%)`;
             imageWrapper.style.opacity = imageWrapper.currentOpacity;
-
-            // Continua o loop
             animationFrameId = requestAnimationFrame(smoothAnimate);
         }
 
@@ -430,72 +424,61 @@ document.addEventListener('DOMContentLoaded', () => {
             imageWrapper = document.querySelector('.image-to-animate');
             if (!imageWrapper) return;
 
-            // Define as propriedades iniciais no próprio elemento
-            imageWrapper.targetX = 100; // Alvo inicial: 100% para a direita
+            imageWrapper.targetX = 100;
             imageWrapper.currentX = 100;
             imageWrapper.targetOpacity = 0;
             imageWrapper.currentOpacity = 0;
-            imageWrapper.style.opacity = '0'; // Garante o estado visual inicial
+            imageWrapper.style.opacity = '0';
             imageWrapper.style.willChange = 'transform, opacity';
 
-            // O Observer apenas define o ALVO da animação
+            // -> CORREÇÃO: Usando rootMargin para criar a "zona neutra"
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        // Quando entra na tela, o alvo é a posição final (0% e opacidade 1)
+                        // Aparece quando entra na tela
                         imageWrapper.targetX = 0;
                         imageWrapper.targetOpacity = 1;
                     } else {
-                        // Quando sai, o alvo volta a ser a posição inicial
+                        // Só desaparece depois de sair completamente da tela
                         imageWrapper.targetX = 100;
                         imageWrapper.targetOpacity = 0;
                     }
                 });
             }, {
-                threshold: 0.1 // Gatilho com 10% de visibilidade
+                // O gatilho é uma margem invisível de 20% na parte inferior e superior
+                rootMargin: "0px 0px -20% 0px"
             });
 
             observer.observe(imageWrapper);
 
-            // Inicia o loop de animação contínuo
             if (animationFrameId) {
                 cancelAnimationFrame(animationFrameId);
             }
             smoothAnimate();
         }
-
         return { init };
     })();
 
     // =============================================
-    // MÓDULO "SLIDE-UP" SUAVE PARA CONTEÚDO (MÚLTIPLOS ELEMENTOS)
+    // MÓDULO "SLIDE-UP" SUAVE PARA CONTEÚDO (CORRIGIDO)
     // =============================================
     const contentAnimationModule = (() => {
         let elements;
-        const smoothingFactor = 0.02; // Fator de suavização (ajuste aqui a velocidade)
+        const smoothingFactor = 0.02;
         let animationFrameId;
 
         function smoothAnimate() {
             if (!elements || elements.length === 0) return;
-
             elements.forEach(el => {
-                // Calcula a distância que o elemento precisa percorrer na vertical
                 let deltaY = el.targetY - el.currentY;
                 let deltaOpacity = el.targetOpacity - el.currentOpacity;
-
-                // Move o elemento uma fração dessa distância a cada frame
                 el.currentY += deltaY * smoothingFactor;
                 el.currentOpacity += deltaOpacity * smoothingFactor;
-
-                // Para de calcular quando estiver muito próximo para otimizar
                 if (Math.abs(deltaY) < 0.01) el.currentY = el.targetY;
                 if (Math.abs(deltaOpacity) < 0.01) el.currentOpacity = el.targetOpacity;
-
-                // Aplica os estilos
                 el.style.transform = `translateY(${el.currentY}px)`;
                 el.style.opacity = el.currentOpacity;
             });
-
             animationFrameId = requestAnimationFrame(smoothAnimate);
         }
 
@@ -504,29 +487,31 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!elements || elements.length === 0) return;
 
             elements.forEach(el => {
-                // Define as propriedades iniciais em cada elemento
-                el.targetY = 80; // Alvo inicial: 80px para baixo
+                el.targetY = 80;
                 el.currentY = 80;
                 el.targetOpacity = 0;
                 el.currentOpacity = 0;
-                el.style.opacity = '0'; // Garante o estado visual inicial
+                el.style.opacity = '0';
                 el.style.willChange = 'transform, opacity';
             });
 
+            // -> CORREÇÃO: Usando rootMargin para criar a "zona neutra"
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
+                    const el = entry.target;
                     if (entry.isIntersecting) {
-                        // Quando entra na tela, o alvo é a posição final
-                        entry.target.targetY = 0;
-                        entry.target.targetOpacity = 1;
+                        // Aparece
+                        el.targetY = 0;
+                        el.targetOpacity = 1;
                     } else {
-                        // Quando sai, o alvo volta a ser a posição inicial
-                        entry.target.targetY = 80;
-                        entry.target.targetOpacity = 0;
+                        // Desaparece
+                        el.targetY = 80;
+                        el.targetOpacity = 0;
                     }
                 });
             }, {
-                threshold: 0.1
+                // O gatilho é uma margem invisível de 20% na parte inferior
+                rootMargin: "0px 0px -20% 0px"
             });
 
             elements.forEach(el => observer.observe(el));
@@ -536,83 +521,76 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             smoothAnimate();
         }
-
         return { init };
     })();
 
 
     // =============================================
-    // MÓDULO DA TIMELINE ("DATA SHARD" - ATUALIZADO COM ANO)
+    // MÓDULO DA TIMELINE ("DATA SHARD" - CORRIGIDO)
     // =============================================
     const timelineModule = (() => {
         function init() {
             const datascape = document.querySelector('.timeline-datascape');
             const spine = document.querySelector('.timeline-spine');
             const shards = document.querySelectorAll('.shard');
-
             if (!datascape || !spine || shards.length === 0) return;
 
-            // Limpa elementos antigos para evitar duplicação
             spine.innerHTML = '';
             document.querySelectorAll('.timeline-year').forEach(el => el.remove());
-
             const markers = [];
-            const yearDisplays = []; // -> NOVO: Array para guardar os elementos do ano
+            const yearDisplays = [];
 
-            // Cria e posiciona dinamicamente os marcadores e os anos
             shards.forEach((shard, index) => {
-                // Cria o marcador no centro (lógica existente)
                 const marker = document.createElement('div');
                 marker.className = 'spine-marker';
                 const shardTop = shard.offsetTop;
-                marker.style.top = `${shardTop + 25}px`; // 25px de ajuste para alinhar
+                marker.style.top = `${shardTop + 25}px`;
                 spine.appendChild(marker);
                 markers.push(marker);
 
-                // -> NOVO: Cria o elemento de texto para o ano
                 const yearDisplay = document.createElement('div');
                 yearDisplay.className = 'timeline-year';
                 yearDisplay.textContent = shard.dataset.year;
-
-                // Posiciona o ano verticalmente alinhado ao marcador
                 yearDisplay.style.top = marker.style.top;
-
-                // Adiciona a classe para posicionar no lado correto (esquerdo ou direito)
-                if ((index + 1) % 2 !== 0) { // Se o shard é ímpar (fica à esquerda)
+                if ((index + 1) % 2 !== 0) {
                     yearDisplay.classList.add('year-on-right');
-                } else { // Se o shard é par (fica à direita)
+                } else {
                     yearDisplay.classList.add('year-on-left');
                 }
-
                 datascape.appendChild(yearDisplay);
                 yearDisplays.push(yearDisplay);
             });
 
-            // Anima a entrada e saída dos elementos
+            // -> CORREÇÃO: Usando rootMargin para criar a "zona neutra"
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     const shard = entry.target;
                     const shardIndex = Array.from(shards).indexOf(shard);
                     const marker = markers[shardIndex];
-                    const yearDisplay = yearDisplays[shardIndex]; // -> NOVO: Pega o ano correspondente
+                    const yearDisplay = yearDisplays[shardIndex];
 
-                    const isVisible = entry.isIntersecting;
-
-                    shard.classList.toggle('is-visible', isVisible);
-                    if (marker) {
-                        marker.classList.toggle('is-active', isVisible);
-                    }
-                    if (yearDisplay) { // -> NOVO: Controla a visibilidade do ano
-                        yearDisplay.classList.toggle('is-visible', isVisible);
+                    // A classe só é ADICIONADA se o elemento está visível
+                    if (entry.isIntersecting) {
+                        shard.classList.add('is-visible');
+                        if (marker) marker.classList.add('is-active');
+                        if (yearDisplay) yearDisplay.classList.add('is-visible');
+                    } else {
+                        // A classe só é REMOVIDA se o elemento está fora da tela
+                        shard.classList.remove('is-visible');
+                        if (marker) marker.classList.remove('is-active');
+                        if (yearDisplay) yearDisplay.classList.remove('is-visible');
                     }
                 });
-            }, { threshold: 0.4 }); // Gatilho com 40% de visibilidade
+            }, {
+                // O gatilho acontece quando o elemento está 25% para dentro da parte de baixo
+                // E 25% para dentro da parte de cima. Isso cria a zona neutra.
+                rootMargin: "-25% 0px -25% 0px"
+            });
 
             shards.forEach(shard => {
                 observer.observe(shard);
             });
         }
-
         return { init };
     })();
 
